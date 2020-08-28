@@ -1,0 +1,61 @@
+Compilation Task Model
+	title: string, printable label for this task
+	
+	weight: int, global ordering across pkgs [default: 0]
+	pkgWeight: int, automatic indication of priority according to dependencies
+	natNeight: int, natural position
+	
+	watch: string[], list of relative file paths to monitor
+	
+	command: string, bash
+	callback: string, class::func
+
+General Compilation Algorithm
+	Make a list of packages in topological order
+	From each package, take a list of 'extra.compile' items. Normalize, incl adding top-weight. Add to list.
+	Sort by weight, top-weight, natweight
+	Run tasks in order
+
+Command Synopses:
+	`composer install`, `composer update`		After all packages are downloaded, do a soft check on timestamps and compile any new items
+	`composer compile [-f] [--dry-run]`		Compile all artifacts. (By default, check timestamps.)
+	`composer compile --watch [--delay=]`		Monitor all 'watch' lists and auto-compile
+	`composer compile --debug`			Dump a detailed listing of 
+
+Major Classes and Functions
+	Civi\CompilePlugin\Task				Model of a task
+	Civi\CompilePlugin\CompilePlugin		Composer integration. After install or update, do executeAll()
+	Civi\CompilePlugin\Command\CompileCommand	CLI integration, with methods for executeAll() and executeWatch()
+		::execute()				Run `executeAll()` and then optionally `executeWatch()`
+		::executeAll()				
+		::executeWatch()			
+	Civi\CompilePlugin\TaskFinder			
+	Civi\CompilePlugin\TaskRunner			Given a list of tasks, run them
+
+
+---
+
+who parses the 'extra.compile'?
+who fills in pkgweight?
+when do we build the topsort?
+where do overrides/optouts live?
+
+
+--------------
+--------------
+
+
+"require": {"composer-task-plugin": "~1.0"}
+"extra": {
+  "tasks": [
+    {
+      "tag": "compile",
+      "title": "Compile CSS for MyTheme",
+      "command": "pscss scss/mytheme.scss | php-autoprefixer > css/mytheme.css",
+      "watch": ["scss/mytheme.scss", "extern/bootstrap3/"]
+    }
+  ]
+}
+
+composer task:compile
+
