@@ -49,7 +49,7 @@ where do overrides/optouts live?
 "extra": {
   "tasks": [
     {
-      "tag": "compile",
+      "tag": ["scss"],
       "title": "Compile CSS for MyTheme",
       "command": "pscss scss/mytheme.scss | php-autoprefixer > css/mytheme.css",
       "watch": ["scss/mytheme.scss", "extern/bootstrap3/"]
