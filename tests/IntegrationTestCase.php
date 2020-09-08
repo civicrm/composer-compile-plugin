@@ -21,6 +21,10 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
               'type' => 'path',
               'url' => self::getPluginSourceDir(),
             ],
+            'test-cherry-yogurt' => [
+              'type' => 'path',
+              'url' => self::getPluginSourceDir() . '/tests/pkgs/cherry-yogurt',
+            ],
           ],
         ];
     }
@@ -84,7 +88,7 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
 
             if (getenv('USE_TEST_PROJECT')) {
                 fwrite(STDERR,
-                  sprintf("\n\nTest project location (%s): %s\n", __CLASS__,
+                  sprintf("\n\nTest project location (%s): %s\n", static::CLASS,
                     self::$testDir));
             } else {
                 self::cleanDir(self::$testDir);

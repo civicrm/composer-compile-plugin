@@ -1,0 +1,22 @@
+{
+    "authors": [
+        {
+            "name": "Tester McFakus",
+            "email": "tester@example.org"
+        }
+    ],
+    "name": "test/cherry-yogurt",
+    "require": {
+        "civicrm/composer-compile-plugin": "@dev"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "compile": [
+            {
+                "tag": ["yogurt"],
+                "title": "Compile yogurt.out from yogurt.in",
+                "command": "echo START > yogurt.out; cat yogurt.in >> yogurt.out; echo END >> yogurt.out"
+            }
+        ]
+    }
+}
