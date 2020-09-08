@@ -36,25 +36,26 @@ class TaskRunner
         });
 
         $origTimeout = ProcessExecutor::getTimeout();
-        try {
-            $p = new ProcessExecutor($io);
-            foreach ($tasks as $task) {
-                /** @var \Civi\CompilePlugin\Task $task */
-                if (!$task->active) {
-                    $io->write('<error>Skip</error>: ' . ($task->title ?: $task->command), TRUE, IOInterface::VERBOSE);
-                    continue;
-                }
-
-                $io->write('<info>Compile</info>: ' . ($task->title ?: $task->command));
-                ProcessExecutor::setTimeout($task->timeout);
-                if ($io->isVerbose()) {
-                    $io->write("<info>In <comment>{$task->pwd}</comment>, execute <comment>{$task->command}</comment></info>");
-                }
-                $p->execute($task->command, $ignore, $task->pwd);
+        $p = new ProcessExecutor($io);
+        foreach ($tasks as $task) {
+            /** @var \Civi\CompilePlugin\Task $task */
+            if (!$task->active) {
+                $io->write('<error>Skip</error>: ' . ($task->title ?: $task->command),
+                  true, IOInterface::VERBOSE);
+                continue;
             }
-        }
-        finally {
-            ProcessExecutor::setTimeout($origTimeout);
+
+            $io->write('<info>Compile</info>: ' . ($task->title ?: $task->command));
+            if ($io->isVerbose()) {
+                $io->write("<info>In <comment>{$task->pwd}</comment>, execute <comment>{$task->command}</comment></info>");
+            }
+
+            try {
+                ProcessExecutor::setTimeout($task->timeout);
+                $p->execute($task->command, $ignore, $task->pwd);
+            } finally {
+                ProcessExecutor::setTimeout($origTimeout);
+            }
         }
     }
 
