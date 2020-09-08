@@ -10,6 +10,10 @@ use ProcessHelper\ProcessHelper as PH;
  *
  * This is general integration test of the plugin. It creates an example project which uses the
  * current/under-development plugin. The 'composer compile' command should perform compilation.
+ *
+ * This test project has compiled assets from two places:
+ * 1. The root project (asset 'fondue.out')
+ * 2. The 'cherry-yogurt' project (asset 'yogurt.out')
  */
 class CompileCommandTest extends IntegrationTestCase
 {
@@ -19,14 +23,15 @@ class CompileCommandTest extends IntegrationTestCase
         return parent::getComposerJson() + [
           'name' => 'test/sniff-test',
           'require' => [
-            'civicrm/composer-compile-plugin' => '@dev',
+              'civicrm/composer-compile-plugin' => '@dev',
+              'test/cherry-yogurt' => '@dev',
           ],
           'minimum-stability' => 'dev',
           'extra' => [
             'compile' => [
               [
                 'tag' => ['fondue'],
-                'title' => 'Compile fondue.out from fondue.in',
+                'title' => 'Compile <comment>fondue.out</comment> from <comment>fondue.in</comment>',
                 'command' => 'echo START > fondue.out; cat fondue.in >> fondue.out; echo END >> fondue.out',
                   // TODO 'watch' => ['fondue.in'],
               ]
@@ -45,6 +50,7 @@ class CompileCommandTest extends IntegrationTestCase
     {
         parent::setUp();
         self::cleanFile('fondue.out');
+        self::cleanFile('vendor/test/cherry-yogurt/yogurt.out');
         file_put_contents('fondue.in', "gouda\n");
         PH::runOk('composer install -v');
     }
@@ -54,9 +60,13 @@ class CompileCommandTest extends IntegrationTestCase
      */
     public function testCompile()
     {
-        file_put_contents('fondue.in', "gouda\ngruyere\n");
+        self::cleanFile('fondue.out');
+        self::cleanFile('vendor/test/cherry-yogurt/yogurt.out');
+
         PH::runOk('composer compile -v');
-        $this->assertFileContent('fondue.out', "START\ngouda\ngruyere\nEND\n");
+
+        $this->assertFileContent('fondue.out', "START\ngouda\nEND\n");
+        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\ncherry\nEND\n");
     }
 
 }
