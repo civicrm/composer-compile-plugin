@@ -77,12 +77,26 @@ class Task
     public $watches = [];
 
     /**
+     * (Optional) Whether the task should be executed.
+     *
+     * @var bool
+     */
+    public $active;
+
+    /**
+     * (Required) The raw task definition
+     *
+     * @var array
+     */
+    public $definition;
+
+    /**
      * Ensure that any required fields are defined.
      * @return static
      */
     public function validateRequiredFields() {
         $missing = [];
-        foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd'] as $requiredField) {
+        foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd', 'definition'] as $requiredField) {
             if ($this->{$requiredField} === NULL || $this->{$requiredField} === '') {
                 $missing[] = $requiredField;
             }
@@ -97,6 +111,9 @@ class Task
      * @return static
      */
     public function resolveDefaults() {
+        if ($this->active === NULL) {
+            $this->active = TRUE;
+        }
         if ($this->weight === NULL) {
             $this->weight = 0;
         }

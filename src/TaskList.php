@@ -58,11 +58,12 @@ class TaskList
         $naturalWeight = 1;
         foreach ($extra['compile'] ?? [] as $taskSpec) {
             $task = new Task();
+            $task->definition = $taskSpec;
             $task->packageName = $package->getName();
             $task->pwd = $installPath;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight++;
-            foreach (['title', 'command', 'weight', 'timeout'] as $field) {
+            foreach (['title', 'command', 'weight', 'timeout', 'active'] as $field) {
                 if (isset($taskSpec[$field])) {
                     $task->{$field} = $taskSpec[$field];
                 }
