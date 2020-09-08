@@ -55,8 +55,8 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
             return;
         }
 
-        $taskList = new TaskList();
-        $taskList->load($this->composer);
+        $taskList = new TaskList($this->composer, $this->io);
+        $taskList->load();
         TaskRunner::create()->run($this->io, $taskList->getAll());
     }
 
