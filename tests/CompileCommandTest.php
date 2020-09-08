@@ -11,9 +11,10 @@ use ProcessHelper\ProcessHelper as PH;
  * This is general integration test of the plugin. It creates an example project which uses the
  * current/under-development plugin. The 'composer compile' command should perform compilation.
  *
- * This test project has compiled assets from two places:
+ * This test project has compiled assets from these places:
  * 1. The root project (asset 'fondue.out')
  * 2. The 'cherry-yogurt' project (asset 'yogurt.out')
+ * 3. The 'cherry-jam' project (asset 'jam.out')
  */
 class CompileCommandTest extends IntegrationTestCase
 {
@@ -24,6 +25,7 @@ class CompileCommandTest extends IntegrationTestCase
           'name' => 'test/sniff-test',
           'require' => [
               'civicrm/composer-compile-plugin' => '@dev',
+              'test/cherry-jam' => '@dev',
               'test/cherry-yogurt' => '@dev',
           ],
           'minimum-stability' => 'dev',
@@ -68,7 +70,8 @@ class CompileCommandTest extends IntegrationTestCase
         PH::runOk('composer install -v');
 
         $this->assertFileContent('fondue.out', "START\ngouda\nEND\n");
-        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\ncherry\nEND\n");
+        $this->assertFileContent('vendor/test/cherry-jam/jam.out', "RAINIER-CHERRY\n");
+        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\nmilk\nRAINIER-CHERRY\nEND\n");
     }
 
     /**
@@ -86,25 +89,35 @@ class CompileCommandTest extends IntegrationTestCase
         PH::runOk('composer compile -v');
 
         $this->assertFileContent('fondue.out', "START\ngouda\nEND\n");
-        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\ncherry\nEND\n");
+        $this->assertFileContent('vendor/test/cherry-jam/jam.out', "RAINIER-CHERRY\n");
+        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\nmilk\nRAINIER-CHERRY\nEND\n");
 
         // Second pass at compilation with modified content
         file_put_contents('fondue.in', "gruyere\ngouda\n");
-        file_put_contents('vendor/test/cherry-yogurt/yogurt.in', "cherry\nchocolate\n");
+        file_put_contents('vendor/test/cherry-jam/jam.in', "bing-cherry\n");
+        file_put_contents('vendor/test/cherry-yogurt/yogurt.in', "milk\nstreptococcus thermophilus\n");
         PH::runOk('composer compile -v');
 
         $this->assertFileContent('fondue.out', "START\ngruyere\ngouda\nEND\n");
-        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\ncherry\nchocolate\nEND\n");
-
+        $this->assertFileContent('vendor/test/cherry-jam/jam.out', "BING-CHERRY\n");
+        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\nmilk\nstreptococcus thermophilus\nBING-CHERRY\nEND\n");
     }
 
     protected static function resetCompileFiles()
     {
         self::cleanFile('fondue.out');
+        self::cleanFile('vendor/test/cherry-jam/jam.out');
         self::cleanFile('vendor/test/cherry-yogurt/yogurt.out');
-        file_put_contents('fondue.in', "gouda\n");
-        if (file_exists('vendor/test/cherry-yogurt/')) {
-            file_put_contents('vendor/test/cherry-yogurt/yogurt.in', "cherry\n");
+        $defaultFiles = [
+            './fondue.in' => "gouda\n",
+            'vendor/test/cherry-jam/jam.in' => "rainier-cherry\n",
+            'vendor/test/cherry-yogurt/yogurt.in' => "milk\n",
+        ];
+        foreach ($defaultFiles as $file => $content) {
+            // If the package hasn't been installed yet, then there's nothing to clear.
+            if (file_exists(dirname($file))) {
+                file_put_contents($file, $content);
+            }
         }
     }
 

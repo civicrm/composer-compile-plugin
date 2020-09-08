@@ -1,7 +1,6 @@
 <?php
 namespace Civi\CompilePlugin;
 
-use Civi\CompilePlugin\Command\Task;
 use Composer\IO\IOInterface;
 use Composer\Util\ProcessExecutor;
 
@@ -23,6 +22,19 @@ class TaskRunner
      */
     public function run(IOInterface $io, array $tasks)
     {
+        usort($tasks, function($a, $b){
+            $fields = ['weight', 'packageWeight', 'naturalWeight'];
+            foreach ($fields as $field) {
+                if ($a->{$field} > $b->{$field}) {
+                    return 1;
+                }
+                elseif ($a->{$field} < $b->{$field}) {
+                    return -1;
+                }
+            }
+            return 0;
+        });
+
         $origTimeout = ProcessExecutor::getTimeout();
         try {
             $p = new ProcessExecutor($io);

@@ -6,8 +6,10 @@
         }
     ],
     "name": "test/cherry-yogurt",
+    "description": "(MOCK) Cherry yogurt implementation",
     "require": {
-        "civicrm/composer-compile-plugin": "@dev"
+        "civicrm/composer-compile-plugin": "@dev",
+        "test/jam-implementation": "~1.0"
     },
     "minimum-stability": "dev",
     "extra": {
@@ -15,7 +17,7 @@
             {
                 "tag": ["yogurt"],
                 "title": "Compile <comment>yogurt.out</comment> from <comment>yogurt.in</comment>",
-                "command": "echo START > yogurt.out; cat yogurt.in >> yogurt.out; echo END >> yogurt.out"
+                "command": "echo START > yogurt.out; cat yogurt.in ../cherry-jam/jam.out >> yogurt.out; echo END >> yogurt.out"
             }
         ]
     }

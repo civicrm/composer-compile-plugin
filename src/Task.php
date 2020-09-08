@@ -8,37 +8,65 @@ class Task
     const DEFAULT_TIMEOUT = 600;
 
     /**
+     * (Optional) Printable title for this compilation task.
+     *
      * @var string
      *   Ex: 'Compile <comment>foobar.txt</comment>'
      */
     public $title;
 
     /**
+     * (Optional) The developer's chosen ordering key.
+     *
+     * This ordering takes precedence over all other orderings. For example,
+     * if your ecosystem had a policy that all `XML=>PHP` compilations run
+     * before all `SCSS=>CSS` compilations, then you would use different weights
+     * for `XML=>PHP` (eg -5) and `SCSS=>CSS` (eg +5).
+     *
      * @var int
      */
     public $weight;
 
     /**
+     * (System-Generated) The topological order of the package which defines this
+     * task.
+     *
+     * @var int
+     */
+    public $packageWeight;
+
+    /**
+     * (System-Generated) Within a given package, the written ordering (from JSON)
+     * determines natural weight.
+     *
      * @var int
      */
     public $naturalWeight;
 
     /**
+     * (System-Generated) The name of the package which defined this task.
+     *
      * @var string
      */
     public $packageName;
 
     /**
+     * (Required) Bash expression to execute.
+     *
      * @var string
      */
     public $command;
 
     /**
+     * (Optional) Maximum time the task may run (seconds).
+     *
      * @var int
      */
     public $timeout;
 
     /**
+     * (Required) The folder in which to execute the task.
+     *
      * @var string
      */
     public $pwd;
@@ -54,7 +82,7 @@ class Task
      */
     public function validateRequiredFields() {
         $missing = [];
-        foreach (['naturalWeight', 'packageName', 'pwd'] as $requiredField) {
+        foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd'] as $requiredField) {
             if ($this->{$requiredField} === NULL || $this->{$requiredField} === '') {
                 $missing[] = $requiredField;
             }
