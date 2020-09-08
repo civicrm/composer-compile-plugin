@@ -49,24 +49,63 @@ class CompileCommandTest extends IntegrationTestCase
     protected function setUp()
     {
         parent::setUp();
-        self::cleanFile('fondue.out');
-        self::cleanFile('vendor/test/cherry-yogurt/yogurt.out');
-        file_put_contents('fondue.in', "gouda\n");
-        PH::runOk('composer install -v');
+        self::resetCompileFiles();
+    }
+
+    protected function tearDown()
+    {
+        self::resetCompileFiles();
+        parent::tearDown();
     }
 
     /**
-     * When running 'composer install', it should generate the 'fondue.out' file.
+     * When running 'composer install', it should generate the 'fondue.out' and 'yogurt.out' files.
      */
-    public function testCompile()
+    public function testComposerInstall()
     {
-        self::cleanFile('fondue.out');
-        self::cleanFile('vendor/test/cherry-yogurt/yogurt.out');
+        $this->assertFileNotExists('fondue.out');
 
+        PH::runOk('composer install -v');
+
+        $this->assertFileContent('fondue.out', "START\ngouda\nEND\n");
+        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\ncherry\nEND\n");
+    }
+
+    /**
+     * When running 'composer compile', it should generate the 'fondue.out' and 'yogurt.out' files.
+     */
+    public function testComposerCompile()
+    {
+        $this->assertFileNotExists('fondue.out');
+
+        // We need to make sure the project is setup.
+        PH::runOk('COMPOSER_COMPILE_PLUGIN=0 composer install -v');
+        $this->assertFileNotExists('fondue.out');
+
+        // First pass at compilation in a clean-ish environment
         PH::runOk('composer compile -v');
 
         $this->assertFileContent('fondue.out', "START\ngouda\nEND\n");
         $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\ncherry\nEND\n");
+
+        // Second pass at compilation with modified content
+        file_put_contents('fondue.in', "gruyere\ngouda\n");
+        file_put_contents('vendor/test/cherry-yogurt/yogurt.in', "cherry\nchocolate\n");
+        PH::runOk('composer compile -v');
+
+        $this->assertFileContent('fondue.out', "START\ngruyere\ngouda\nEND\n");
+        $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\ncherry\nchocolate\nEND\n");
+
+    }
+
+    protected static function resetCompileFiles()
+    {
+        self::cleanFile('fondue.out');
+        self::cleanFile('vendor/test/cherry-yogurt/yogurt.out');
+        file_put_contents('fondue.in', "gouda\n");
+        if (file_exists('vendor/test/cherry-yogurt/')) {
+            file_put_contents('vendor/test/cherry-yogurt/yogurt.in', "cherry\n");
+        }
     }
 
 }

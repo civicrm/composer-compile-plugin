@@ -4,8 +4,6 @@ namespace Civi\CompilePlugin;
 
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
-use Composer\Installer\PackageEvent;
-use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
 use Composer\Plugin\Capable;
 use Composer\Plugin\PluginInterface;
@@ -27,12 +25,9 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
 
     public static function getSubscribedEvents()
     {
-        echo "";
         return [
-          PackageEvents::POST_PACKAGE_INSTALL => ['installDownloads', 10],
-          PackageEvents::POST_PACKAGE_UPDATE => ['updateDownloads', 10],
-          ScriptEvents::POST_INSTALL_CMD => ['installDownloadsRoot', 10],
-          ScriptEvents::POST_UPDATE_CMD => ['installDownloadsRoot', 10],
+          ScriptEvents::POST_INSTALL_CMD => ['runTasks', 5],
+          ScriptEvents::POST_UPDATE_CMD => ['runTasks', 5],
         ];
     }
 
@@ -53,33 +48,16 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         $this->io = $io;
     }
 
-    public function installDownloadsRoot(Event $event)
+    public function runTasks(Event $event)
     {
-        $rootPackage = $this->composer->getPackage();
-        $localRepo = $this->composer->getRepositoryManager()
-          ->getLocalRepository();
-        $installationManager = $this->composer->getInstallationManager();
-        foreach ($localRepo->getCanonicalPackages() as $package) {
-            /** @var \Composer\Package\PackageInterface $package */
-            // $package->getExtra()
-            // $installationManager->getInstallPath($package)
+        $active = getenv('COMPOSER_COMPILE_PLUGIN');
+        if ($active === '0' || $active === 0 || $active === 'off') {
+            return;
         }
-    }
 
-    public function installDownloads(PackageEvent $event)
-    {
-        /** @var \Composer\Package\PackageInterface $package */
-        $package = $event->getOperation()->getPackage();
-        $installationManager = $event->getComposer()->getInstallationManager();
-        // $installationManager->getInstallPath($package);
-    }
-
-    public function updateDownloads(PackageEvent $event)
-    {
-        /** @var \Composer\Package\PackageInterface $package */
-        $package = $event->getOperation()->getTargetPackage();
-        $installationManager = $event->getComposer()->getInstallationManager();
-        // $installationManager->getInstallPath($package);
+        $taskList = new TaskList();
+        $taskList->load($this->composer);
+        TaskRunner::create()->run($this->io, $taskList->getAll());
     }
 
 }
