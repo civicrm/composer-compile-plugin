@@ -1,6 +1,7 @@
 <?php
 namespace Civi\CompilePlugin;
 
+use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Util\ProcessExecutor;
 
@@ -8,20 +9,38 @@ class TaskRunner
 {
 
     /**
-     * @return static
+     * @var Composer
      */
-    public static function create() {
-        return new static();
+    protected $composer;
+
+    /**
+     * @var IOInterface
+     */
+    protected $io;
+
+    /**
+     * TaskRunner constructor.
+     * @param \Composer\Composer $composer
+     * @param \Composer\IO\IOInterface $io
+     */
+    public function __construct(
+      \Composer\Composer $composer,
+      \Composer\IO\IOInterface $io
+    ) {
+        $this->composer = $composer;
+        $this->io = $io;
     }
 
     /**
      * Execute a list of compilation tasks.
      *
-     * @param \Composer\IO\IOInterface $io
      * @param Task[] $tasks
      */
-    public function run(IOInterface $io, array $tasks)
+    public function run(array $tasks)
     {
+        /** @var IOInterface $io */
+        $io = $this->io;
+
         usort($tasks, function($a, $b){
             $fields = ['weight', 'packageWeight', 'naturalWeight'];
             foreach ($fields as $field) {

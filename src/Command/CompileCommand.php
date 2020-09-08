@@ -26,7 +26,8 @@ class CompileCommand extends \Composer\Command\BaseCommand
     {
         $taskList = new TaskList($this->getComposer(), $this->getIO());
         $taskList->load();
-        TaskRunner::create()->run($this->getIO(), $taskList->getAll());
+        $taskRunner = new TaskRunner($this->getComposer(), $this->getIO());
+        $taskRunner->run($taskList->getAll());
     }
 
 }
