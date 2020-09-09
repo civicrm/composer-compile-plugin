@@ -2,6 +2,8 @@
 namespace Civi\CompilePlugin;
 
 
+use Civi\CompilePlugin\Event\CompileEvents;
+use Civi\CompilePlugin\Event\CompileListEvent;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
@@ -54,13 +56,18 @@ class TaskList
           [$this->composer->getPackage()]
         )));
 
-        $this->loadPackage($this->composer->getPackage(), realpath('.'));
-        // I'm not a huge fan of using 'realpath()' here, but other tasks (using `getInstallPath()`)
-        // are effectively using `realpath()`, so we should be consistent.
-
+        $rootPackage = $this->composer->getPackage();
         $localRepo = $this->composer->getRepositoryManager()->getLocalRepository();
-        foreach ($localRepo->getCanonicalPackages() as $package) {
-            $this->loadPackage($package, $this->composer->getInstallationManager()->getInstallPath($package));
+        foreach ($this->packageWeights as $packageName => $packageWeight) {
+            if ($packageName === $rootPackage->getName()) {
+                $this->loadPackage($rootPackage, realpath('.'));
+                // I'm not a huge fan of using 'realpath()' here, but other tasks (using `getInstallPath()`)
+                // are effectively using `realpath()`, so we should be consistent.
+            }
+            else {
+                $package = $localRepo->findPackage($packageName, '*');
+                $this->loadPackage($package, $this->composer->getInstallationManager()->getInstallPath($package));
+            }
         }
 
         return $this;
