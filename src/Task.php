@@ -5,8 +5,6 @@ namespace Civi\CompilePlugin;
 
 class Task
 {
-    const DEFAULT_TIMEOUT = 600;
-
     /**
      * (Optional) Printable title for this compilation task.
      *
@@ -58,11 +56,16 @@ class Task
     public $command;
 
     /**
-     * (Optional) Maximum time the task may run (seconds).
+     * (Optional) Whether to display output on the console
      *
-     * @var int
+     * Options:
+     * - 'always': Display output in real time
+     * - 'error': Buffer output. If an error arises, then display output
+     * - 'never': Do not show output
+     *
+     * @var string
      */
-    public $timeout;
+    public $passthru;
 
     /**
      * (Required) The folder in which to execute the task.
@@ -111,15 +114,17 @@ class Task
      * @return static
      */
     public function resolveDefaults() {
-        if ($this->active === NULL) {
-            $this->active = TRUE;
+        $basicDefaults = [
+            'active' => TRUE,
+            'weight' => 0,
+            'passthru' => 'error',
+        ];
+        foreach ($basicDefaults as $key => $value) {
+            if ($this->{$key} === NULL) {
+                $this->{$key} = $value;
+            }
         }
-        if ($this->weight === NULL) {
-            $this->weight = 0;
-        }
-        if ($this->timeout === NULL) {
-            $this->timeout = self::DEFAULT_TIMEOUT;
-        }
+
         if ($this->title === NULL || $this->title === '') {
             $this->title = sprintf('Task <comment>#%d</comment> from <comment>%s</comment>',
               $this->naturalWeight, $this->packageName);
