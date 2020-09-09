@@ -25,7 +25,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $taskList = new TaskList($this->getComposer(), $this->getIO());
-        $taskList->load();
+        $taskList->load()->validateAll();
         $taskRunner = new TaskRunner($this->getComposer(), $this->getIO());
         $taskRunner->run($taskList->getAll());
     }

@@ -100,20 +100,28 @@ class TaskList
         $naturalWeight = 1;
         $tasks = [];
         foreach ($taskDefinitions as $taskDefinition) {
+            $defaults = [
+                'active' => TRUE,
+                'callback' => NULL,
+                'title' => sprintf('Task <comment>%s</comment>#<comment>%s</comment>',
+                  $package->getName(), $naturalWeight),
+                'weight' => 0,
+                'passthru' => 'error',
+            ];
+
+            $taskDefinition = array_merge($defaults, $taskDefinition);
             $task = new Task();
             $task->definition = $taskDefinition;
             $task->packageName = $package->getName();
             $task->pwd = $installPath;
             $task->packageWeight = $this->packageWeights[$package->getName()];
-            $task->naturalWeight = $naturalWeight++;
+            $task->naturalWeight = $naturalWeight;
             foreach (['title', 'callback', 'weight', 'passthru', 'active'] as $field) {
-                if (isset($taskDefinition[$field])) {
-                    $task->{$field} = $taskDefinition[$field];
-                }
+                $task->{$field} = $taskDefinition[$field];
             }
             // TODO watch
-            $task->validateRequiredFields()->resolveDefaults();
             $tasks[] = $task;
+            $naturalWeight++;
         }
 
         $event = new CompileListEvent(CompileEvents::POST_COMPILE_LIST, $this->composer, $this->io, $package, $taskDefinitions, $tasks);
@@ -127,6 +135,16 @@ class TaskList
      */
     public function getAll() {
         return $this->tasks;
+    }
+
+    /**
+     * @return static
+     */
+    public function validateAll() {
+        foreach ($this->tasks as $task) {
+            $task->validate();
+        }
+        return $this;
     }
 
 }

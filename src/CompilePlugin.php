@@ -49,7 +49,7 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         $this->composer = $composer;
         $this->io = $io;
         $dispatch = $composer->getEventDispatcher();
-        $dispatch->addListener(CompileEvents::PRE_COMPILE_LIST, [CommandSubscriber::class, 'applyDefaultCallback']);
+        $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [CommandSubscriber::class, 'applyDefaultCallback']);
     }
 
     public function runTasks(Event $event)
@@ -60,7 +60,7 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         }
 
         $taskList = new TaskList($this->composer, $this->io);
-        $taskList->load();
+        $taskList->load()->validateAll();
         $taskRunner = new TaskRunner($this->composer, $this->io);
         $taskRunner->run($taskList->getAll());
     }

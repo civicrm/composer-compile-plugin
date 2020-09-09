@@ -100,7 +100,7 @@ class Task
      * Ensure that any required fields are defined.
      * @return static
      */
-    public function validateRequiredFields() {
+    public function validate() {
         $missing = [];
         foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd', 'definition', 'callback'] as $requiredField) {
             if ($this->{$requiredField} === NULL || $this->{$requiredField} === '') {
@@ -110,27 +110,8 @@ class Task
         if ($missing) {
             throw new \RuntimeException("Compilation task is missing field(s): " . implode(",", $missing));
         }
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
-    public function resolveDefaults() {
-        $basicDefaults = [
-            'active' => TRUE,
-            'weight' => 0,
-            'passthru' => 'error',
-        ];
-        foreach ($basicDefaults as $key => $value) {
-            if ($this->{$key} === NULL) {
-                $this->{$key} = $value;
-            }
-        }
-
-        if ($this->title === NULL || $this->title === '') {
-            $this->title = sprintf('Task <comment>#%d</comment> from <comment>%s</comment>',
-              $this->naturalWeight, $this->packageName);
+        if (!is_callable($this->callback)) {
+            throw new \RuntimeException("Compilation task has invalid callback: {$this->callback}");
         }
         return $this;
     }

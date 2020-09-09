@@ -19,13 +19,13 @@ class CommandSubscriber
      */
     public static function applyDefaultCallback(CompileListEvent $e)
     {
-        $definitions = $e->getTasksSpecs();
-        foreach ($definitions as &$definition) {
-            if (!isset($definition['callback']) && isset($definition['command'])) {
-                $definition['callback'] = [static::CLASS, 'runTask'];
+        $tasks = $e->getTasks();
+        foreach ($tasks as $task) {
+            /** @var Task $task */
+            if ($task->callback === NULL && isset($task->definition['command'])) {
+                $task->callback = [static::CLASS, 'runTask'];
             }
         }
-        $e->setTasksSpecs($definitions);
     }
 
     public static function runTask(CompileTaskEvent $e)
