@@ -61,16 +61,9 @@ For the next example, we seek to build a custom variant of Bootstrap.
 ```
 -->
 
-## Events
+## Development
 
-If you are developing another Composer enhancement on top of `composer-compile-plugin`, these events may prove useful:
-
-* `pre-compile-list`: Fires before parsing each package's task-list. This allows other plugins to inspect
-  and modify the raw `taskDefinitions` (JSON data).
-* `post-compile-list`: Fires after parsing each package's task-list. This allows  other plugins to inspect
-  and modify the parsed `Task`.
-* `pre-compile-task`: Fires before executing a specific `task`.
-* `post-compile-task`: Fires after executing a specific `task`.
+To do development on `composer-compile-plugin.git`, see [DEVELOP.md](DEVELOP.md).
 
 ## Comparison
 
