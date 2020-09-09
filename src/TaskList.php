@@ -91,23 +91,23 @@ class TaskList
         if ($extra === NULL) {
             $extra = $package->getExtra();
         }
-        $taskSpecs = $extra['compile'] ?? [];
+        $taskDefinitions = $extra['compile'] ?? [];
 
-        $event = new CompileListEvent(CompileEvents::PRE_COMPILE_LIST, $this->composer, $this->io, $package, $taskSpecs);
+        $event = new CompileListEvent(CompileEvents::PRE_COMPILE_LIST, $this->composer, $this->io, $package, $taskDefinitions);
         $this->composer->getEventDispatcher()->dispatch(CompileEvents::PRE_COMPILE_LIST, $event);
 
         $naturalWeight = 1;
         $tasks = [];
-        foreach ($taskSpecs as $taskSpec) {
+        foreach ($taskDefinitions as $taskDefinition) {
             $task = new Task();
-            $task->definition = $taskSpec;
+            $task->definition = $taskDefinition;
             $task->packageName = $package->getName();
             $task->pwd = $installPath;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight++;
             foreach (['title', 'command', 'weight', 'passthru', 'active'] as $field) {
-                if (isset($taskSpec[$field])) {
-                    $task->{$field} = $taskSpec[$field];
+                if (isset($taskDefinition[$field])) {
+                    $task->{$field} = $taskDefinition[$field];
                 }
             }
             // TODO watch
@@ -115,7 +115,7 @@ class TaskList
             $tasks[] = $task;
         }
 
-        $event = new CompileListEvent(CompileEvents::POST_COMPILE_LIST, $this->composer, $this->io, $package, $taskSpecs, $tasks);
+        $event = new CompileListEvent(CompileEvents::POST_COMPILE_LIST, $this->composer, $this->io, $package, $taskDefinitions, $tasks);
         $this->composer->getEventDispatcher()->dispatch(CompileEvents::POST_COMPILE_LIST, $event);
 
         $this->tasks = array_merge($this->tasks, $event->getTasks());

@@ -6,7 +6,7 @@ class CompileEvents
 
     /**
      * The PRE_COMPILE_LIST event occurs before parsing the task-list. This allows
-     * other plugins to inspect and modify the raw 'taskSpecs'.
+     * other plugins to inspect and modify the raw 'taskDefinitions'.
      *
      * @see CompileListEvent
      */
