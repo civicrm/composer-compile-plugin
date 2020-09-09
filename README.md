@@ -74,15 +74,18 @@ If you are developing another Composer enhancement on top of `composer-compile-p
 
 ## Comparison
 
-You may consider this an alternative to:
+There are other ways to prepare compiled material for composer-based project. We can compare:
 
-* Adding [composer post-install scripts](https://getcomposer.org/doc/articles/scripts.md) in the root project. 
-* Configuring a continuous-integration system (Github/Gitlab/Jenkins/etc) to prepare compiled releases for a package.
+* __Compile Plugin__: Use this plugin. Add the `extra.compile` tasks in the package.
+* __Post-Install Scripts__: Add an inert script to the package. Using out-of-band materials (documentation/templates),
+  prompt each consumer to add it to the [composer post-install scripts](https://getcomposer.org/doc/articles/scripts.md).
+* __CI Release Pipeline__: Configure a continuous-integration system (Github/Gitlab/Jenkins/etc) to prepare compiled releases for a package.
+  Ensure that the package-feed provides these releases.
 
 | __Criterion__ | __Compile Plugin__ | __Post-Install Scripts__ | __CI Release Pipeline__ |
 | -- | -- | -- | -- |
-| _How do you declare a new compilation task?_         | Add once to upstream project | Add to upstream project *and every downstream project* | Add once to upstream project |
-| _Can you run the pipeline locally?_                  | Yes | Yes | No |
-| _Can you run the pipeline with forks or patches?_    | Yes | Yes | Requires reproducing CI server |
-| _Can you use PHP tooling in the pipeline?_           | Yes | Yes | Yes |
-| _Can you use non-PHP tooling in the pipeline?_       | Requires docs/coordination | Requires docs/coordination | Yes |
+| _How do you declare a new compilation task?_                   | Add once to upstream project | Add to upstream project *and every downstream project* | Add once to upstream project |
+| _Can you run the pipeline locally?_                            | Yes | Yes | No |
+| _Can you run the pipeline with forks or patches?_              | Yes | Yes | Requires reproducing CI server |
+| _Can you use PHP tooling (eg `scssphp`) in the pipeline?_      | Yes | Yes | Yes |
+| _Can you use non-PHP tooling (eg `gulp`) in the pipeline?_     | Requires docs/coordination | Requires docs/coordination | Yes |
