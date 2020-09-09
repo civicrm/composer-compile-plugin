@@ -2,6 +2,8 @@
 
 namespace Civi\CompilePlugin;
 
+use Civi\CompilePlugin\Event\CompileEvents;
+use Civi\CompilePlugin\Subscriber\CommandSubscriber;
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
@@ -46,6 +48,8 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
     {
         $this->composer = $composer;
         $this->io = $io;
+        $dispatch = $composer->getEventDispatcher();
+        $dispatch->addListener(CompileEvents::PRE_COMPILE_LIST, [CommandSubscriber::class, 'applyDefaultCallback']);
     }
 
     public function runTasks(Event $event)

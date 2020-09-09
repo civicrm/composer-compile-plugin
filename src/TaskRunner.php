@@ -6,6 +6,7 @@ use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Exception\TaskFailedException;
 use Composer\Composer;
 use Composer\IO\IOInterface;
+use Composer\Package\PackageInterface;
 
 class TaskRunner
 {
@@ -68,62 +69,29 @@ class TaskRunner
             $dispatcher->dispatch(CompileEvents::PRE_COMPILE_TASK, $event);
 
             if (!$task->active) {
-                $io->write('<error>Skip</error>: ' . ($task->title ?: $task->command),
+                $io->write('<error>Skip</error>: ' . ($task->title),
                   true, IOInterface::VERBOSE);
                 continue;
             }
 
-            $io->write('<info>Compile</info>: ' . ($task->title ?: $task->command));
-            if ($io->isVerbose()) {
-                $io->write("<info>In <comment>{$task->pwd}</comment>, execute <comment>{$task->command}</comment></info>");
-            }
+            $io->write('<info>Compile</info>: ' . ($task->title));
 
-            $this->runTask($task);
+            $this->runTask($task, $package);
 
             $event = new CompileTaskEvent(CompileEvents::POST_COMPILE_TASK, $this->composer, $this->io, $package, $task);
             $this->composer->getEventDispatcher()->dispatch(CompileEvents::POST_COMPILE_TASK, $event);
         }
     }
 
-    protected function runTask(Task $task) {
+    protected function runTask(Task $task, PackageInterface $package) {
         $orig = [
           'pwd' => getcwd(),
         ];
 
         try {
             chdir($task->pwd);
-
-            switch ($task->passthru) {
-                case 'always':
-                    passthru($task->command, $retVal);
-                    if ($retVal !== 0) {
-                        throw new TaskFailedException($task);
-                    }
-                    break;
-
-                case 'error':
-                    exec($task->command, $output, $retVal);
-                    if ($retVal !== 0) {
-                        if (is_callable([$this->io, 'writeErrorRaw'])) {
-                            $this->io->writeErrorRaw($output);
-                        }
-                        else {
-                            $this->io->writeError($output);
-                        }
-                        throw new TaskFailedException($task);
-                    }
-                    break;
-
-                case 'never':
-                    exec($task->command, $output, $retVal);
-                    if ($retVal !== 0) {
-                        throw new TaskFailedException($task);
-                    }
-                    break;
-
-                default:
-                    throw new \InvalidArgumentException("Invalid passthru option: \"$task->passthru\"");
-            }
+            $e = new CompileTaskEvent(NULL, $this->composer, $this->io, $package, $task);
+            call_user_func($task->callback, $e);
         }
         finally {
             chdir($orig['pwd']);

@@ -49,11 +49,14 @@ class Task
     public $packageName;
 
     /**
-     * (Required) Bash expression to execute.
+     * (Required) Callback.
      *
-     * @var string
+     * Note: Event listeners may examine the task definition and fill-in
+     * the callback.
+     *
+     * @var callable
      */
-    public $command;
+    public $callback;
 
     /**
      * (Optional) Whether to display output on the console
@@ -99,7 +102,7 @@ class Task
      */
     public function validateRequiredFields() {
         $missing = [];
-        foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd', 'definition'] as $requiredField) {
+        foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd', 'definition', 'callback'] as $requiredField) {
             if ($this->{$requiredField} === NULL || $this->{$requiredField} === '') {
                 $missing[] = $requiredField;
             }

@@ -95,6 +95,7 @@ class TaskList
 
         $event = new CompileListEvent(CompileEvents::PRE_COMPILE_LIST, $this->composer, $this->io, $package, $taskDefinitions);
         $this->composer->getEventDispatcher()->dispatch(CompileEvents::PRE_COMPILE_LIST, $event);
+        $taskDefinitions = $event->getTasksSpecs();
 
         $naturalWeight = 1;
         $tasks = [];
@@ -105,7 +106,7 @@ class TaskList
             $task->pwd = $installPath;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight++;
-            foreach (['title', 'command', 'weight', 'passthru', 'active'] as $field) {
+            foreach (['title', 'callback', 'weight', 'passthru', 'active'] as $field) {
                 if (isset($taskDefinition[$field])) {
                     $task->{$field} = $taskDefinition[$field];
                 }
