@@ -8,7 +8,7 @@ the `composer-compile-plugin` itself.
 The `tests/` folder includes integration tests written with PHPUnit.  Each
 integration-test generates a new folder/project with a plausible,
 representative `composer.json` file and executes `composer install`.  It
-checks the output has the expected files.
+checks that the output has the expected files.
 
 To run the tests, you will need `composer` and `phpunit` in the `PATH`.
 
@@ -29,26 +29,25 @@ Time: 8.25 seconds, Memory: 12.00MB
 OK (3 tests, 32 assertions)
 ```
 
-The integration tests can be a bit large/slow. To monitor the tests more
-closesly, set the `DEBUG` variable, as in:
+The integration tests may have a lot going on under the hood.  To monitor
+the tests more closesly, set the `DEBUG` variable, as in:
 
 ```
-[~/src/composer-compile-plugin] env DEBUG=2 phpunit
+[~/src/composer-compile-plugin] env DEBUG=2 phpunit6
 ```
 
-## Local Dev Harness
+## Local Dev Sandbox
 
-What if you want to produce an environment which uses the current plugin
-code - one where you can quickly re-run `composer` commands while
-iterating on code?
+What if you want to produce an example project which uses the current plugin
+code -- a place where you can manually experiment with running `composer`
+while using your draft patches?
 
-You may use any of the integration-tests to initialize a baseline
-environment.
+You may use any of the integration-tests to initialize a basic sandbox.
 
-1. Initialize a placeholder project
+1. Initialize a sandbox project
 
    ```bash
-   env USE_TEST_PROJECT=$HOME/src/myprj DEBUG=2 phpunit tests/EventTest.php
+   env USE_TEST_PROJECT=$HOME/src/sandbox DEBUG=2 phpunit tests/EventTest.php
    ```
 
 2. Navigate into that project. If you inspect it, there should be
@@ -56,7 +55,7 @@ environment.
    in `vendor` are symlinks back to our original `composer-compile-plugin`.
 
    ```bash
-   cd $HOME/src/myprj
+   cd $HOME/src/sandbox
    ```
 
 3. Run whatever `composer` commands interest you.
