@@ -7,7 +7,7 @@ The "Compile" plugin allows any package to define "compilation" tasks, such as:
 
 ## Example
 
-Here is a basic example - the package `foo/bar` specifies that 3 JS files and 3 CSS files should be combined:
+Here is a basic example - the package `foo/bar` specifies that its three JS files and three CSS files should be combined:
 
 ```json
 {
@@ -61,6 +61,30 @@ For the next example, we seek to build a custom variant of Bootstrap.
 ```
 -->
 
+## Task Specification
+
+The `extra.compile` section may list multiple *tasks*. Each task must define one of the following primary elements:
+
+| Field | Type | Description |
+| -- | -- | -- |
+| `callback` | `string` | PHP class and method. Ex: `\MyModule\Compile::doCompilationStuff` |
+| `command` | `string` | Bash statement to execute. Ex: `cat file1.txt file2.txt > file3.txt` |
+
+Additionally, there are several optional fields which may modify how the task operates:
+
+| Field | Type | Default | Description |
+| -- | -- | -- | -- |
+| `active` | `bool` | `true` | Whether this task should be executed |
+| `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
+| `passthru` | `string` | `error` | Should the console output be displayed? Values may be `always`, `never`, and `error`. |
+
+## Task Ordering
+
+The ordering of tasks aims to meet these intuitions:
+
+* Dependencies run first.
+* Tasks run in the order listed.
+
 ## Development
 
 To do development on `composer-compile-plugin.git`, see [DEVELOP.md](DEVELOP.md).
@@ -69,11 +93,13 @@ To do development on `composer-compile-plugin.git`, see [DEVELOP.md](DEVELOP.md)
 
 There are other ways to prepare compiled material for composer-based project. We can compare:
 
-* __Compile Plugin__: Use this plugin. Add the `extra.compile` tasks in the package.
+* __Compile Plugin__: Load this plugin. Add the `extra.compile` tasks in the package.
 * __Post-Install Scripts__: Add an inert script to the package. Using out-of-band materials (documentation/templates),
   prompt each consumer to add it to the [composer post-install scripts](https://getcomposer.org/doc/articles/scripts.md).
 * __CI Release Pipeline__: Configure a continuous-integration system (Github/Gitlab/Jenkins/etc) to prepare compiled releases for a package.
   Ensure that the package-feed provides these releases.
+
+With the ofllowing trade-offs:
 
 | __Criterion__ | __Compile Plugin__ | __Post-Install Scripts__ | __CI Release Pipeline__ |
 | -- | -- | -- | -- |
@@ -81,4 +107,4 @@ There are other ways to prepare compiled material for composer-based project. We
 | _Can you run the pipeline locally?_                            | Yes | Yes | No |
 | _Can you run the pipeline with forks or patches?_              | Yes | Yes | Requires reproducing CI server |
 | _Can you use PHP tooling (eg `scssphp`) in the pipeline?_      | Yes | Yes | Yes |
-| _Can you use non-PHP tooling (eg `gulp`) in the pipeline?_     | Requires docs/coordination | Requires docs/coordination | Yes |
+| _Can you use non-PHP tooling (eg `gulp`, `docker`) in the pipeline?_ | Requires docs/installation | Requires docs/installation | Yes |
