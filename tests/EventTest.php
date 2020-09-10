@@ -58,13 +58,7 @@ class EventTest extends IntegrationTestCase
     public function testComposerInstall()
     {
         $p = PH::runOk('composer install');
-        $expectLines = [
-            // First package: civicrm/composer-compile-plugin
-            "^MARK: PRE_COMPILE_LIST",
-            "^MARK: POST_COMPILE_LIST",
-            // Second package: test/event-test
-            "^MARK: PRE_COMPILE_LIST",
-            "^MARK: POST_COMPILE_LIST",
+        $expectLines = array_merge($this->startupLines(), [
             // First task
             "^MARK: PRE_COMPILE_TASK",
             "^MARK: RUN FIRST",
@@ -73,7 +67,7 @@ class EventTest extends IntegrationTestCase
             "^MARK: PRE_COMPILE_TASK",
             "^MARK: RUN SECOND",
             "^MARK: POST_COMPILE_TASK",
-        ];
+        ]);
         $output = $p->getOutput();
         $actualLines = array_values(preg_grep(';^MARK:;', explode("\n", $output)));
 
@@ -91,13 +85,7 @@ class EventTest extends IntegrationTestCase
     public function testDryRun()
     {
         $p = PH::runOk('composer compile --dry-run');
-        $expectLines = [
-            // First package: civicrm/composer-compile-plugin
-            "^MARK: PRE_COMPILE_LIST",
-            "^MARK: POST_COMPILE_LIST",
-            // Second package: test/event-test
-            "^MARK: PRE_COMPILE_LIST",
-            "^MARK: POST_COMPILE_LIST",
+        $expectLines = array_merge($this->startupLines(), [
             // First task
             "^MARK: PRE_COMPILE_TASK",
             // Not on dry-run: "^MARK: RUN FIRST",
@@ -106,7 +94,7 @@ class EventTest extends IntegrationTestCase
             "^MARK: PRE_COMPILE_TASK",
             // Not on dry-run: "^MARK: RUN SECOND",
             "^MARK: POST_COMPILE_TASK",
-        ];
+        ]);
         $output = $p->getOutput();
         $actualLines = array_values(preg_grep(';^MARK:;', explode("\n", $output)));
 
@@ -119,5 +107,15 @@ class EventTest extends IntegrationTestCase
         foreach ($expectLines as $offset => $expectLine) {
             $this->assertRegExp(";$expectLine;", $actualLines[$offset], "Check line $offset in $serialize");
         }
+    }
+
+    protected function startupLines() {
+        $pkgCount = 3;
+        $r = [];
+        for ($i = 0; $i < $pkgCount; $i++) {
+            $r[] = "^MARK: PRE_COMPILE_LIST";
+            $r[] ="^MARK: POST_COMPILE_LIST";
+        }
+        return $r;
     }
 }
