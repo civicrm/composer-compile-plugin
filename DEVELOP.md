@@ -84,3 +84,9 @@ for third party enhancements. These events are:
   and modify the parsed `Task` object.
 * `pre-compile-task`: Fires before executing a specific `task`.
 * `post-compile-task`: Fires after executing a specific `task`.
+
+Note: The `compile` command supports a dry-run mode. All events will fire
+normally during dry-run. This is important to support subscribers which
+manipulate task definitions. However, if (hypothetically), a subscriber had
+some significant side-effects (like creating files), then it would be
+important to consult `$event->isDryRun()`.

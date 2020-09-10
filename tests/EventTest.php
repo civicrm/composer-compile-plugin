@@ -84,9 +84,40 @@ class EventTest extends IntegrationTestCase
 
         $this->assertEquals(count($expectLines), count($actualLines), "Compare line count in $serialize");
         foreach ($expectLines as $offset => $expectLine) {
-            $this->assertRegExp(";$expectLine;", $actualLines[$offset],
-              "Check line $offset in $serialize");
+            $this->assertRegExp(";$expectLine;", $actualLines[$offset], "Check line $offset in $serialize");
         }
     }
 
+    public function testDryRun()
+    {
+        $p = PH::runOk('composer compile --dry-run');
+        $expectLines = [
+            // First package: civicrm/composer-compile-plugin
+            "^MARK: PRE_COMPILE_LIST",
+            "^MARK: POST_COMPILE_LIST",
+            // Second package: test/event-test
+            "^MARK: PRE_COMPILE_LIST",
+            "^MARK: POST_COMPILE_LIST",
+            // First task
+            "^MARK: PRE_COMPILE_TASK",
+            // Not on dry-run: "^MARK: RUN FIRST",
+            "^MARK: POST_COMPILE_TASK",
+            // Second task
+            "^MARK: PRE_COMPILE_TASK",
+            // Not on dry-run: "^MARK: RUN SECOND",
+            "^MARK: POST_COMPILE_TASK",
+        ];
+        $output = $p->getOutput();
+        $actualLines = array_values(preg_grep(';^MARK:;', explode("\n", $output)));
+
+        $serialize = print_r([
+          'expect' => $expectLines,
+          'actual' => $actualLines,
+        ], 1);
+
+        $this->assertEquals(count($expectLines), count($actualLines), "Compare line count in $serialize");
+        foreach ($expectLines as $offset => $expectLine) {
+            $this->assertRegExp(";$expectLine;", $actualLines[$offset], "Check line $offset in $serialize");
+        }
+    }
 }

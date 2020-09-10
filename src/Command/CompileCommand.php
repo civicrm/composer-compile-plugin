@@ -18,7 +18,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
         $this
           ->setName('compile')
           ->setDescription('Run compilation steps in all packages')
-          // ->addOption('dry-run', 'N', InputOption::VALUE_NONE, 'Dry-run: Print a list of steps to be run')
+          ->addOption('dry-run', 'N', InputOption::VALUE_NONE, 'Dry-run: Print a list of steps to be run')
         ;
     }
 
@@ -27,7 +27,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
         $taskList = new TaskList($this->getComposer(), $this->getIO());
         $taskList->load()->validateAll();
         $taskRunner = new TaskRunner($this->getComposer(), $this->getIO());
-        $taskRunner->run($taskList->getAll());
+        $taskRunner->run($taskList->getAll(), $input->getOption('dry-run'));
     }
 
 }

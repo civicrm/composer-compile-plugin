@@ -31,25 +31,33 @@ class CompileTaskEvent extends \Composer\EventDispatcher\Event
     private $task;
 
     /**
+     * @var bool
+     */
+    private $dryRun;
+
+    /**
      * CompileEvent constructor.
      * @param string $eventName
      * @param \Composer\Composer $composer
      * @param \Composer\IO\IOInterface $io
      * @param \Composer\Package\PackageInterface $package
      * @param \Civi\CompilePlugin\Task $task
+     * @param bool $dryRun
      */
     public function __construct(
       $eventName,
       \Composer\Composer $composer,
       \Composer\IO\IOInterface $io,
       \Composer\Package\PackageInterface $package,
-      Task $task
+      Task $task,
+      $dryRun
     ) {
         parent::__construct($eventName);
         $this->io = $io;
         $this->composer = $composer;
         $this->package = $package;
         $this->task = $task;
+        $this->dryRun = $dryRun;
     }
 
     /**
@@ -82,6 +90,14 @@ class CompileTaskEvent extends \Composer\EventDispatcher\Event
     public function getTask()
     {
         return $this->task;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDryRun()
+    {
+        return $this->dryRun;
     }
 
 }

@@ -38,25 +38,14 @@ class TaskRunner
      * Execute a list of compilation tasks.
      *
      * @param Task[] $tasks
+     * @param bool $isDryRun
      */
-    public function run(array $tasks)
+    public function run(array $tasks, $isDryRun = FALSE)
     {
         /** @var IOInterface $io */
         $io = $this->io;
 
-        usort($tasks, function($a, $b){
-            $fields = ['weight', 'packageWeight', 'naturalWeight'];
-            foreach ($fields as $field) {
-                if ($a->{$field} > $b->{$field}) {
-                    return 1;
-                }
-                elseif ($a->{$field} < $b->{$field}) {
-                    return -1;
-                }
-            }
-            return 0;
-        });
-
+        $tasks = $this->sortTasks($tasks);
         foreach ($tasks as $task) {
             /** @var \Civi\CompilePlugin\Task $task */
 
@@ -64,7 +53,7 @@ class TaskRunner
               ? $this->composer->getPackage()
               : $this->composer->getRepositoryManager()->getLocalRepository()->findPackage($task->packageName, '*');
 
-            $event = new CompileTaskEvent(CompileEvents::PRE_COMPILE_TASK, $this->composer, $this->io, $package, $task);
+            $event = new CompileTaskEvent(CompileEvents::PRE_COMPILE_TASK, $this->composer, $this->io, $package, $task, $isDryRun);
             $dispatcher = $this->composer->getEventDispatcher();
             $dispatcher->dispatch(CompileEvents::PRE_COMPILE_TASK, $event);
 
@@ -76,9 +65,11 @@ class TaskRunner
 
             $io->write('<info>Compile</info>: ' . ($task->title));
 
-            $this->runTask($task, $package);
+            if (!$isDryRun) {
+                $this->runTask($task, $package);
+            }
 
-            $event = new CompileTaskEvent(CompileEvents::POST_COMPILE_TASK, $this->composer, $this->io, $package, $task);
+            $event = new CompileTaskEvent(CompileEvents::POST_COMPILE_TASK, $this->composer, $this->io, $package, $task, $isDryRun);
             $this->composer->getEventDispatcher()->dispatch(CompileEvents::POST_COMPILE_TASK, $event);
         }
     }
@@ -90,12 +81,33 @@ class TaskRunner
 
         try {
             chdir($task->pwd);
-            $e = new CompileTaskEvent(NULL, $this->composer, $this->io, $package, $task);
+            $isDryRun = FALSE;
+            $e = new CompileTaskEvent(NULL, $this->composer, $this->io, $package, $task, $isDryRun);
             call_user_func($task->callback, $e);
         }
         finally {
             chdir($orig['pwd']);
         }
+    }
+
+    /**
+     * @param Task[] $tasks
+     * @return Task[]
+     */
+    protected function sortTasks($tasks)
+    {
+        usort($tasks, function ($a, $b) {
+            $fields = ['weight', 'packageWeight', 'naturalWeight'];
+            foreach ($fields as $field) {
+                if ($a->{$field} > $b->{$field}) {
+                    return 1;
+                } elseif ($a->{$field} < $b->{$field}) {
+                    return -1;
+                }
+            }
+            return 0;
+        });
+        return $tasks;
     }
 
 }
