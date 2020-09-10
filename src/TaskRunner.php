@@ -97,7 +97,7 @@ class TaskRunner
      * @param Task[] $tasks
      * @return Task[]
      */
-    protected function sortTasks($tasks)
+    public function sortTasks($tasks)
     {
         usort($tasks, function ($a, $b) {
             $fields = ['weight', 'packageWeight', 'naturalWeight'];
