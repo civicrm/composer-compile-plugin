@@ -13,5 +13,4 @@ class CommandProvider implements \Composer\Plugin\Capability\CommandProvider
           new CompileCommand(),
         ];
     }
-
 }

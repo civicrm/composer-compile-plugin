@@ -2,7 +2,6 @@
 
 namespace Civi\CompilePlugin;
 
-
 class Task
 {
     /**
@@ -105,10 +104,11 @@ class Task
      * Ensure that any required fields are defined.
      * @return static
      */
-    public function validate() {
+    public function validate()
+    {
         $missing = [];
         foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd', 'definition', 'callback'] as $requiredField) {
-            if ($this->{$requiredField} === NULL || $this->{$requiredField} === '') {
+            if ($this->{$requiredField} === null || $this->{$requiredField} === '') {
                 $missing[] = $requiredField;
             }
         }
@@ -120,5 +120,4 @@ class Task
         }
         return $this;
     }
-
 }

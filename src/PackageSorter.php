@@ -3,7 +3,8 @@ namespace Civi\CompilePlugin;
 
 use Composer\Package\PackageInterface;
 
-class PackageSorter {
+class PackageSorter
+{
 
     /**
      * Get the list of installed packages (sorted topologically).
@@ -17,7 +18,8 @@ class PackageSorter {
      *
      *   Ex: [0 => 'very-much/upstream', 1 => 'some-what/midstream', 2 => 'hear-now/downstream']
      */
-    public static function sortPackages($installedPackages) {
+    public static function sortPackages($installedPackages)
+    {
         // We do our own topological sort. It doesn't seem particularly easy
         // to ask composer for this list -- the code-paths for 'composer require'
         // and 'composer update' have to address a lot of issues (like version-selection)
@@ -25,7 +27,7 @@ class PackageSorter {
 
         // Given that $allPackages starts in some known order, the remaining steps
         // should be deterministic/stable over multiple iterations.
-        usort($installedPackages, function($a, $b) {
+        usort($installedPackages, function ($a, $b) {
             return strnatcmp($a->getName(), $b->getName());
         });
 
@@ -34,12 +36,12 @@ class PackageSorter {
         $validNames = [];
         foreach ($installedPackages as $package) {
             /** @var PackageInterface $package */
-            $validNames[$package->getName()] = TRUE;
+            $validNames[$package->getName()] = true;
             foreach ($package->getProvides() as $link) {
-                $validNames[$link->getTarget()] = TRUE;
+                $validNames[$link->getTarget()] = true;
             }
             foreach ($package->getReplaces() as $link) {
-                $validNames[$link->getTarget()] = TRUE;
+                $validNames[$link->getTarget()] = true;
             }
         }
 
@@ -50,7 +52,7 @@ class PackageSorter {
             /** @var PackageInterface $package */
             foreach ($package->getRequires() as $link) {
                 if (!isset($validNames[$link->getTarget()])) {
-                    $ignoredNames[$link->getTarget()] = TRUE;
+                    $ignoredNames[$link->getTarget()] = true;
                 }
             }
         }
@@ -67,27 +69,27 @@ class PackageSorter {
         $sortedPackages = [];
 
         // A package is "ripe" when all its requirements are met.
-        $isRipe = function(PackageInterface $pkg) use (&$sortedPackages, &$ignoredNames) {
+        $isRipe = function (PackageInterface $pkg) use (&$sortedPackages, &$ignoredNames) {
             foreach ($pkg->getRequires() as $link) {
                 if (!isset($sortedPackages[$link->getTarget()]) && !isset($ignoredNames[$link->getTarget()])) {
                     // printf("[%s] is not ripe due to [%s]\n", $pkg->getName(), $link->getTarget());
-                    return FALSE;
+                    return false;
                 }
             }
             // printf("[%s] is ripe\n", $pkg->getName());
-            return TRUE;
+            return true;
         };
 
         // A package is "consumed" when we move it from $todoPackages to $sortedPackages.
-        $consumePackage = function(PackageInterface $pkg) use (&$sortedPackages, &$todoPackages, &$ignoredNames) {
+        $consumePackage = function (PackageInterface $pkg) use (&$sortedPackages, &$todoPackages, &$ignoredNames) {
             $sortedPackages[$pkg->getName()] = $pkg;
             unset($todoPackages[$pkg->getName()]);
 
             foreach ($pkg->getProvides() as $link) {
-                $ignoredNames[$link->getTarget()] = TRUE;
+                $ignoredNames[$link->getTarget()] = true;
             }
             foreach ($pkg->getReplaces() as $link) {
-                $ignoredNames[$link->getTarget()] = TRUE;
+                $ignoredNames[$link->getTarget()] = true;
             }
         };
 
@@ -104,5 +106,4 @@ class PackageSorter {
 
         return array_keys($sortedPackages);
     }
-
 }

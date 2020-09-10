@@ -45,12 +45,12 @@ class CompileTaskEvent extends \Composer\EventDispatcher\Event
      * @param bool $dryRun
      */
     public function __construct(
-      $eventName,
-      \Composer\Composer $composer,
-      \Composer\IO\IOInterface $io,
-      \Composer\Package\PackageInterface $package,
-      Task $task,
-      $dryRun
+        $eventName,
+        \Composer\Composer $composer,
+        \Composer\IO\IOInterface $io,
+        \Composer\Package\PackageInterface $package,
+        Task $task,
+        $dryRun
     ) {
         parent::__construct($eventName);
         $this->io = $io;
@@ -99,5 +99,4 @@ class CompileTaskEvent extends \Composer\EventDispatcher\Event
     {
         return $this->dryRun;
     }
-
 }

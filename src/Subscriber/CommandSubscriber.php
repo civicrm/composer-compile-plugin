@@ -22,7 +22,7 @@ class CommandSubscriber
         $tasks = $e->getTasks();
         foreach ($tasks as $task) {
             /** @var Task $task */
-            if ($task->callback === NULL && isset($task->definition['command'])) {
+            if ($task->callback === null && isset($task->definition['command'])) {
                 $task->callback = [static::CLASS, 'runTask'];
             }
         }

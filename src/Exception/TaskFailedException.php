@@ -25,5 +25,4 @@ class TaskFailedException extends \Exception
     {
         return $this->task;
     }
-
 }

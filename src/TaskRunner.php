@@ -27,8 +27,8 @@ class TaskRunner
      * @param \Composer\IO\IOInterface $io
      */
     public function __construct(
-      \Composer\Composer $composer,
-      \Composer\IO\IOInterface $io
+        \Composer\Composer $composer,
+        \Composer\IO\IOInterface $io
     ) {
         $this->composer = $composer;
         $this->io = $io;
@@ -40,7 +40,7 @@ class TaskRunner
      * @param Task[] $tasks
      * @param bool $isDryRun
      */
-    public function run(array $tasks, $isDryRun = FALSE)
+    public function run(array $tasks, $isDryRun = false)
     {
         /** @var IOInterface $io */
         $io = $this->io;
@@ -58,8 +58,11 @@ class TaskRunner
             $dispatcher->dispatch(CompileEvents::PRE_COMPILE_TASK, $event);
 
             if (!$task->active) {
-                $io->write('<error>Skip</error>: ' . ($task->title),
-                  true, IOInterface::VERBOSE);
+                $io->write(
+                    '<error>Skip</error>: ' . ($task->title),
+                    true,
+                    IOInterface::VERBOSE
+                );
                 continue;
             }
 
@@ -74,18 +77,18 @@ class TaskRunner
         }
     }
 
-    protected function runTask(Task $task, PackageInterface $package) {
+    protected function runTask(Task $task, PackageInterface $package)
+    {
         $orig = [
           'pwd' => getcwd(),
         ];
 
         try {
             chdir($task->pwd);
-            $isDryRun = FALSE;
-            $e = new CompileTaskEvent(NULL, $this->composer, $this->io, $package, $task, $isDryRun);
+            $isDryRun = false;
+            $e = new CompileTaskEvent(null, $this->composer, $this->io, $package, $task, $isDryRun);
             call_user_func($task->callback, $e);
-        }
-        finally {
+        } finally {
             chdir($orig['pwd']);
         }
     }
@@ -109,5 +112,4 @@ class TaskRunner
         });
         return $tasks;
     }
-
 }

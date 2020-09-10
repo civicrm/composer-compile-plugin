@@ -45,12 +45,12 @@ class CompileListEvent extends \Composer\EventDispatcher\Event
      * @param \Civi\CompilePlugin\Task[] $tasks
      */
     public function __construct(
-      $eventName,
-      \Composer\Composer $composer,
-      \Composer\IO\IOInterface $io,
-      \Composer\Package\PackageInterface $package,
-      array $tasksSpecs,
-      array $tasks = NULL
+        $eventName,
+        \Composer\Composer $composer,
+        \Composer\IO\IOInterface $io,
+        \Composer\Package\PackageInterface $package,
+        array $tasksSpecs,
+        array $tasks = null
     ) {
         parent::__construct($eventName);
         $this->io = $io;
@@ -115,5 +115,4 @@ class CompileListEvent extends \Composer\EventDispatcher\Event
     {
         $this->tasks = $tasks;
     }
-
 }

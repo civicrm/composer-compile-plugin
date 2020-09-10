@@ -29,5 +29,4 @@ class CompileCommand extends \Composer\Command\BaseCommand
         $taskRunner = new TaskRunner($this->getComposer(), $this->getIO());
         $taskRunner->run($taskList->getAll(), $input->getOption('dry-run'));
     }
-
 }

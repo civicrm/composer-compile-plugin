@@ -29,5 +29,4 @@ class CompileEvents
      * The POST_COMPILE_TASK event occurs before executing a specific task.
      */
     const POST_COMPILE_TASK = 'post-compile-task';
-
 }
