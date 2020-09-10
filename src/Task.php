@@ -21,6 +21,11 @@ class Task
      * before all `SCSS=>CSS` compilations, then you would use different weights
      * for `XML=>PHP` (eg -5) and `SCSS=>CSS` (eg +5).
      *
+     * NOTE: This option was added in early drafts as a pressure-relief valve
+     * in case some control was needed over ordering. It's now hidden, though,
+     * because I think it's better to wait for some feedback re:use-cases before
+     * committing to this model.
+     *
      * @var int
      */
     public $weight;

@@ -105,7 +105,6 @@ class TaskList
                 'callback' => NULL,
                 'title' => sprintf('Task <comment>%s</comment>#<comment>%s</comment>',
                   $package->getName(), $naturalWeight),
-                'weight' => 0,
                 'passthru' => 'error',
             ];
 
@@ -114,9 +113,10 @@ class TaskList
             $task->definition = $taskDefinition;
             $task->packageName = $package->getName();
             $task->pwd = $installPath;
+            $task->weight = 0;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight;
-            foreach (['title', 'callback', 'weight', 'passthru', 'active'] as $field) {
+            foreach (['title', 'callback', 'passthru', 'active'] as $field) {
                 $task->{$field} = $taskDefinition[$field];
             }
             // TODO watch
