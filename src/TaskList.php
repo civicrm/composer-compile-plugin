@@ -145,6 +145,32 @@ class TaskList
     }
 
     /**
+     * @param string $pattern
+     *   Ex: 'vendor/*'
+     *   Ex: 'vendor/package'
+     *   Ex: 'vendor/package:id'
+     * @return Task[]
+     */
+    public function getByPattern($pattern) {
+        list ($tgtVendorPackage, $tgtId) = explode(':', "{$pattern}:");
+        list ($tgtVendor, $tgtPackage) = explode('/', $tgtVendorPackage . '/');
+        return array_filter($this->tasks, function($task) use ($tgtVendor, $tgtPackage, $tgtVendorPackage, $tgtId) {
+            /** @var Task $task */
+            if ($tgtId && $task->naturalWeight != $tgtId) {
+                return FALSE;
+            }
+
+            if ($tgtPackage === '*') {
+                list ($actualVendor) = explode('/', $task->packageName);
+                return $actualVendor == $tgtVendor;
+            }
+            else {
+                return $tgtVendorPackage === $task->packageName;
+            }
+        });
+    }
+
+    /**
      * @return static
      */
     public function validateAll()

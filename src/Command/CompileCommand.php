@@ -4,6 +4,7 @@ namespace Civi\CompilePlugin\Command;
 
 use Civi\CompilePlugin\TaskList;
 use Civi\CompilePlugin\TaskRunner;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,6 +20,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
           ->setName('compile')
           ->setDescription('Run compilation steps in all packages')
           ->addOption('dry-run', 'N', InputOption::VALUE_NONE, 'Dry-run: Print a list of steps to be run')
+          ->addArgument('filterExpr', InputArgument::IS_ARRAY, 'Optional filter to match. Ex: \'vendor/package\' or \'vendor/package:id\'')
         ;
     }
 
@@ -26,7 +28,19 @@ class CompileCommand extends \Composer\Command\BaseCommand
     {
         $taskList = new TaskList($this->getComposer(), $this->getIO());
         $taskList->load()->validateAll();
+
+        $filters = $input->getArgument('filterExpr');
+        if (empty($filters)) {
+            $tasks = $taskList->getAll();
+        }
+        else {
+            $tasks = [];
+            foreach ($filters as $filter) {
+                $tasks = array_merge($tasks, $taskList->getByPattern($filter));
+            }
+        }
+
         $taskRunner = new TaskRunner($this->getComposer(), $this->getIO());
-        $taskRunner->run($taskList->getAll(), $input->getOption('dry-run'));
+        $taskRunner->run($tasks, $input->getOption('dry-run'));
     }
 }

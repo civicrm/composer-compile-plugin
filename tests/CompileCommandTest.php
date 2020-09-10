@@ -103,6 +103,50 @@ class CompileCommandTest extends IntegrationTestCase
         $this->assertFileContent('vendor/test/cherry-yogurt/yogurt.out', "START\nmilk\nstreptococcus thermophilus\nBING-CHERRY\nEND\n");
     }
 
+    /**
+     * @param string $inputFilterExpr
+     *   The value to send to 'composer compile <FILTER-EXPR>'
+     * @param string $expectFile
+     *   The file created by the compilation task.
+     * @param string $expectFileContent
+     *   The content of the file created by the compilation task.
+     * @dataProvider getExampleIds
+     */
+    public function testComposerCompileById($inputFilterExpr, $expectFile, $expectFileContent) {
+        $allFiles = ['fondue.out', 'vendor/test/cherry-jam/jam.out', 'vendor/test/cherry-yogurt/yogurt.out'];
+        $otherFiles = array_diff($allFiles, [$expectFile]);
+
+        $assertAll = function($method, $args) {
+            foreach ($args as $arg) {
+                $this->$method($arg);
+            }
+        };
+
+        // We need to make sure the project is setup.
+        $assertAll('assertFileNotExists', $allFiles);
+        PH::runOk('COMPOSER_COMPILE_PLUGIN=0 composer install -v');
+        $assertAll('assertFileNotExists', $allFiles);
+
+        PH::runOk('composer compile ' . escapeshellarg($inputFilterExpr));
+        $this->assertFileContent($expectFile, $expectFileContent);
+        $assertAll('assertFileNotExists', $otherFiles);
+    }
+
+    public function getExampleIds() {
+        $es = [];
+        $es['test/cherry-jam:1'] = [
+          'test/cherry-jam:1',
+          'vendor/test/cherry-jam/jam.out',
+          "RAINIER-CHERRY\n",
+        ];
+        $es['test/cherry-yogurt'] = [
+          'test/sniff-test',
+          'fondue.out',
+          "START\ngouda\nEND\n",
+        ];
+        return $es;
+    }
+
     protected static function resetCompileFiles()
     {
         self::cleanFile('fondue.out');
