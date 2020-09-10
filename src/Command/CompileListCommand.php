@@ -56,7 +56,7 @@ class CompileListCommand extends \Composer\Command\BaseCommand
                 /** @var Task $task */
                 $rows[] = [
                   $task->active ? '+' : '-',
-                  $task->packageName . '#' . $task->naturalWeight,
+                  $task->packageName . ':' . $task->naturalWeight,
                   $task->title,
                   $descAction($task),
                 ];

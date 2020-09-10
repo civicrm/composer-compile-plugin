@@ -106,7 +106,7 @@ class TaskList
                 'active' => true,
                 'callback' => null,
                 'title' => sprintf(
-                    'Task <comment>%s</comment>#<comment>%s</comment>',
+                    '<comment>%s</comment>:<comment>%s</comment>',
                     $package->getName(),
                     $naturalWeight
                 ),
