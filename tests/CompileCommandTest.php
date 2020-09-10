@@ -82,7 +82,7 @@ class CompileCommandTest extends IntegrationTestCase
         $this->assertFileNotExists('fondue.out');
 
         // We need to make sure the project is setup.
-        PH::runOk('COMPOSER_COMPILE_PLUGIN=0 composer install -v');
+        PH::runOk('COMPOSER_COMPILE=0 composer install -v');
         $this->assertFileNotExists('fondue.out');
 
         // First pass at compilation in a clean-ish environment
@@ -124,7 +124,7 @@ class CompileCommandTest extends IntegrationTestCase
 
         // We need to make sure the project is setup.
         $assertAll('assertFileNotExists', $allFiles);
-        PH::runOk('COMPOSER_COMPILE_PLUGIN=0 composer install -v');
+        PH::runOk('COMPOSER_COMPILE=0 composer install -v');
         $assertAll('assertFileNotExists', $allFiles);
 
         PH::runOk('composer compile ' . escapeshellarg($inputFilterExpr));
