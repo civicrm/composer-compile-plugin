@@ -111,6 +111,7 @@ class TaskList
                     $naturalWeight
                 ),
                 'passthru' => 'error',
+                'watches' => NULL,
             ];
 
             $taskDefinition = array_merge($defaults, $taskDefinition);
@@ -122,10 +123,9 @@ class TaskList
             $task->weight = 0;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight;
-            foreach (['title', 'callback', 'passthru', 'active'] as $field) {
+            foreach (['title', 'callback', 'passthru', 'active', 'watches'] as $field) {
                 $task->{$field} = $taskDefinition[$field];
             }
-            // TODO watch
             $tasks[] = $task;
             $naturalWeight++;
         }

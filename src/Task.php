@@ -82,6 +82,9 @@ class Task
     public $pwd;
 
     /**
+     * List of file-names and/or directory-names to watch.
+     *
+     * @see \Lurker\ResourceWatcher::track()
      * @var array
      */
     public $watches = [];
