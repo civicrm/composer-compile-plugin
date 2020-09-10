@@ -45,6 +45,8 @@ class TaskRunner
         /** @var IOInterface $io */
         $io = $this->io;
 
+        $dryRunText = $isDryRun ? '<error>(DRY-RUN)</error> ' : '';
+
         $tasks = $this->sortTasks($tasks);
         foreach ($tasks as $task) {
             /** @var \Civi\CompilePlugin\Task $task */
@@ -59,14 +61,14 @@ class TaskRunner
 
             if (!$task->active) {
                 $io->write(
-                    '<error>Skip</error>: ' . ($task->title),
+                    $dryRunText . '<error>Skip</error>: ' . ($task->title),
                     true,
                     IOInterface::VERBOSE
                 );
                 continue;
             }
 
-            $io->write('<info>Compile</info>: ' . ($task->title));
+            $io->write($dryRunText . '<info>Compile</info>: ' . ($task->title));
 
             if (!$isDryRun) {
                 $this->runTask($task, $package);
