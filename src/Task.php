@@ -4,6 +4,16 @@ namespace Civi\CompilePlugin;
 
 class Task
 {
+
+    /**
+     * (Required) A unique ID for this task
+     *
+     * Ex: 'vendor/package:123'
+     *
+     * @var string
+     */
+    public $id;
+
     /**
      * (Optional) Printable title for this compilation task.
      *

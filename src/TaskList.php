@@ -116,6 +116,7 @@ class TaskList
 
             $taskDefinition = array_merge($defaults, $taskDefinition);
             $task = new Task();
+            $task->id = $package->getName() . ':' . $naturalWeight;
             $task->sourceFile = $sourceFile;
             $task->definition = $taskDefinition;
             $task->packageName = $package->getName();
