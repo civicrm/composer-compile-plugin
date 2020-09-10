@@ -57,7 +57,7 @@ class EventTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $p = PH::runOk('composer install');
+        $p = PH::runOk('COMPOSER_COMPILE=1 composer install');
         $expectLines = array_merge($this->startupLines(), [
             // First task
             "^MARK: PRE_COMPILE_TASK",

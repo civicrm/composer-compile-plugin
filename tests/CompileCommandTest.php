@@ -67,7 +67,7 @@ class CompileCommandTest extends IntegrationTestCase
     {
         $this->assertFileNotExists('fondue.out');
 
-        PH::runOk('composer install -v');
+        PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 
         $this->assertFileContent('fondue.out', "START\ngouda\nEND\n");
         $this->assertFileContent('vendor/test/cherry-jam/jam.out', "RAINIER-CHERRY\n");
