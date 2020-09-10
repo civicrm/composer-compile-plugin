@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "composer-plugin-api": "^1.1",
+        "composer-plugin-api": "^1.1 || ^2.0",
         "php": ">=7.0",
         "totten/lurkerlite": "^1.3"
     },
