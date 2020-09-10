@@ -4,6 +4,7 @@ namespace Civi\CompilePlugin;
 
 use Civi\CompilePlugin\Command\CompileCommand;
 use Civi\CompilePlugin\Command\CompileListCommand;
+use Civi\CompilePlugin\Command\CompileWatchCommand;
 
 class CommandProvider implements \Composer\Plugin\Capability\CommandProvider
 {
@@ -13,6 +14,7 @@ class CommandProvider implements \Composer\Plugin\Capability\CommandProvider
         return [
             new CompileCommand(),
             new CompileListCommand(),
+            new CompileWatchCommand(),
         ];
     }
 }
