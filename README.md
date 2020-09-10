@@ -5,9 +5,28 @@ The "Compile" plugin allows any package to define "compilation" tasks, such as:
 * Converting SCSS to CSS
 * Generating PHP wrappers based on an XML schema
 
-## Example
+## Command Line Interface
 
-Here is a basic example - the package `foo/bar` specifies that its three JS files and three CSS files should be combined:
+The "Compile" plugin integrates into common `composer` lifecycle actions (`composer install`, `composer require`, `composer update`).
+Thus, a typical console user does not need to work with any other CLI commands.
+
+The plugin does add a few subcommands. These may be useful during development or when inspecting a build.
+
+```bash
+## Run compilation tasks
+composer compile [-v[v]] [--dry-run] [filterExpr...]
+
+## Watch key files and automatically re-run compilation tasks
+composer compile:watch [-v[v]] [--dry-run] [--interval=ms]
+
+## List the compilation tasks
+composer compile:list [-v[v]]
+```
+
+## Configuration
+
+Suppose you publish a package, `foo/bar`, which includes a handful of JS files and CSS files. You want to ensure that
+an aggregated file is available. This example would produce two aggregate files, `all.js` and `all.css`.
 
 ```json
 {
@@ -85,7 +104,6 @@ The ordering of tasks aims to meet these intuitions:
 
 * Dependencies run first.
 * Tasks run in the order listed.
-
 ## Development
 
 To do development on `composer-compile-plugin.git`, see [DEVELOP.md](DEVELOP.md).
