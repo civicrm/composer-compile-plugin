@@ -94,6 +94,13 @@ class Task
     public $active;
 
     /**
+     * The file in which this task was originally defined.
+     *
+     * @var string
+     */
+    public $sourceFile;
+
+    /**
      * (Required) The raw task definition
      *
      * @var array

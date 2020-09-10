@@ -84,9 +84,11 @@ class TaskList
         // Tangentially, this means it would be invalid for another composer plugin to try
         // to inject data here at runtime. If that's needed, add an event for hooking in here.
         $extra = null;
+        $sourceFile = NULL;
         if ($extra === null && file_exists("$installPath/composer.json")) {
             $json = json_decode(file_get_contents("$installPath/composer.json"), 1);
             $extra = $json['extra'] ?: null;
+            $sourceFile = "$installPath/composer.json";
         }
         if ($extra === null) {
             $extra = $package->getExtra();
@@ -113,6 +115,7 @@ class TaskList
 
             $taskDefinition = array_merge($defaults, $taskDefinition);
             $task = new Task();
+            $task->sourceFile = $sourceFile;
             $task->definition = $taskDefinition;
             $task->packageName = $package->getName();
             $task->pwd = $installPath;
