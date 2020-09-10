@@ -1,5 +1,7 @@
 # Composer Compile Plugin
 
+[![Build Status](https://travis-ci.com/civicrm/composer-compile-plugin.svg?branch=master)](https://travis-ci.com/civicrm/composer-compile-plugin)
+
 The "Compile" plugin allows any package to define "compilation" tasks, such as:
 
 * Converting SCSS to CSS

@@ -1,0 +1,21 @@
+language: php
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+matrix:
+  include:
+    - php: 7.1
+      env: COMPOSER_VERSION=--1
+    - php: 7.1
+      env: COMPOSER_VERSION=--snapshot
+    - php: 7.4
+      env: COMPOSER_VERSION=--snapshot
+
+before_script:
+  - curl -sSfL -o ~/.phpenv/versions/$(phpenv version-name)/bin/phpunit https://phar.phpunit.de/phpunit-6.phar
+  - "composer self-update $COMPOSER_VERSION"
+  - "composer install --no-progress --no-interaction"
