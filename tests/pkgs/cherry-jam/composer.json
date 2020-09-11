@@ -19,7 +19,7 @@
             {
                 "tag": ["jam"],
                 "title": "Compile <comment>jam.out</comment> from <comment>jam.in</comment>",
-                "command": "tr '[a-z]' '[A-Z]' < jam.in > jam.out"
+                "shell": "tr '[a-z]' '[A-Z]' < jam.in > jam.out"
             }
         ]
     }

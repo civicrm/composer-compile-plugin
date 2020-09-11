@@ -2,7 +2,7 @@
 
 namespace Civi\CompilePlugin\Command;
 
-use Civi\CompilePlugin\Subscriber\CommandSubscriber;
+use Civi\CompilePlugin\Subscriber\ShellSubscriber;
 use Civi\CompilePlugin\Task;
 use Civi\CompilePlugin\TaskList;
 use Civi\CompilePlugin\TaskRunner;
@@ -42,12 +42,12 @@ class CompileListCommand extends \Composer\Command\BaseCommand
             $header = ['', 'ID', 'Title', 'Action'];
             $rows = [];
             $descAction = function ($task) {
-                if ($task->callback === [CommandSubscriber::CLASS, 'runTask']) {
-                    return '<info>(Cmd)</info> ' . $task->definition['command'];
+                if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
+                    return '<info>(shell)</info> ' . $task->definition['shell'];
                 } elseif (is_array($task->callback)) {
-                    return $task->callback[0] . '::' . $task->callback[1];
+                    return '<info>(php)</info> ' . $task->callback[0] . '::' . $task->callback[1];
                 } elseif (is_string($task->callback)) {
-                    return $task->callback;
+                    return '<info>(php)</info> ' . $task->callback;
                 } else {
                     return '<error>(UNRECOGNIZED)</error>';
                 }

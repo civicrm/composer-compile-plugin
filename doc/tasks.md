@@ -7,7 +7,7 @@ The `extra.compile` section may list multiple *tasks*. Each task must define one
 | Field | Type | Description |
 | -- | -- | -- |
 | `callback` | `string` | PHP class and method. Ex: `\MyModule\Compile::doCompilationStuff` |
-| `command` | `string` | Bash statement to execute. Ex: `cat file1.txt file2.txt > file3.txt` |
+| `shell` | `string` | Bash statement to execute. Ex: `cat file1.txt file2.txt > file3.txt` |
 
 Additionally, there are several optional fields which may modify how the task operates:
 

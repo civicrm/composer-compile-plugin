@@ -8,11 +8,11 @@ use Civi\CompilePlugin\Exception\TaskFailedException;
 use Civi\CompilePlugin\Task;
 use Composer\IO\IOInterface;
 
-class CommandSubscriber
+class ShellSubscriber
 {
 
     /**
-     * When evaluating the tasks, any task with a 'command'
+     * When evaluating the tasks, any task with a 'shell'
      * property will (by default) by handled by us.
      *
      * @param \Civi\CompilePlugin\Event\CompileListEvent $e
@@ -22,7 +22,7 @@ class CommandSubscriber
         $tasks = $e->getTasks();
         foreach ($tasks as $task) {
             /** @var Task $task */
-            if ($task->callback === null && isset($task->definition['command'])) {
+            if ($task->callback === null && isset($task->definition['shell'])) {
                 $task->callback = [static::CLASS, 'runTask'];
             }
         }
@@ -35,24 +35,24 @@ class CommandSubscriber
         /** @var IOInterface $io */
         $io = $e->getIO();
 
-        if (empty($task->definition['command'])) {
-            throw new \InvalidArgumentException("Invalid or missing command option");
+        if (empty($task->definition['shell'])) {
+            throw new \InvalidArgumentException("Invalid or missing \"shell\" option");
         }
 
         if ($io->isVerbose()) {
-            $io->write("<info>In <comment>{$task->pwd}</comment>, execute <comment>{$task->definition['command']}</comment></info>");
+            $io->write("<info>In <comment>{$task->pwd}</comment>, execute <comment>{$task->definition['shell']}</comment></info>");
         }
 
         switch ($task->passthru) {
             case 'always':
-                passthru($task->definition['command'], $retVal);
+                passthru($task->definition['shell'], $retVal);
                 if ($retVal !== 0) {
                     throw new TaskFailedException($task);
                 }
                 break;
 
             case 'error':
-                exec($task->definition['command'], $output, $retVal);
+                exec($task->definition['shell'], $output, $retVal);
                 if ($retVal !== 0) {
                     if (is_callable([$io, 'writeErrorRaw'])) {
                         $io->writeErrorRaw($output);
@@ -64,7 +64,7 @@ class CommandSubscriber
                 break;
 
             case 'never':
-                exec($task->definition['command'], $output, $retVal);
+                exec($task->definition['shell'], $output, $retVal);
                 if ($retVal !== 0) {
                     throw new TaskFailedException($task);
                 }

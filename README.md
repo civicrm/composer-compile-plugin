@@ -44,8 +44,8 @@ an aggregated file is available. This example would produce two aggregate files,
   },
   "extra": {
     "compile": [
-      {"command": "cat js/{one,two,three}.js > all.js"},
-      {"command": "cat css/{one,two,three}.css > all.css"}
+      {"shell": "cat js/{one,two,three}.js > all.js"},
+      {"shell": "cat css/{one,two,three}.css > all.css"}
     ]
   }
 }

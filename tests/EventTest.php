@@ -33,12 +33,12 @@ class EventTest extends IntegrationTestCase
             'compile' => [
               [
                   'title' => 'Compile first',
-                  'command' => 'echo MARK: RUN FIRST',
+                  'shell' => 'echo MARK: RUN FIRST',
                   'passthru' => 'always',
               ],
               [
                   'title' => 'Compile second',
-                  'command' => 'echo MARK: RUN SECOND',
+                  'shell' => 'echo MARK: RUN SECOND',
                   'passthru' => 'always',
               ]
             ],

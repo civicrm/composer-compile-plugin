@@ -34,7 +34,7 @@ class CompileCommandTest extends IntegrationTestCase
               [
                 'tag' => ['fondue'],
                 'title' => 'Compile <comment>fondue.out</comment> from <comment>fondue.in</comment>',
-                'command' => 'echo START > fondue.out; cat fondue.in >> fondue.out; echo END >> fondue.out',
+                'shell' => 'echo START > fondue.out; cat fondue.in >> fondue.out; echo END >> fondue.out',
                   // TODO 'watch' => ['fondue.in'],
               ]
             ],
