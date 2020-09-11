@@ -95,7 +95,9 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
                 break;
 
             case 'off':
-                $this->io->write(sprintf("<error>ERROR</error>: Automatic compilation is disabled. These packages have compilation tasks which have not been executed:"));
+                $this->io->write(
+                    "<error>ERROR</error>: Automatic compilation is disabled. These packages have compilation tasks which have not been executed:"
+                );
                 $this->io->write($this->createTaskSummary($taskList));
                 $this->io->writeError(sprintf("<error>Skipped %d compilation task(s)</error>", count($taskList->getAll())));
                 // FIXME follow-up steps
@@ -121,7 +123,10 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
 
                     case 'n':
                         $this->io->writeError(sprintf("<error>Skipped %d compilation task(s)</error>", count($taskList->getAll())));
-                        $this->io->writeError(sprintf("<error>You may run tasks manually with \"composer compile\"</error>", count($taskList->getAll())));
+                        $this->io->writeError(sprintf(
+                            "<error>You may run tasks manually with \"composer compile\"</error>",
+                            count($taskList->getAll())
+                        ));
                         break;
                 }
         }
@@ -163,7 +168,9 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         if (in_array($mode, $options)) {
             return $mode;
         } else {
-            throw new \InvalidArgumentException("The compilation policy (COMPOSER_COMPILE or extra.compile-mode) is invalid. Valid options are \"" . implode('", "', $options) . "\".");
+            throw new \InvalidArgumentException(
+                "The compilation policy (COMPOSER_COMPILE or extra.compile-mode) is invalid. Valid options are \"" . implode('", "', $options) . "\"."
+            );
         }
     }
 
