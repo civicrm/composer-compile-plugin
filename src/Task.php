@@ -65,8 +65,12 @@ class Task
     /**
      * (Required) Callback.
      *
-     * Note: Event listeners may examine the task definition and fill-in
+     * The callback property is not necessarily defined in the task-definition.
+     * Instead, event-listeners examine the task definition and fill-in
      * the callback.
+     *
+     * @see \Civi\CompilePlugin\Subscriber\PhpSubscriber
+     * @see \Civi\CompilePlugin\Subscriber\ShellSubscriber
      *
      * @var callable
      */

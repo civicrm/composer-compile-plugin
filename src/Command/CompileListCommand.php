@@ -45,9 +45,9 @@ class CompileListCommand extends \Composer\Command\BaseCommand
                 if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
                     return '<info>(shell)</info> ' . $task->definition['shell'];
                 } elseif (is_array($task->callback)) {
-                    return '<info>(php)</info> ' . $task->callback[0] . '::' . $task->callback[1];
+                    return '<info>(php-method)</info> ' . $task->callback[0] . '::' . $task->callback[1];
                 } elseif (is_string($task->callback)) {
-                    return '<info>(php)</info> ' . $task->callback;
+                    return '<info>(php-method)</info> ' . $task->callback;
                 } else {
                     return '<error>(UNRECOGNIZED)</error>';
                 }

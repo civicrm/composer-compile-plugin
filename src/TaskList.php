@@ -104,7 +104,6 @@ class TaskList
         foreach ($taskDefinitions as $taskDefinition) {
             $defaults = [
                 'active' => true,
-                'callback' => null,
                 'title' => sprintf(
                     '<comment>%s</comment>:<comment>%s</comment>',
                     $package->getName(),
@@ -124,7 +123,7 @@ class TaskList
             $task->weight = 0;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight;
-            foreach (['title', 'callback', 'passthru', 'active', 'watches'] as $field) {
+            foreach (['title', 'passthru', 'active', 'watches'] as $field) {
                 $task->{$field} = $taskDefinition[$field];
             }
             $tasks[] = $task;
