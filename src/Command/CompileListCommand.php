@@ -35,7 +35,7 @@ class CompileListCommand extends \Composer\Command\BaseCommand
 
         if ($output->isVerbose()) {
             $output->writeln(
-                json_encode($tasks, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES),
+                json_encode($tasks, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
                 OutputInterface::OUTPUT_RAW
             );
         } else {

@@ -115,7 +115,7 @@ class EventTest extends IntegrationTestCase
         $r = [];
         for ($i = 0; $i < $pkgCount; $i++) {
             $r[] = "^MARK: PRE_COMPILE_LIST";
-            $r[] ="^MARK: POST_COMPILE_LIST";
+            $r[] = "^MARK: POST_COMPILE_LIST";
         }
         return $r;
     }
