@@ -32,8 +32,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
         $filters = $input->getArgument('filterExpr');
         if (empty($filters)) {
             $tasks = $taskList->getAll();
-        }
-        else {
+        } else {
             $tasks = [];
             foreach ($filters as $filter) {
                 $tasks = array_merge($tasks, $taskList->getByPattern($filter));

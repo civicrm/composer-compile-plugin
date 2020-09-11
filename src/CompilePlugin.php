@@ -54,14 +54,16 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [CommandSubscriber::class, 'applyDefaultCallback']);
     }
 
-    public function deactivate(Composer $composer, IOInterface $io) {
-      // NOTE: This method is only valid on composer v2.
-      $dispatch = $composer->getEventDispatcher();
-      $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [CommandSubscriber::class, 'applyDefaultCallback']);
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+        // NOTE: This method is only valid on composer v2.
+        $dispatch = $composer->getEventDispatcher();
+        $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [CommandSubscriber::class, 'applyDefaultCallback']);
     }
 
-    public function uninstall(Composer $composer, IOInterface $io) {
-      // NOTE: This method is only valid on composer v2.
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
+        // NOTE: This method is only valid on composer v2.
     }
 
     public function validateMode(Event $event)

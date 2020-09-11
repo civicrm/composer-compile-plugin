@@ -67,17 +67,23 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
             self::$testDir = getenv('USE_TEST_PROJECT');
             @unlink(self::$testDir . DIRECTORY_SEPARATOR . 'composer.lock');
         } else {
-            self::$testDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'compileplg-' . md5(__DIR__ . time() . rand(0,
-                  10000));
+            self::$testDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'compileplg-' . md5(__DIR__ . time() . rand(
+                0,
+                10000
+            ));
             self::cleanDir(self::$testDir);
         }
 
         if (!is_dir(self::$testDir)) {
             mkdir(self::$testDir);
         }
-        file_put_contents(self::$testDir . DIRECTORY_SEPARATOR . 'composer.json',
-          json_encode($composerJson,
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        file_put_contents(
+            self::$testDir . DIRECTORY_SEPARATOR . 'composer.json',
+            json_encode(
+                $composerJson,
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+            )
+        );
         chdir(self::$testDir);
         return self::$testDir;
     }
@@ -91,9 +97,14 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
             self::$origDir = null;
 
             if (getenv('USE_TEST_PROJECT')) {
-                fwrite(STDERR,
-                  sprintf("\n\nTest project location (%s): %s\n", static::CLASS,
-                    self::$testDir));
+                fwrite(
+                    STDERR,
+                    sprintf(
+                        "\n\nTest project location (%s): %s\n",
+                        static::CLASS,
+                        self::$testDir
+                    )
+                );
             } else {
                 self::cleanDir(self::$testDir);
             }
@@ -111,7 +122,8 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
         PH::runOk(['if [ -d @DIR ]; then rm -rf @DIR ; fi', 'DIR' => $dir]);
     }
 
-    protected static function cleanFile($file) {
+    protected static function cleanFile($file)
+    {
         if (file_exists($file)) {
             unlink($file);
         }
@@ -119,63 +131,87 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
 
     public function assertSameFileContent($expected, $actual)
     {
-        $this->assertEquals(file_get_contents($expected),
-          file_get_contents($actual));
+        $this->assertEquals(
+            file_get_contents($expected),
+            file_get_contents($actual)
+        );
     }
 
     public function assertFileContent($file, $content, $message = null)
     {
         if ($content === null) {
-            $this->assertFileNotExists($file,
-              "($message) File should not exist");
+            $this->assertFileNotExists(
+                $file,
+                "($message) File should not exist"
+            );
         } else {
             $this->assertFileExists($file, "($message) File should exist");
-            $this->assertEquals($content, file_get_contents($file),
-              "($message) File should match given content");
+            $this->assertEquals(
+                $content,
+                file_get_contents($file),
+                "($message) File should match given content"
+            );
         }
     }
 
     public function assertFileIsSymlink($path)
     {
-        $this->assertTrue(file_exists($path),
-          "Path ($path) should exist (symlink file)");
+        $this->assertTrue(
+            file_exists($path),
+            "Path ($path) should exist (symlink file)"
+        );
         $this->assertTrue(is_link($path), "Path ($path) should be a symlink");
 
         $linkTgt = readlink($path);
         $this->assertTrue(is_string($linkTgt));
-        $this->assertTrue(is_file(dirname($path) . '/' . $linkTgt),
-          "Path ($path) should be symlinking pointing to a file. Found tgt ($linkTgt)");
+        $this->assertTrue(
+            is_file(dirname($path) . '/' . $linkTgt),
+            "Path ($path) should be symlinking pointing to a file. Found tgt ($linkTgt)"
+        );
     }
 
     public function assertFileIsNormal($path)
     {
-        $this->assertTrue(file_exists($path),
-          "Path ($path) should exist (normal file)");
-        $this->assertTrue(is_file($path),
-          "Path ($path) should be a normal file");
-        $this->assertTrue(!is_link($path),
-          "Path ($path) should not be a symlink");
+        $this->assertTrue(
+            file_exists($path),
+            "Path ($path) should exist (normal file)"
+        );
+        $this->assertTrue(
+            is_file($path),
+            "Path ($path) should be a normal file"
+        );
+        $this->assertTrue(
+            !is_link($path),
+            "Path ($path) should not be a symlink"
+        );
     }
 
     public function assertDirIsSymlink($path)
     {
-        $this->assertTrue(file_exists($path),
-          "Path ($path) should exist (symlink dir)");
+        $this->assertTrue(
+            file_exists($path),
+            "Path ($path) should exist (symlink dir)"
+        );
         $this->assertTrue(is_link($path), "Path ($path) should be a symlink");
 
         $linkTgt = readlink($path);
         $this->assertTrue(is_string($linkTgt));
-        $this->assertTrue(is_dir(dirname($path) . '/' . $linkTgt),
-          "Path ($path) should be symlinking pointing to a dir. Found tgt ($linkTgt");
+        $this->assertTrue(
+            is_dir(dirname($path) . '/' . $linkTgt),
+            "Path ($path) should be symlinking pointing to a dir. Found tgt ($linkTgt"
+        );
     }
 
     public function assertDirIsNormal($path)
     {
-        $this->assertTrue(file_exists($path),
-          "Path ($path) should exist (normal dir)");
-        $this->assertTrue(!is_link($path),
-          "Path ($path) should not be a symlink");
+        $this->assertTrue(
+            file_exists($path),
+            "Path ($path) should exist (normal dir)"
+        );
+        $this->assertTrue(
+            !is_link($path),
+            "Path ($path) should not be a symlink"
+        );
         $this->assertTrue(is_dir($path), "Path ($path) should be a dir");
     }
-
 }

@@ -112,11 +112,12 @@ class CompileCommandTest extends IntegrationTestCase
      *   The content of the file created by the compilation task.
      * @dataProvider getExampleIds
      */
-    public function testComposerCompileById($inputFilterExpr, $expectFile, $expectFileContent) {
+    public function testComposerCompileById($inputFilterExpr, $expectFile, $expectFileContent)
+    {
         $allFiles = ['fondue.out', 'vendor/test/cherry-jam/jam.out', 'vendor/test/cherry-yogurt/yogurt.out'];
         $otherFiles = array_diff($allFiles, [$expectFile]);
 
-        $assertAll = function($method, $args) {
+        $assertAll = function ($method, $args) {
             foreach ($args as $arg) {
                 $this->$method($arg);
             }
@@ -132,7 +133,8 @@ class CompileCommandTest extends IntegrationTestCase
         $assertAll('assertFileNotExists', $otherFiles);
     }
 
-    public function getExampleIds() {
+    public function getExampleIds()
+    {
         $es = [];
         $es['test/cherry-jam:1'] = [
           'test/cherry-jam:1',
@@ -164,5 +166,4 @@ class CompileCommandTest extends IntegrationTestCase
             }
         }
     }
-
 }

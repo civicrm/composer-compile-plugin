@@ -84,7 +84,7 @@ class TaskList
         // Tangentially, this means it would be invalid for another composer plugin to try
         // to inject data here at runtime. If that's needed, add an event for hooking in here.
         $extra = null;
-        $sourceFile = NULL;
+        $sourceFile = null;
         if ($extra === null && file_exists("$installPath/composer.json")) {
             $json = json_decode(file_get_contents("$installPath/composer.json"), 1);
             $extra = $json['extra'] ?: null;
@@ -111,7 +111,7 @@ class TaskList
                     $naturalWeight
                 ),
                 'passthru' => 'error',
-                'watches' => NULL,
+                'watches' => null,
             ];
 
             $taskDefinition = array_merge($defaults, $taskDefinition);
@@ -152,20 +152,20 @@ class TaskList
      *   Ex: 'vendor/package:id'
      * @return Task[]
      */
-    public function getByPattern($pattern) {
+    public function getByPattern($pattern)
+    {
         list ($tgtVendorPackage, $tgtId) = explode(':', "{$pattern}:");
         list ($tgtVendor, $tgtPackage) = explode('/', $tgtVendorPackage . '/');
-        return array_filter($this->tasks, function($task) use ($tgtVendor, $tgtPackage, $tgtVendorPackage, $tgtId) {
+        return array_filter($this->tasks, function ($task) use ($tgtVendor, $tgtPackage, $tgtVendorPackage, $tgtId) {
             /** @var Task $task */
             if ($tgtId && $task->naturalWeight != $tgtId) {
-                return FALSE;
+                return false;
             }
 
             if ($tgtPackage === '*') {
                 list ($actualVendor) = explode('/', $task->packageName);
                 return $actualVendor == $tgtVendor;
-            }
-            else {
+            } else {
                 return $tgtVendorPackage === $task->packageName;
             }
         });

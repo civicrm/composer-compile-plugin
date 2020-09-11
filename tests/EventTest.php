@@ -109,7 +109,8 @@ class EventTest extends IntegrationTestCase
         }
     }
 
-    protected function startupLines() {
+    protected function startupLines()
+    {
         $pkgCount = 3;
         $r = [];
         for ($i = 0; $i < $pkgCount; $i++) {
