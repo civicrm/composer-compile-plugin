@@ -126,7 +126,7 @@ class TaskList
             foreach (['title', 'passthru', 'active', 'watches'] as $field) {
                 $task->{$field} = $taskDefinition[$field];
             }
-            $tasks[] = $task;
+            $tasks[$task->id] = $task;
             $naturalWeight++;
         }
 
@@ -134,6 +134,26 @@ class TaskList
         $this->composer->getEventDispatcher()->dispatch(CompileEvents::POST_COMPILE_LIST, $event);
 
         $this->tasks = array_merge($this->tasks, $event->getTasks());
+    }
+
+    /**
+     * Disable a list of tasks.
+     *
+     * @param string|string[] $taskIds
+     * @return int
+     *   The number of tasks which were toggled.
+     */
+    public function disable($taskIds)
+    {
+        $taskIds = (array)$taskIds;
+        $count = 0;
+        foreach ($taskIds as $taskId) {
+            if ($this->tasks[$taskId]->active) {
+                $this->tasks[$taskId]->active = false;
+                $count++;
+            }
+        }
+        return $count;
     }
 
     /**
@@ -151,23 +171,25 @@ class TaskList
      *   Ex: 'vendor/package:id'
      * @return Task[]
      */
-    public function getByPattern($pattern)
+    public function getByFilter($pattern)
     {
-        list ($tgtVendorPackage, $tgtId) = explode(':', "{$pattern}:");
-        list ($tgtVendor, $tgtPackage) = explode('/', $tgtVendorPackage . '/');
-        return array_filter($this->tasks, function ($task) use ($tgtVendor, $tgtPackage, $tgtVendorPackage, $tgtId) {
+        $tasks = [];
+        foreach ($this->tasks as $task) {
             /** @var Task $task */
-            if ($tgtId && $task->naturalWeight != $tgtId) {
-                return false;
+            if ($task->matchesFilter($pattern)) {
+                $tasks[$task->id] = $task;
             }
+        }
+        return $tasks;
+    }
 
-            if ($tgtPackage === '*') {
-                list ($actualVendor) = explode('/', $task->packageName);
-                return $actualVendor == $tgtVendor;
-            } else {
-                return $tgtVendorPackage === $task->packageName;
-            }
-        });
+    public function getByFilters($filters)
+    {
+        $tasks = [];
+        foreach ($filters as $filter) {
+            $tasks = array_merge($tasks, $this->getByFilter($filter));
+        }
+        return $tasks;
     }
 
     /**

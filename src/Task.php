@@ -144,4 +144,30 @@ class Task
         }
         return $this;
     }
+
+    /**
+     * @param string $filter
+     *   Ex: 'vendor/*'
+     *   Ex: 'vendor/package'
+     *   Ex: 'vendor/package:id'
+     * @return bool
+     */
+    public function matchesFilter($filter)
+    {
+        list ($tgtVendorPackage, $tgtId) = explode(':', "{$filter}:");
+        list ($tgtVendor, $tgtPackage) = explode('/', $tgtVendorPackage . '/');
+        list ($actualVendor, $actualPackage) = explode('/', $this->packageName);
+
+        if ($tgtVendor !== '*' && $tgtVendor !== $actualVendor) {
+            return false;
+        }
+        if ($tgtPackage !== '*' && $tgtPackage !== $actualPackage) {
+            return false;
+        }
+        if ($tgtId !== '' && $tgtId !== '*' && $tgtId != $this->naturalWeight) {
+            return false;
+        }
+
+        return true;
+    }
 }

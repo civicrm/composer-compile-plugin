@@ -33,10 +33,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
         if (empty($filters)) {
             $tasks = $taskList->getAll();
         } else {
-            $tasks = [];
-            foreach ($filters as $filter) {
-                $tasks = array_merge($tasks, $taskList->getByPattern($filter));
-            }
+            $tasks = $taskList->getByFilters($filters);
         }
 
         $taskRunner = new TaskRunner($this->getComposer(), $this->getIO());
