@@ -17,7 +17,7 @@ composer compile:list [-v[v]] [--json]
 
 For further details, see the built-in `--help` screen.
 
-## Example: composer.json
+## Example: Shell-based task
 
 Suppose you publish a library (package), `foo/bar`, which includes a handful of JS files and CSS files. You want to ensure that
 an aggregated file is available. This example would produce two aggregate files, `all.js` and `all.css`.
@@ -45,34 +45,42 @@ Observe that:
 * It does not matter if `foo/bar` is a root-project.
 * Compiled files should not be committed to the origin/git project.
 
-<!--
-For the next example, we seek to build a custom variant of Bootstrap.
+## Example: PHP-based task
+
+For the next example, we declare a PHP-based task to compile some SCSS.
 
 ```json
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~1.0",
-    "scssphp/scssphp": "~1.2",
-    "twbs/bootstrap": "~4.5.2"
+    "civicrm/composer-compile-plugin": "@dev",
+    "scssphp/scssphp": "1.2.0",
+    "padaliyajay/php-autoprefixer": "~1.2"
   },
-  "autoload": {
-    "psr-4": {
-      "MyTheme\\": "src/"
-    }
-  },
+  "autoload": {"psr-4": {"ScssExample\\": "src"}},
   "extra": {
-    "compile": [
-      {
-        "title": "Compile <comment>*.css</comment => <comment>*.scss</comment>"
-        "callback": "\MyTheme\Compile::compileCss",
-        "watch": ["scss/*"]
-      }
-    ]
+    "compile": [{"php-method": "\\ScssExample\\ScssExample::make"}]
   }
 }
 ```
--->
+
+The method goes in `src/ScssExample.php`:
+
+```php
+namespace ScssExample;
+class ScssExample
+{
+  public static function make(array $task)
+  {
+    $pkgDir = dirname(__DIR__);
+    $scssCompiler = new \ScssPhp\ScssPhp\Compiler();
+    $scss = 'div { .foo { hyphens: auto; } }';
+    $css = $scssCompiler->compile($scss);
+    $autoprefixer = new \Padaliyajay\PHPAutoprefixer\Autoprefixer($css);
+    file_put_contents("$pkgDir/build.css", $autoprefixer->compile());
+  }
+}
+```
 
 ## Task Specification
 

@@ -140,7 +140,7 @@ class Task
             throw new \RuntimeException("Compilation task is missing field(s): " . implode(",", $missing));
         }
         if (!is_callable($this->callback)) {
-            throw new \RuntimeException("Compilation task has invalid callback: {$this->callback}");
+            throw new \RuntimeException("Compilation task has invalid callback: " . json_encode($this->callback));
         }
         return $this;
     }
