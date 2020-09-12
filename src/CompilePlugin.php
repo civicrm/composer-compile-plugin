@@ -4,6 +4,7 @@ namespace Civi\CompilePlugin;
 
 use Civi\CompilePlugin\Command\CompileListCommand;
 use Civi\CompilePlugin\Event\CompileEvents;
+use Civi\CompilePlugin\Subscriber\PhpSubscriber;
 use Civi\CompilePlugin\Subscriber\ShellSubscriber;
 use Civi\CompilePlugin\Util\TaskUIHelper;
 use Composer\Composer;
@@ -54,6 +55,7 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         $this->io = $io;
         $dispatch = $composer->getEventDispatcher();
         $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [ShellSubscriber::class, 'applyDefaultCallback']);
+        $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [PhpSubscriber::class, 'applyDefaultCallback']);
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
@@ -61,6 +63,7 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         // NOTE: This method is only valid on composer v2.
         $dispatch = $composer->getEventDispatcher();
         $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [ShellSubscriber::class, 'applyDefaultCallback']);
+        $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [PhpSubscriber::class, 'applyDefaultCallback']);
     }
 
     public function uninstall(Composer $composer, IOInterface $io)
