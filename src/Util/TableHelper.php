@@ -7,13 +7,13 @@ class TableHelper
 {
 
     /**
-     * @param OutputInterface $output
      * @param array $header
      *   Ex: ['Column A', 'Column B']
      * @param array $rows
      *   Ex: [[10,20,30], [11,21,31]]
+     * @return string
      */
-    public static function showTable(OutputInterface $output, $header, $rows)
+    public static function formatTable($header, $rows)
     {
         // Hard dice: we don't know what version of Symfony Console is around.
 
@@ -51,12 +51,14 @@ class TableHelper
             $hrPattern .= str_repeat('-', 2 + $colWidths[$col]) . '+';
         }
 
-        $output->writeln($hrPattern);
-        $output->writeln($mkRow(array_map($bold, $header)));
-        $output->writeln($hrPattern);
+        $buf = '';
+        $buf .= $hrPattern . "\n";
+        $buf .= $mkRow(array_map($bold, $header)) . "\n";
+        $buf .= $hrPattern . "\n";
         foreach ($rows as $row) {
-            $output->writeln($mkRow($row));
+            $buf .= $mkRow($row) . "\n";
         }
-        $output->writeln($hrPattern);
+        $buf .= $hrPattern . "\n";
+        return $buf;
     }
 }

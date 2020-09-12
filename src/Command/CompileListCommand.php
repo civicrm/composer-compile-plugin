@@ -39,30 +39,40 @@ class CompileListCommand extends \Composer\Command\BaseCommand
                 OutputInterface::OUTPUT_RAW
             );
         } else {
-            $header = ['', 'ID', 'Title', 'Action'];
-            $rows = [];
-            $descAction = function ($task) {
-                if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
-                    return '<info>(shell)</info> ' . $task->definition['shell'];
-                } elseif (is_array($task->callback)) {
-                    return '<info>(php-method)</info> ' . $task->callback[0] . '::' . $task->callback[1];
-                } elseif (is_string($task->callback)) {
-                    return '<info>(php-method)</info> ' . $task->callback;
-                } else {
-                    return '<error>(UNRECOGNIZED)</error>';
-                }
-            };
-            foreach ($tasks as $task) {
-                /** @var Task $task */
-                $rows[] = [
-                  $task->active ? '+' : '-',
-                  $task->id,
-                  $task->title,
-                  $descAction($task),
-                ];
-            }
-
-            TableHelper::showTable($output, $header, $rows);
+            $output->write(self::formatTaskTable($tasks));
         }
+    }
+
+    /**
+     * @param Task[] $tasks
+     * @return string
+     */
+    public static function formatTaskTable($tasks)
+    {
+        $header = ['', 'ID', 'Title', 'Action'];
+        $rows = [];
+        $descAction = function ($task) {
+            if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
+                return '<info>(shell)</info> ' . $task->definition['shell'];
+            } elseif (is_array($task->callback)) {
+                return '<info>(php-method)</info> ' . $task->callback[0] . '::' . $task->callback[1];
+            } elseif (is_string($task->callback)) {
+                return '<info>(php-method)</info> ' . $task->callback;
+            } else {
+                return '<error>(UNRECOGNIZED)</error>';
+            }
+        };
+        foreach ($tasks as $task) {
+            /** @var Task $task */
+            $rows[] = [
+              $task->active ? '+' : '-',
+              $task->id,
+              $task->title,
+              $descAction($task),
+            ];
+        }
+
+        $table = TableHelper::formatTable($header, $rows);
+        return $table;
     }
 }
