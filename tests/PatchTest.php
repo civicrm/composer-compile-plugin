@@ -62,11 +62,6 @@ class PatchTest extends IntegrationTestCase
    */
     public function testComposerInstall()
     {
-//        var_export([[PluginInterface::PLUGIN_API_VERSION]]);
-//        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0.alpha1', '>=')) {
-//            $this->markTestSkipped('Cannot test cweagans/composer-patches on composer v2. It does not yet support v2.');
-//        }
-
         $this->assertFileNotExists('vendor/test/cherry-jam/jam.out');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
