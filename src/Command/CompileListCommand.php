@@ -19,7 +19,7 @@ class CompileListCommand extends \Composer\Command\BaseCommand
         $this
           ->setName('compile:list')
           ->setDescription('Print list of compilation tasks')
-          ->addOption('json', NULL, InputOption::VALUE_NONE, 'Report tasks in JSON format')
+          ->addOption('json', null, InputOption::VALUE_NONE, 'Report tasks in JSON format')
         ;
     }
 
@@ -33,8 +33,7 @@ class CompileListCommand extends \Composer\Command\BaseCommand
 
         if ($input->getOption('json')) {
             $output->writeln(json_encode($tasks), OutputInterface::OUTPUT_RAW);
-        }
-        elseif ($output->isVerbose()) {
+        } elseif ($output->isVerbose()) {
             // TODO: Can we get Symfony Dumper to make this pretty?
             $output->writeln(
                 json_encode($tasks, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
