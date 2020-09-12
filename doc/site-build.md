@@ -6,26 +6,18 @@ By default, the plugin will prompt before compiling any new packages:
 
 ![Screenshot](/doc/img/composer-require.png)
 
-You may set a configuration option to suppress this prompt.
+You may set configuration options to suppress this prompt; these are described below.
 
 ## Mode
 
-The "compilation mode" gives a broad preference:
+The "compilation mode" gives a broad preference. It may be set as an environment-variable:
 
-* `none`: Do not compile anything automatically.
-* `all`: Automatically run all compilation tasks.
-* `whitelist`: Automatically compile anything on the whitelist, and reject everything else.
-* `prompt` (*default*): Automatically compile anything on the whitelist, and prompt for everything else.
+* `COMPOSER_COMPILE=none`: Do not compile anything automatically.
+* `COMPOSER_COMPILE=all`: Automatically run all compilation tasks.
+* `COMPOSER_COMPILE=whitelist`: Automatically compile anything on the whitelist, and reject everything else.
+* `COMPOSER_COMPILE=prompt` (*default*): Automatically compile anything on the whitelist, and prompt for everything else.
 
-The option may be via environment variable, e.g.
-
-```bash
-export COMPOSER_COMPILE=all
-export COMPOSER_COMPILE=none
-export COMPOSER_COMPILE=whitelist
-```
-
-It may also be stored persistently in `composer.json`,  as in:
+Alternatively, the same option may be added persistently to `composer.json`,  e.g.:
 
 ```bash
 composer config extra.compile-mode all
@@ -34,7 +26,7 @@ composer config extra.compile-mode all
 or
 
 ```js
-// composer.json
+// FILE: composer.json
 {
   "extra": {
     "compile-mode": "all"
@@ -42,13 +34,15 @@ or
 }
 ```
 
+If both the environment variable (`COMPOSER_COMPILE`) and the JSON option (`extra.compile-mode`) are set, then
+the environment-variable takes precedence.
+
 ## Whitelist
 
-If the mode is `prompt` or `whitelist`, then any whitelisted packages
-will run compilation steps automatically:
+If the mode is `prompt` or `whitelist`, then any whitelisted packages will run compilation steps automatically:
 
 ```js
-// composer.json
+// FILE: composer.json
 {
   "extra": {
     "compile-whitelist": [
