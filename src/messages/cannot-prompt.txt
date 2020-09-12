@@ -1,16 +1,15 @@
-<error>Unattended installer requires a compilation policy.</error>
+<error>WARNING: Unattended installation should have a compilation policy.</error>
 
-Some packages may require executing compilation steps, such as converting
-SCSS to CSS.
-
-By default, <comment>composer asks for permission before executing downloaded
-compilation steps. However, it is not possible to ask during unattended
+If any packages require unrecognized compilation steps, composer will
+prompt for approval. However, it is not possible to prompt during unattended
 installation.
 
-You must set a preference via environment-variable or composer
+You should set a preference via environment-variable or composer
 configuration, e.g.
 
- - <comment>export COMPOSER_COMPILE=on</comment>
- - <comment>export COMPOSER_COMPILE=off</comment>
- - <comment>composer config extra.compile-mode on</comment>
- - <comment>composer config extra.compile-mode off</comment>
+ - <comment>export COMPOSER_COMPILE=all</comment>
+ - <comment>export COMPOSER_COMPILE=whitelist</comment>
+ - <comment>export COMPOSER_COMPILE=none</comment>
+ - <comment>composer config extra.compile-mode all</comment>
+ - <comment>composer config extra.compile-mode whitelist</comment>
+ - <comment>composer config extra.compile-mode none</comment>

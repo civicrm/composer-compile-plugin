@@ -86,7 +86,7 @@ class CompileCommandTest extends IntegrationTestCase
         $this->assertFileNotExists('fondue.out');
 
         // First pass at compilation in a clean-ish environment
-        PH::runOk('composer compile -v');
+        PH::runOk('COMPOSER_COMPILE=1 composer compile -v');
 
         $this->assertFileContent('fondue.out', "START\ngouda\nEND\n");
         $this->assertFileContent('vendor/test/cherry-jam/jam.out', "RAINIER-CHERRY\n");
@@ -96,7 +96,7 @@ class CompileCommandTest extends IntegrationTestCase
         file_put_contents('fondue.in', "gruyere\ngouda\n");
         file_put_contents('vendor/test/cherry-jam/jam.in', "bing-cherry\n");
         file_put_contents('vendor/test/cherry-yogurt/yogurt.in', "milk\nstreptococcus thermophilus\n");
-        PH::runOk('composer compile -v');
+        PH::runOk('COMPOSER_COMPILE=1 composer compile -v');
 
         $this->assertFileContent('fondue.out', "START\ngruyere\ngouda\nEND\n");
         $this->assertFileContent('vendor/test/cherry-jam/jam.out', "BING-CHERRY\n");

@@ -84,7 +84,7 @@ class EventTest extends IntegrationTestCase
 
     public function testDryRun()
     {
-        $p = PH::runOk('composer compile --dry-run');
+        $p = PH::runOk('COMPOSER_COMPILE=1 composer compile --dry-run');
         $expectLines = array_merge($this->startupLines(), [
             // First task
             "^MARK: PRE_COMPILE_TASK",
