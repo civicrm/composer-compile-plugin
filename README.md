@@ -1,17 +1,18 @@
-# Composer Compile Plugin
-
-[![Build Status](https://travis-ci.com/civicrm/composer-compile-plugin.svg?branch=master)](https://travis-ci.com/civicrm/composer-compile-plugin)
+# Composer Compile Plugin [![Build Status](https://travis-ci.com/civicrm/composer-compile-plugin.svg?branch=master)](https://travis-ci.com/civicrm/composer-compile-plugin)
 
 The "Compile" plugin enables developers of PHP libraries to define free-form "compilation" tasks, such as:
 
 * Converting SCSS to CSS
 * Generating PHP wrappers based on an XML schema
 
-For PHP site-builders who use these libraries, the compilation process is a seamless part of the regular download (`composer install`).
+For PHP site-builders who use these libraries, the compilation process is a seamless part of the regular download (`composer install`, etc).
 
 This model is framework-agnostic and portable to many different environments.  It includes a permission mechanism to
 address historical concerns about `composer` hooks and untrusted libraries.  It allows libraries to be managed in a
-"clean" fashion, amenable to patching/forking and without comitting build-artifacts.
+"clean" fashion, amenable to patching/forking and without comitting build-artifacts. It relies on no external services,
+and it can be run locally (or anywhere that `composer` runs).
+
+At time of writing, the integration-tests are passing on both `composer` v1.10 and v2.0-dev.
 
 ## More information
 
