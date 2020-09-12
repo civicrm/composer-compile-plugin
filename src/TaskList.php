@@ -87,7 +87,7 @@ class TaskList
         $sourceFile = null;
         if ($extra === null && file_exists("$installPath/composer.json")) {
             $json = json_decode(file_get_contents("$installPath/composer.json"), 1);
-            $extra = $json['extra'] ?: null;
+            $extra = $json['extra'] ?? null;
             $sourceFile = "$installPath/composer.json";
         }
         if ($extra === null) {
