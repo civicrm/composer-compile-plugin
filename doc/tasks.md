@@ -1,4 +1,23 @@
-# Composer Compile Plugin: Library Configuration
+# Composer Compile Plugin: Working with tasks (for library developers)
+
+## Command Line Interface
+
+If you are specifically doing development for the compiled assets, then these subcommands may be helpful:
+
+```bash
+## Run compilation tasks
+composer compile [-v[v]] [--dry-run] [--all] [filterExpr...]
+
+## Watch key files and automatically re-run compilation tasks
+composer compile:watch [-v[v]] [--dry-run] [--interval=ms]
+
+## List the compilation tasks
+composer compile:list [-v[v]] [--json]
+```
+
+For further details, see the built-in `--help` screen.
+
+## Example: composer.json
 
 Suppose you publish a library (package), `foo/bar`, which includes a handful of JS files and CSS files. You want to ensure that
 an aggregated file is available. This example would produce two aggregate files, `all.js` and `all.css`.
@@ -54,7 +73,6 @@ For the next example, we seek to build a custom variant of Bootstrap.
 }
 ```
 -->
-
 
 ## Task Specification
 
