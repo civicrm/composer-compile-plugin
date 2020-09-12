@@ -2,12 +2,9 @@
 
 namespace Civi\CompilePlugin\Command;
 
-use Civi\CompilePlugin\Subscriber\ShellSubscriber;
-use Civi\CompilePlugin\Task;
 use Civi\CompilePlugin\TaskList;
 use Civi\CompilePlugin\TaskRunner;
-use Civi\CompilePlugin\Util\TableHelper;
-use Composer\Package\Dumper\ArrayDumper;
+use Civi\CompilePlugin\Util\TaskUIHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,40 +36,7 @@ class CompileListCommand extends \Composer\Command\BaseCommand
                 OutputInterface::OUTPUT_RAW
             );
         } else {
-            $output->write(self::formatTaskTable($tasks));
+            $output->write(TaskUIHelper::formatTaskTable($tasks, ['active', 'id', 'title', 'action']));
         }
-    }
-
-    /**
-     * @param Task[] $tasks
-     * @return string
-     */
-    public static function formatTaskTable($tasks)
-    {
-        $header = ['', 'ID', 'Title', 'Action'];
-        $rows = [];
-        $descAction = function ($task) {
-            if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
-                return '<info>(shell)</info> ' . $task->definition['shell'];
-            } elseif (is_array($task->callback)) {
-                return '<info>(php-method)</info> ' . $task->callback[0] . '::' . $task->callback[1];
-            } elseif (is_string($task->callback)) {
-                return '<info>(php-method)</info> ' . $task->callback;
-            } else {
-                return '<error>(UNRECOGNIZED)</error>';
-            }
-        };
-        foreach ($tasks as $task) {
-            /** @var Task $task */
-            $rows[] = [
-              $task->active ? '+' : '-',
-              $task->id,
-              $task->title,
-              $descAction($task),
-            ];
-        }
-
-        $table = TableHelper::formatTable($header, $rows);
-        return $table;
     }
 }
