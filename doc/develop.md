@@ -14,10 +14,10 @@ To run the tests, you will need `composer` and `phpunit` in the `PATH`.
 
 ```
 [~/src/composer-compile-plugin] which composer
-/Users/myuser/bknix/civicrm-buildkit/bin/composer
+/Users/myuser/bin/composer
 
 [~/src/composer-compile-plugin] which phpunit6
-/Users/myuser/bknix/civicrm-buildkit/bin/phpunit6
+/Users/myuser/bin/phpunit6
 
 [~/src/composer-compile-plugin] phpunit6
 PHPUnit 6.5.14 by Sebastian Bergmann and contributors.
@@ -58,17 +58,20 @@ You may use any of the integration-tests to initialize a basic sandbox.
    cd $HOME/src/sandbox
    ```
 
-3. Run whatever `composer` commands interest you.
+3. Run whatever `composer` commands interest you, .e.g
 
    ```bash
-   composer compile
+   composer compile -v
    ```
 
 4. If you would like to use an IDE with XDebug to investigate the running
-   command, then this will require an extra option:
+   command, then this will require an extra option (`COMPOSER_ALLOW_XDEBUG=1`).
+   Note that the developmental codebase for `composer-compile-plugin`
+   should have a debuggable copy of `composer` in its `vendor/bin`. Putting these
+   together, we may construct a command like:
 
    ```bash
-   COMPOSER_ALLOW_XDEBUG=1 php /path/to/composer.phar compile  -v
+   COMPOSER_ALLOW_XDEBUG=1 php $HOME/src/composer-compile-plugin/vendor/bin/composer compile  -v
    ```
 
 ## Events
