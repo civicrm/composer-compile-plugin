@@ -12,23 +12,21 @@ use ProcessHelper\ProcessHelper as PH;
  * This is general integration test of the plugin. It runs composer.json with
  * a combination of composer-compile-plugin and composer-downloads-plugin.
  *
- *  Ensure that downloaded are applied before compilation tasks execute.
+ * Ensure that `extra.downloads` run before `extra.compile`.
  */
 class DownloadTest extends IntegrationTestCase
 {
 
     public static function getComposerJson()
     {
-        $r = parent::getComposerJson() + [
+        return parent::getComposerJson() + [
             'name' => 'test/download-test',
             'require' => [
                 'civicrm/composer-compile-plugin' => '@dev',
                 'test/rosti' => '@dev',
-                'civicrm/composer-downloads-plugin' => '*',
             ],
             'minimum-stability' => 'dev',
         ];
-        return $r;
     }
 
     public static function setUpBeforeClass()

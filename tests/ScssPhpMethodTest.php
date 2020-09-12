@@ -17,14 +17,13 @@ class ScssPhpMethodTest extends IntegrationTestCase
 
     public static function getComposerJson()
     {
-        $r = parent::getComposerJson() + [
+        return parent::getComposerJson() + [
             'name' => 'test/patch-test',
             'require' => [
                 'test/gnocchi' => '@dev',
             ],
             'minimum-stability' => 'dev',
         ];
-        return $r;
     }
 
     public static function setUpBeforeClass()
@@ -33,9 +32,9 @@ class ScssPhpMethodTest extends IntegrationTestCase
         self::initTestProject(static::getComposerJson());
     }
 
-  /**
-   * When running 'composer install', it should generate 'jam.out' with suitable patches in place.
-   */
+    /**
+     * When running 'composer install', it should generate gnocchi's "build.css".
+     */
     public function testComposerInstall()
     {
         $this->assertFileNotExists('vendor/test/gnocchi/build.css');

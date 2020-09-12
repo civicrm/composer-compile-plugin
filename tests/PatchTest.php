@@ -12,7 +12,7 @@ use ProcessHelper\ProcessHelper as PH;
  * This is general integration test of the plugin. It runs composer.json with
  * a combination of composer-compile-plugin and composer-patches.
  *
- *  Ensure that patch-files are applied before compilation tasks execute.
+ * Ensure that `extra.patches` are applied before `extra.compile` tasks.
  */
 class PatchTest extends IntegrationTestCase
 {

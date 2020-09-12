@@ -11,6 +11,9 @@ use ProcessHelper\ProcessHelper as PH;
  *
  * This is general integration test of the plugin. It creates an example project which uses the
  * current/under-development plugin.  It asserts that various events fire.
+ *
+ * We check this by having each event echo some text of the form `MARK: something-happend`.
+ * We then do an assertion on the list of `^MARK:` statements.
  */
 class EventTest extends IntegrationTestCase
 {
@@ -24,10 +27,10 @@ class EventTest extends IntegrationTestCase
           ],
           'minimum-stability' => 'dev',
           'scripts' => [
-            CompileEvents::PRE_COMPILE_LIST => 'echo MARK: PRE_COMPILE_LIST',
-            CompileEvents::POST_COMPILE_LIST => 'echo MARK: POST_COMPILE_LIST',
-            CompileEvents::PRE_COMPILE_TASK => 'echo MARK: PRE_COMPILE_TASK',
-            CompileEvents::POST_COMPILE_TASK => 'echo MARK: POST_COMPILE_TASK',
+              CompileEvents::PRE_COMPILE_LIST => 'echo MARK: PRE_COMPILE_LIST',
+              CompileEvents::POST_COMPILE_LIST => 'echo MARK: POST_COMPILE_LIST',
+              CompileEvents::PRE_COMPILE_TASK => 'echo MARK: PRE_COMPILE_TASK',
+              CompileEvents::POST_COMPILE_TASK => 'echo MARK: POST_COMPILE_TASK',
           ],
           'extra' => [
             'compile' => [
