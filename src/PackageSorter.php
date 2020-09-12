@@ -16,17 +16,16 @@ class PackageSorter
      *
      *   Upstream packages with no dependencies come earlier than downstream packages that require them.
      *
-     *   Ex: [0 => 'very-much/upstream', 1 => 'some-what/midstream', 2 => 'hear-now/downstream']
+     *   Ex: [0 => 'very-much/upstream', 1 => 'some-what/midstream', 2 => 'here-now/downstream']
      */
     public static function sortPackages($installedPackages)
     {
-        // We do our own topological sort. It doesn't seem particularly easy
-        // to ask composer for this list -- the code-paths for 'composer require'
-        // and 'composer update' have to address a lot of issues (like version-selection)
-        // that don't matter. We're using whatever packages are already here.
+        // We do our own topological sort.  It doesn't seem particularly easy to ask composer for this list -- the
+        // canonical sort for 'composer require' and 'composer update' have to address a lot of issues (like
+        // version-selection and already-installed packages) that don't make sense here.
 
-        // Given that $allPackages starts in some known order, the remaining steps
-        // should be deterministic/stable over multiple iterations.
+        // The topological sort may have multiple, equally-correct outputs. Given the same
+        // packages as input (regardless of input-order), we want to produce stable output.
         usort($installedPackages, function ($a, $b) {
             return strnatcmp($a->getName(), $b->getName());
         });

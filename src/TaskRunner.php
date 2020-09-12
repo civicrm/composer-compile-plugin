@@ -146,7 +146,7 @@ class TaskRunner
     protected function runTask(Task $task, PackageInterface $package)
     {
         $orig = [
-          'pwd' => getcwd(),
+            'pwd' => getcwd(),
         ];
 
         try {
@@ -194,10 +194,10 @@ class TaskRunner
     public function getMode()
     {
         $aliases = [
-          '0' => 'none',
-          '1' => 'all',
-          'off' => 'none',
-          'on' => 'all',
+            '0' => 'none',
+            '1' => 'all',
+            'off' => 'none',
+            'on' => 'all',
         ];
 
         $mode = getenv('COMPOSER_COMPILE');

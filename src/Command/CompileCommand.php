@@ -18,7 +18,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
 
         $this
           ->setName('compile')
-          ->setDescription('Run compilation steps in all packages')
+          ->setDescription('Run compilation tasks')
           ->addOption('all', null, InputOption::VALUE_NONE, 'Run all tasks, regardless of configuration')
           ->addOption('dry-run', 'N', InputOption::VALUE_NONE, 'Dry-run: Print a list of steps to be run')
           ->addArgument('filterExpr', InputArgument::IS_ARRAY, 'Optional filter to match. Ex: \'vendor/package\' or \'vendor/package:id\'')

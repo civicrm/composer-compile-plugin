@@ -31,23 +31,19 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
     public static function getSubscribedEvents()
     {
         return [
-          ScriptEvents::PRE_INSTALL_CMD => ['validateMode', 5],
-          ScriptEvents::PRE_UPDATE_CMD => ['validateMode', 5],
-          ScriptEvents::POST_INSTALL_CMD => ['runTasks', 5],
-          ScriptEvents::POST_UPDATE_CMD => ['runTasks', 5],
+            ScriptEvents::PRE_INSTALL_CMD => ['validateMode', 5],
+            ScriptEvents::PRE_UPDATE_CMD => ['validateMode', 5],
+            ScriptEvents::POST_INSTALL_CMD => ['runTasks', 5],
+            ScriptEvents::POST_UPDATE_CMD => ['runTasks', 5],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCapabilities()
     {
         return [
-          'Composer\Plugin\Capability\CommandProvider' => CommandProvider::class,
+            'Composer\Plugin\Capability\CommandProvider' => CommandProvider::class,
         ];
     }
-
 
     public function activate(Composer $composer, IOInterface $io)
     {
@@ -71,6 +67,9 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         // NOTE: This method is only valid on composer v2.
     }
 
+    /**
+     * The "prompt" compilation mode only makes sense with interactive usage.
+     */
     public function validateMode(Event $event)
     {
         $taskRunner = new TaskRunner($this->composer, $this->io);
@@ -81,7 +80,6 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
 
     public function runTasks(Event $event)
     {
-
         $taskList = new TaskList($this->composer, $this->io);
         $taskList->load()->validateAll();
 

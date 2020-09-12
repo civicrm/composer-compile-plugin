@@ -79,10 +79,11 @@ class TaskList
      */
     protected function loadPackage(PackageInterface $package, $installPath)
     {
-        // Typically, a package folder has its own copy of composer.json. We prefer to read
-        // from that file in case one is drafting or applying patches.
-        // Tangentially, this means it would be invalid for another composer plugin to try
-        // to inject data here at runtime. If that's needed, add an event for hooking in here.
+        // Typically, a package folder has its own copy of composer.json.  We prefer to read from that file in case one
+        // is drafting or applying patches.  Relatedly, if another plugin wants to hook into our list of tasks, they
+        // should not try to work with `getExtra()`.  Instead, listen to `PRE_COMPILE_LIST` or `POST_COMPILE_LIST`
+        // and alter configuration there.
+
         $extra = null;
         $sourceFile = null;
         if ($extra === null && file_exists("$installPath/composer.json")) {
@@ -165,24 +166,29 @@ class TaskList
     }
 
     /**
-     * @param string $pattern
+     * @param string $filter
      *   Ex: 'vendor/*'
      *   Ex: 'vendor/package'
      *   Ex: 'vendor/package:id'
      * @return Task[]
      */
-    public function getByFilter($pattern)
+    public function getByFilter($filter)
     {
         $tasks = [];
         foreach ($this->tasks as $task) {
             /** @var Task $task */
-            if ($task->matchesFilter($pattern)) {
+            if ($task->matchesFilter($filter)) {
                 $tasks[$task->id] = $task;
             }
         }
         return $tasks;
     }
 
+    /**
+     * @param string[] $filters
+     *   Ex: ['vendor1/*', 'vendor2/package2']
+     * @return Task[]
+     */
     public function getByFilters($filters)
     {
         $tasks = [];

@@ -7,6 +7,8 @@ class TaskUIHelper
 {
 
     /**
+     * Make a bulleted list to summarize the tasks.
+     *
      * @param Task[] $tasks
      * @return string
      */
@@ -37,7 +39,12 @@ class TaskUIHelper
     }
 
     /**
+     * Make a table displaying a list of tasks.
+     *
      * @param Task[] $tasks
+     * @param string[] $fields
+     *   List of fields/columns to display.
+     *   Some mix of: 'active', 'id', 'packageName', 'title', 'action'
      * @return string
      */
     public static function formatTaskTable($tasks, $fields)
@@ -76,12 +83,12 @@ class TaskUIHelper
 
                     default:
                         $row[] = $task->{$field};
+                        break;
                 }
             }
             $rows[] = $row;
         }
 
-        $table = TableHelper::formatTable($header, $rows);
-        return $table;
+        return TableHelper::formatTable($header, $rows);
     }
 }
