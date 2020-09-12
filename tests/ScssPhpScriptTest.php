@@ -41,12 +41,6 @@ class ScssPhpScriptTest extends IntegrationTestCase
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 
-        $normalize = function ($s) {
-            return trim(preg_replace(';\s+;', ' ', $s));
-        };
-        $actual = $normalize(file_get_contents('vendor/test/scss-script/build.css'));
-        $expected = $normalize(file_get_contents('vendor/test/scss-script/build.css-expected'));
-        $this->assertNotEmpty($expected);
-        $this->assertEquals($expected, $actual);
+        $this->assertSameCssFile('vendor/test/scss-script/build.css-expected', 'vendor/test/scss-script/build.css');
     }
 }

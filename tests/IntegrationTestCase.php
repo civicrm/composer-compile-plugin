@@ -178,6 +178,23 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
         EnvHelper::setAll($this->origEnvTestCase);
     }
 
+    /**
+     * @param string $expectedCssFile
+     * @param string $actualCssFile
+     *   Path to CSS file
+     */
+    public function assertSameCssFile($expectedCssFile, $actualCssFile)
+    {
+        $normalize = function ($s) {
+            return trim(preg_replace(';\s+;', ' ', $s));
+        };
+        $this->assertFileExists($actualCssFile);
+        $this->assertFileExists($expectedCssFile);
+        $actual = $normalize(file_get_contents($actualCssFile));
+        $expected = $normalize(file_get_contents($expectedCssFile));
+        $this->assertNotEmpty($expected);
+        $this->assertEquals($expected, $actual);
+    }
 
     public function assertSameFileContent($expected, $actual)
     {

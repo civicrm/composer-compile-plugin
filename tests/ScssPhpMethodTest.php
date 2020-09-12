@@ -18,7 +18,7 @@ class ScssPhpMethodTest extends IntegrationTestCase
     public static function getComposerJson()
     {
         return parent::getComposerJson() + [
-            'name' => 'test/patch-test',
+            'name' => 'test/scss-php-method-test',
             'require' => [
                 'test/scss-method' => '@dev',
             ],
@@ -41,12 +41,6 @@ class ScssPhpMethodTest extends IntegrationTestCase
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 
-        $normalize = function ($s) {
-            return trim(preg_replace(';\s+;', ' ', $s));
-        };
-        $actual = $normalize(file_get_contents('vendor/test/scss-method/build.css'));
-        $expected = $normalize(file_get_contents('vendor/test/scss-method/build.css-expected'));
-        $this->assertNotEmpty($expected);
-        $this->assertEquals($expected, $actual);
+        $this->assertSameCssFile('vendor/test/scss-method/build.css-expected', 'vendor/test/scss-method/build.css');
     }
 }
