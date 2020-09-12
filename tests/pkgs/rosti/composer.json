@@ -1,0 +1,31 @@
+{
+    "description": "(MOCK) Rosti implementation",
+    "authors": [
+        {
+            "name": "Tester McFakus",
+            "email": "tester@example.org"
+        }
+    ],
+    "name": "test/rosti",
+    "provide": {
+        "test/jam-implementation": "1.0"
+    },
+    "require": {
+        "civicrm/composer-downloads-plugin": "@stable",
+        "civicrm/composer-compile-plugin": "@dev"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "downloads": {
+            "potato.in": {
+                "url": "https://raw.githubusercontent.com/civicrm/civicrm-core/5.28/LICENSE",
+                "path": "potato.in"
+            }
+        },
+        "compile": [
+            {
+                "shell": "head -n1 potato.in > rosti.out"
+            }
+        ]
+    }
+}
