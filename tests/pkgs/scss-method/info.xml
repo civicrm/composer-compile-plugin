@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<extension key="org.example.scssmethodtest" type="module">
+  <file>scssmethodtest</file>
+  <name>scssmethodtest</name>
+  <description>SCSS Method Test Extension</description>
+  <license>MIT</license>
+  <releaseDate>2020-01-01</releaseDate>
+  <version>1.0</version>
+  <develStage>stable</develStage>
+</extension>
