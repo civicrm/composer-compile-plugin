@@ -6,6 +6,7 @@ use Civi\CompilePlugin\Event\CompileListEvent;
 use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Exception\TaskFailedException;
 use Civi\CompilePlugin\Task;
+use Civi\CompilePlugin\Util\ShellRunner;
 use Composer\IO\IOInterface;
 
 class ShellSubscriber
@@ -32,46 +33,12 @@ class ShellSubscriber
     {
         /** @var Task $task */
         $task = $e->getTask();
-        /** @var IOInterface $io */
-        $io = $e->getIO();
 
         if (empty($task->definition['shell'])) {
             throw new \InvalidArgumentException("Invalid or missing \"shell\" option");
         }
 
-        if ($io->isVerbose()) {
-            $io->write("<info>In <comment>{$task->pwd}</comment>, execute <comment>{$task->definition['shell']}</comment></info>");
-        }
-
-        switch ($task->passthru) {
-            case 'always':
-                passthru($task->definition['shell'], $retVal);
-                if ($retVal !== 0) {
-                    throw new TaskFailedException($task);
-                }
-                break;
-
-            case 'error':
-                exec($task->definition['shell'], $output, $retVal);
-                if ($retVal !== 0) {
-                    if (is_callable([$io, 'writeErrorRaw'])) {
-                        $io->writeErrorRaw($output);
-                    } else {
-                        $io->writeError($output);
-                    }
-                    throw new TaskFailedException($task);
-                }
-                break;
-
-            case 'never':
-                exec($task->definition['shell'], $output, $retVal);
-                if ($retVal !== 0) {
-                    throw new TaskFailedException($task);
-                }
-                break;
-
-            default:
-                throw new \InvalidArgumentException("Invalid passthru option: \"$task->passthru\"");
-        }
+        $r = new ShellRunner($e->getComposer(), $e->getIO());
+        $r->run($task->definition['shell']);
     }
 }

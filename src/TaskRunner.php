@@ -4,6 +4,7 @@ namespace Civi\CompilePlugin;
 use Civi\CompilePlugin\Event\CompileEvents;
 use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Exception\TaskFailedException;
+use Civi\CompilePlugin\Util\PassthruPolicyFilter;
 use Civi\CompilePlugin\Util\TaskUIHelper;
 use Composer\Composer;
 use Composer\IO\IOInterface;
@@ -149,10 +150,22 @@ class TaskRunner
             'pwd' => getcwd(),
         ];
 
+        $passthruPolicyFilter = new PassthruPolicyFilter(
+            $this->io,
+            // FIXME: getenv('COMPOSER_COMPILE_PASSTHRU') ?: 'error';
+            $task->passthru,
+            function ($message) {
+                if ($this->io->isVerbose()) {
+                    return true;
+                }
+                return preg_match(';^<error|warning>;', $message);
+            }
+        );
+
         try {
             chdir($task->pwd);
             $isDryRun = false;
-            $e = new CompileTaskEvent(null, $this->composer, $this->io, $package, $task, $isDryRun);
+            $e = new CompileTaskEvent(null, $this->composer, $passthruPolicyFilter, $package, $task, $isDryRun);
             call_user_func($task->callback, $e);
         } finally {
             chdir($orig['pwd']);
