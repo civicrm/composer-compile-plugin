@@ -79,7 +79,7 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
                 foreach ($taskList->getAll() as $task) {
                     /** @var Task $task */
                     foreach ($task->watchFiles ?? [] as $watch) {
-                        $watcher->track($task->id, $watch);
+                        $watcher->track($task->id, $task->pwd . '/' . $watch);
                     }
                     $watcher->addListener($task->id, function ($e) use ($input, $output, $task) {
                         $this->runCompile($input, $output, $task->id);
