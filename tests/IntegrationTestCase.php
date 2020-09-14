@@ -1,6 +1,7 @@
 <?php
 namespace Civi\CompilePlugin\Tests;
 
+use Civi\CompilePlugin\Util\EnvHelper;
 use ProcessHelper\ProcessHelper as PH;
 
 class IntegrationTestCase extends \PHPUnit\Framework\TestCase
@@ -67,6 +68,7 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
 
     private static $origDir;
     private static $testDir;
+    private static $origEnv;
 
     /**
      * Create a temp folder with a "composer.json" file and chdir() into it.
@@ -77,6 +79,7 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
     public static function initTestProject($composerJson)
     {
         self::$origDir = getcwd();
+        self::$origEnv = EnvHelper::getAll();
         if (getenv('USE_TEST_PROJECT')) {
             self::$testDir = getenv('USE_TEST_PROJECT');
             @unlink(self::$testDir . DIRECTORY_SEPARATOR . 'composer.lock');
@@ -124,6 +127,8 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
             }
             self::$testDir = null;
         }
+
+        EnvHelper::setAll(self::$origEnv);
     }
 
     /**
@@ -142,6 +147,26 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
             unlink($file);
         }
     }
+
+    /**
+     * List of env-vars, as they existed at the start of the test-case.
+     *
+     * @var array
+     */
+    private $origEnvTestCase;
+
+    protected function setUp()
+    {
+        $this->origEnvTestCase = EnvHelper::getAll();
+        parent::setUp();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        EnvHelper::setAll($this->origEnvTestCase);
+    }
+
 
     public function assertSameFileContent($expected, $actual)
     {
