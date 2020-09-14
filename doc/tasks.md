@@ -96,7 +96,7 @@ Additionally, there are several optional fields which may modify how the task op
 | -- | -- | -- | -- |
 | `active` | `bool` | `true` | Whether this task should be executed |
 | `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
-| `watches` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
+| `watch-files` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
 
 ## Task Ordering
 

@@ -89,7 +89,7 @@ class Task
      * @see \Lurker\ResourceWatcher::track()
      * @var array
      */
-    public $watches = [];
+    public $watchFiles = [];
 
     /**
      * (Optional) Whether the task should be executed.

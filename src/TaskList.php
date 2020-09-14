@@ -110,7 +110,7 @@ class TaskList
                     $package->getName(),
                     $naturalWeight
                 ),
-                'watches' => null,
+                'watch-files' => null,
             ];
 
             $taskDefinition = array_merge($defaults, $taskDefinition);
@@ -123,9 +123,9 @@ class TaskList
             $task->weight = 0;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight;
-            foreach (['title', 'active', 'watches'] as $field) {
-                $task->{$field} = $taskDefinition[$field];
-            }
+            $task->active = $taskDefinition['active'];
+            $task->watchFiles = $taskDefinition['watch-files'];
+            $task->title = $taskDefinition['title'];
             $tasks[$task->id] = $task;
             $naturalWeight++;
         }
