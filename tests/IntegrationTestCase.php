@@ -253,4 +253,38 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
         );
         $this->assertTrue(is_dir($path), "Path ($path) should be a dir");
     }
+
+    /**
+     * @param array $expectLines
+     *    Lines that should be present in output.
+     * @param string $outputFilter
+     *   A regexp to identify output lines that are interesting.
+     * @param string $actualOutput
+     *   The full command output
+     */
+    public function assertOutputLines($expectLines, $outputFilter, $actualOutput)
+    {
+        $actualLines = array_values(preg_grep(
+            $outputFilter,
+            explode("\n", $actualOutput)
+        ));
+
+        $serialize = print_r([
+          'expect' => $expectLines,
+          'actual' => $actualLines
+        ], 1);
+
+        $this->assertEquals(
+            count($expectLines),
+            count($actualLines),
+            "Compare line count in $serialize"
+        );
+        foreach ($expectLines as $offset => $expectLine) {
+            $this->assertRegExp(
+                ";$expectLine;",
+                $actualLines[$offset],
+                "Check line $offset in $serialize"
+            );
+        }
+    }
 }

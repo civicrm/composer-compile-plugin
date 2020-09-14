@@ -110,7 +110,6 @@ class TaskList
                     $package->getName(),
                     $naturalWeight
                 ),
-                'passthru' => 'error',
                 'watches' => null,
             ];
 
@@ -124,7 +123,7 @@ class TaskList
             $task->weight = 0;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight;
-            foreach (['title', 'passthru', 'active', 'watches'] as $field) {
+            foreach (['title', 'active', 'watches'] as $field) {
                 $task->{$field} = $taskDefinition[$field];
             }
             $tasks[$task->id] = $task;

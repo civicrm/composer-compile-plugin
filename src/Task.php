@@ -77,18 +77,6 @@ class Task
     public $callback;
 
     /**
-     * (Optional) Whether to display output on the console
-     *
-     * Options:
-     * - 'always': Display output in real time
-     * - 'error': Buffer output. If an error arises, then display output
-     * - 'never': Do not show output
-     *
-     * @var string
-     */
-    public $passthru;
-
-    /**
      * (Required) The folder in which to execute the task.
      *
      * @var string

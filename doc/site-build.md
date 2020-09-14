@@ -6,7 +6,7 @@ By default, the plugin will prompt before compiling any new packages:
 
 ![Screenshot](/doc/img/composer-require.png)
 
-You may set configuration options to suppress this prompt; these are described below.
+You may suppress this prompt with runtime options. Runtime options are described more below.
 
 ## Mode
 
@@ -53,3 +53,31 @@ If the mode is `prompt` or `whitelist`, then any whitelisted packages will run c
   }
 }
 ```
+
+## Passthru
+
+The "passthru" mode indicates whether to display console-output from the underlying compilation tasks. It may be set as an environment-variable:
+
+* `COMPOSER_COMPILE_PASSTHRU=never`: Do not display console-output from individual tasks.
+* `COMPOSER_COMPILE_PASSTHRU=always`: Do  display console-output from individual tasks.
+* `COMPOSER_COMPILE_PASSTHRU=error` (*default*): Don't display compilation information, unless there's an error.
+
+Alternatively, the same option may be added persistently to `composer.json`,  e.g.:
+
+```bash
+composer config extra.compile-passthru always
+```
+
+or
+
+```js
+// FILE: composer.json
+{
+  "extra": {
+    "compile-passthru": "always"
+  }
+}
+```
+
+If both the environment variable (`COMPOSER_COMPILE_PASSTHRU`) and the JSON option (`extra.compile-passthru`) are set, then
+the environment-variable takes precedence.

@@ -152,8 +152,7 @@ class TaskRunner
 
         $passthruPolicyFilter = new PassthruPolicyFilter(
             $this->io,
-            // FIXME: getenv('COMPOSER_COMPILE_PASSTHRU') ?: 'error';
-            $task->passthru,
+            $this->getPassthruMode(),
             function ($message) {
                 if ($this->io->isVerbose()) {
                     return true;
@@ -237,6 +236,22 @@ class TaskRunner
                 "The compilation policy (COMPOSER_COMPILE or extra.compile-mode) is invalid. Valid options are \"" . implode('", "', $options) . "\"."
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassthruMode()
+    {
+        $passthru = getenv('COMPOSER_COMPILE_PASSTHRU');
+        if ($passthru === '' || $passthru === false || $passthru === null) {
+            $extra = $this->composer->getPackage()->getExtra();
+            $passthru = $extra['compile-passthru'] ?? '';
+        }
+        if ($passthru === '' || $passthru === false || $passthru === null) {
+            $passthru = 'error';
+        }
+        return $passthru;
     }
 
     /**

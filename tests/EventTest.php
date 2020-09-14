@@ -37,12 +37,10 @@ class EventTest extends IntegrationTestCase
               [
                   'title' => 'Compile first',
                   'shell' => 'echo MARK: RUN FIRST',
-                  'passthru' => 'always',
               ],
               [
                   'title' => 'Compile second',
                   'shell' => 'echo MARK: RUN SECOND',
-                  'passthru' => 'always',
               ]
             ],
           ],
@@ -60,7 +58,7 @@ class EventTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $p = PH::runOk('COMPOSER_COMPILE=1 composer install');
+        $p = PH::runOk('COMPOSER_COMPILE_PASSTHRU=always COMPOSER_COMPILE=1 composer install');
         $expectLines = array_merge($this->startupLines(), [
             // First task
             "^MARK: PRE_COMPILE_TASK",
@@ -71,23 +69,13 @@ class EventTest extends IntegrationTestCase
             "^MARK: RUN SECOND",
             "^MARK: POST_COMPILE_TASK",
         ]);
-        $output = $p->getOutput();
-        $actualLines = array_values(preg_grep(';^MARK:;', explode("\n", $output)));
 
-        $serialize = print_r([
-          'expect' => $expectLines,
-          'actual' => $actualLines
-        ], 1);
-
-        $this->assertEquals(count($expectLines), count($actualLines), "Compare line count in $serialize");
-        foreach ($expectLines as $offset => $expectLine) {
-            $this->assertRegExp(";$expectLine;", $actualLines[$offset], "Check line $offset in $serialize");
-        }
+        $this->assertOutputLines($expectLines, ';^MARK:;', $p->getOutput());
     }
 
     public function testDryRun()
     {
-        $p = PH::runOk('COMPOSER_COMPILE=1 composer compile --dry-run');
+        $p = PH::runOk('COMPOSER_COMPILE_PASSTHRU=always COMPOSER_COMPILE=1 composer compile --dry-run');
         $expectLines = array_merge($this->startupLines(), [
             // First task
             "^MARK: PRE_COMPILE_TASK",
@@ -98,18 +86,7 @@ class EventTest extends IntegrationTestCase
             // Not on dry-run: "^MARK: RUN SECOND",
             "^MARK: POST_COMPILE_TASK",
         ]);
-        $output = $p->getOutput();
-        $actualLines = array_values(preg_grep(';^MARK:;', explode("\n", $output)));
-
-        $serialize = print_r([
-          'expect' => $expectLines,
-          'actual' => $actualLines,
-        ], 1);
-
-        $this->assertEquals(count($expectLines), count($actualLines), "Compare line count in $serialize");
-        foreach ($expectLines as $offset => $expectLine) {
-            $this->assertRegExp(";$expectLine;", $actualLines[$offset], "Check line $offset in $serialize");
-        }
+        $this->assertOutputLines($expectLines, ';^MARK:;', $p->getOutput());
     }
 
     protected function startupLines()
