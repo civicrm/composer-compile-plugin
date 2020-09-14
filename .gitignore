@@ -1,6 +1,5 @@
 .php_cs.cache
 /.idea/
-/composer.lock
 /vendor/
 /tests/pkgs/cherry-yogurt/yogurt.out
 /tests/pkgs/cherry-jam/jam.out
