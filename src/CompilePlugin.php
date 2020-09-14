@@ -72,6 +72,10 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
      */
     public function validateMode(Event $event)
     {
+        if (!class_exists('Civi\CompilePlugin\TaskRunner')) {
+            // Likely a problem in composer v1 uninstall process?
+            return;
+        }
         $taskRunner = new TaskRunner($this->composer, $this->io);
         if ($taskRunner->getMode() === 'prompt' && !$this->io->isInteractive()) {
             $this->io->write(file_get_contents(__DIR__ . '/messages/cannot-prompt.txt'));
@@ -80,6 +84,11 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
 
     public function runTasks(Event $event)
     {
+        if (!class_exists('Civi\CompilePlugin\TaskList')) {
+            // Likely a problem in composer v1 uninstall process?
+            $event->getIO()->write("<warning>Skip CompilePlugin::runTasks. Environment does not appear well-formed.</warning>");
+            return;
+        }
         $taskList = new TaskList($this->composer, $this->io);
         $taskList->load()->validateAll();
 
