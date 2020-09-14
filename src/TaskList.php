@@ -16,6 +16,11 @@ class TaskList
 
     /**
      * @var array
+     */
+    protected $sourceFiles;
+
+    /**
+     * @var array
      *   Ex: ['foo/upstream' => 1, 'foo/downstream' => 2]
      */
     protected $packageWeights;
@@ -51,6 +56,7 @@ class TaskList
     public function load()
     {
         $this->tasks = [];
+        $this->sourceFiles = [];
         $this->packageWeights = array_flip(PackageSorter::sortPackages(array_merge(
             $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages(),
             [$this->composer->getPackage()]
@@ -90,6 +96,7 @@ class TaskList
                 $defn['source-file'] = $sourceFile;
                 $taskDefinitions[] = $defn;
             }
+            $this->sourceFiles[] = $sourceFile;
         };
 
         $extra = null;
@@ -170,6 +177,16 @@ class TaskList
             }
         }
         return $count;
+    }
+
+    /**
+     * Get the list of input files which produced this task-list.
+     *
+     * @return \string[]
+     */
+    public function getSourceFiles()
+    {
+        return $this->sourceFiles;
     }
 
     /**

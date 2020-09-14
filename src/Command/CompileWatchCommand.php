@@ -66,24 +66,32 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
 
                 $output->writeln("<info>Watch for updates</info>");
                 $watcher = new ResourceWatcher();
-                $watcher->addListener('taskList', function () use (&$stale) {
+                $addWatch = function ($logicalId, $filename, $callback) use ($watcher, $output) {
+                    if (strpos($filename, getcwd() . '/') === 0) {
+                        $filename = substr($filename, strlen(getcwd()) + 1);
+                    }
+                    $trackingId = $logicalId . ':' . md5($filename);
+                    $output->writeln("<comment>$logicalId</comment>: $filename", OutputInterface::VERBOSITY_VERY_VERBOSE);
+                    $watcher->track($trackingId, $filename);
+                    $watcher->addListener($trackingId, $callback);
+                };
+                $onTaskListChange = function () use (&$stale) {
                     $stale = true;
-                });
-                foreach ($taskList->getAll() as $task) {
-                    /** @var Task $task */
-                    if ($task->sourceFile !== null) {
-                        $watcher->track('taskList', $task->sourceFile);
+                };
+                foreach ($taskList->getSourceFiles() as $sourceFile) {
+                    if (file_exists($sourceFile)) {
+                        $addWatch('taskList', $sourceFile, $onTaskListChange);
                     }
                 }
 
                 foreach ($taskList->getAll() as $task) {
                     /** @var Task $task */
-                    foreach ($task->watchFiles ?? [] as $watch) {
-                        $watcher->track($task->id, $task->pwd . '/' . $watch);
-                    }
-                    $watcher->addListener($task->id, function ($e) use ($input, $output, $task) {
+                    $onChangeTask = function ($e) use ($input, $output, $task) {
                         $this->runCompile($input, $output, $task->id);
-                    });
+                    };
+                    foreach ($task->watchFiles ?? [] as $watch) {
+                        $addWatch($task->id, $task->pwd . '/' . $watch, $onChangeTask);
+                    }
                 }
 
                 $stale = false;
