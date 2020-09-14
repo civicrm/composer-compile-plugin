@@ -1,0 +1,20 @@
+{
+    "description": "(MOCK) Strawberry jam implementation",
+    "authors": [
+        {
+            "name": "Tester McFakus",
+            "email": "tester@example.org"
+        }
+    ],
+    "name": "test/strawberry-jam",
+    "provide": {
+        "test/jam-implementation": "1.0"
+    },
+    "require": {
+        "civicrm/composer-compile-plugin": "@dev"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "compile-includes": ["subordinate/more-compile.json"]
+    }
+}

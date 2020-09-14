@@ -84,17 +84,33 @@ class TaskList
         // should not try to work with `getExtra()`.  Instead, listen to `PRE_COMPILE_LIST` or `POST_COMPILE_LIST`
         // and alter configuration there.
 
+        $taskDefinitions = [];
+        $addDefinitions = function ($newDefinitions, $sourceFile) use (&$taskDefinitions) {
+            foreach ($newDefinitions as $defn) {
+                $defn['source-file'] = $sourceFile;
+                $taskDefinitions[] = $defn;
+            }
+        };
+
         $extra = null;
-        $sourceFile = null;
         if ($extra === null && file_exists("$installPath/composer.json")) {
             $json = json_decode(file_get_contents("$installPath/composer.json"), 1);
             $extra = $json['extra'] ?? null;
-            $sourceFile = "$installPath/composer.json";
         }
         if ($extra === null) {
             $extra = $package->getExtra();
         }
-        $taskDefinitions = $extra['compile'] ?? [];
+        $addDefinitions($extra['compile'] ?? [], "$installPath/composer.json");
+
+        foreach ($extra['compile-includes'] ?? [] as $includeFile) {
+            $includePathFull = "$installPath/$includeFile";
+            if (!file_exists($includePathFull) || !is_readable($includePathFull)) {
+                $this->io->writeError("<warning>Failed to read $includePathFull</warning>");
+                continue;
+            }
+            $inc = json_decode(file_get_contents($includePathFull), 1);
+            $addDefinitions($inc['compile'] ?? [], $includePathFull);
+        }
 
         $event = new CompileListEvent(CompileEvents::PRE_COMPILE_LIST, $this->composer, $this->io, $package, $taskDefinitions);
         $this->composer->getEventDispatcher()->dispatch(CompileEvents::PRE_COMPILE_LIST, $event);
@@ -116,10 +132,10 @@ class TaskList
             $taskDefinition = array_merge($defaults, $taskDefinition);
             $task = new Task();
             $task->id = $package->getName() . ':' . $naturalWeight;
-            $task->sourceFile = $sourceFile;
+            $task->sourceFile = $taskDefinition['source-file'];
             $task->definition = $taskDefinition;
             $task->packageName = $package->getName();
-            $task->pwd = $installPath;
+            $task->pwd = dirname($taskDefinition['source-file']);
             $task->weight = 0;
             $task->packageWeight = $this->packageWeights[$package->getName()];
             $task->naturalWeight = $naturalWeight;

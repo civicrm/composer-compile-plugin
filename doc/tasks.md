@@ -81,6 +81,34 @@ class ScssExample
 }
 ```
 
+## Example: Includes
+
+If the metadata about the compilation tasks looks a bit long, then you may use an include file.
+
+```json
+{
+  "name": "foo/bar",
+  "require": {
+    "civicrm/composer-compile-plugin": "~1.0"
+  },
+  "extra": {
+    "compile-includes": ["module-a/.composer-compile.json", "module-b/.composer-compile.json"]
+  }
+}
+```
+
+Then, in each file, you may define a `compile` directive like before:
+
+```json
+{
+  "compile": [
+    {"shell": "cat js/{one,two,three}.js > all.js"}
+  ]
+}
+```
+
+Note: The command will run in the same folder as the JSON file.
+
 ## Task Specification
 
 The `extra.compile` section may list multiple *tasks*. Each task must define one of the following primary elements:

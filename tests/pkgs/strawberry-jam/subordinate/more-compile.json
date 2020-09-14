@@ -1,0 +1,9 @@
+{
+        "compile": [
+            {
+                "tag": ["jam"],
+                "title": "Compile <comment>jam.out</comment> from <comment>jam.in</comment>",
+                "shell": "tr '[a-z]' '[A-Z]' < jam.in > jam.out"
+            }
+        ]
+}

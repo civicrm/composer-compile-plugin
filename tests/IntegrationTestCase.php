@@ -30,6 +30,10 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
               'type' => 'path',
               'url' => self::getPluginSourceDir() . '/tests/pkgs/cherry-jam',
             ],
+            'test-strawberry-jam' => [
+              'type' => 'path',
+              'url' => self::getPluginSourceDir() . '/tests/pkgs/strawberry-jam',
+            ],
             'test-gnocchi' => [
               'type' => 'path',
               'url' => self::getPluginSourceDir() . '/tests/pkgs/gnocchi',
