@@ -44,14 +44,24 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
                     $this->resetComposer();
                 }
 
+                $oldTaskList = $taskList;
                 $taskList = new TaskList($this->getComposer(), $this->getIO());
                 $taskList->load()->validateAll();
 
-                $output->writeln(sprintf("Found <comment>%d</comment> tasks", count($taskList->getAll())));
+                $output->writeln(sprintf("Found <comment>%d</comment> task(s)", count($taskList->getAll())));
 
-                if ($firstRun) {
+                if ($oldTaskList === null) {
                     $output->writeln("<info>Perform initial build</info>");
                     $this->runCompile($input, $output);
+                } else {
+                    $changedTasks = $this->findChangedTasks($oldTaskList, $taskList);
+                    if ($changedTasks) {
+                        $output->writeln("<info>Run new or modified tasks</info>");
+                        foreach ($changedTasks as $taskId => $task) {
+                            $this->runCompile($input, $output, $taskId);
+                        }
+                    }
+                    $oldTaskList = null;
                 }
 
                 $output->writeln("<info>Watch for updates</info>");
@@ -117,5 +127,22 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
         } catch (ScriptExecutionException $e) {
             $this->getIO()->writeError('<error>Compilation failed</error>');
         }
+    }
+
+    protected function findChangedTasks(TaskList $oldTaskList, TaskList $newTaskList)
+    {
+        $export = function (Task $task) {
+            $d = $task->definition;
+            ksort($d);
+            return $d;
+        };
+        $tasks = [];
+        $old = $oldTaskList->getAll();
+        foreach ($newTaskList->getAll() as $id => $newTask) {
+            if (!isset($old[$id]) || $export($old[$id]) != $export($newTask)) {
+                $tasks[$id] = $newTask;
+            }
+        }
+        return $tasks;
     }
 }
