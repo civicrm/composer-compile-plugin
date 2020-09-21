@@ -47,6 +47,9 @@ class PhpSubscriber
             var_export($event->getTask()->definition, 1)
         ));
 
+        // Don't crash on windows
+        $cmd = str_replace("\n", " ", $cmd);
+        
         $r = new ShellRunner($event->getComposer(), $event->getIO());
         $r->run($cmd);
     }
