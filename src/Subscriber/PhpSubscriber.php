@@ -46,7 +46,7 @@ class PhpSubscriber
             $event->getTask()->definition['php-method'],
             var_export(base64_encode(json_encode($event->getTask()->definition)), 1)
         ));
-        
+
         $r = new ShellRunner($event->getComposer(), $event->getIO());
         $r->run($cmd);
     }
