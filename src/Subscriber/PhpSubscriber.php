@@ -41,14 +41,11 @@ class PhpSubscriber
             throw new \RuntimeException("CompilePlugin: Failed to locate autoload.php");
         }
         $cmd = '@php -r ' . escapeshellarg(sprintf(
-            'require_once %s; %s(%s);',
+            'require_once %s; %s(json_decode(base64_decode(%s), 1));',
             var_export($autoload, 1),
             $event->getTask()->definition['php-method'],
-            var_export($event->getTask()->definition, 1)
+            var_export(base64_encode(json_encode($event->getTask()->definition)), 1)
         ));
-
-        // Don't crash on windows
-        $cmd = str_replace("\n", " ", $cmd);
         
         $r = new ShellRunner($event->getComposer(), $event->getIO());
         $r->run($cmd);
