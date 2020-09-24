@@ -54,15 +54,15 @@ If the mode is `prompt` or `whitelist`, then any whitelisted packages will run c
 }
 ```
 
-Note: The root-package is automatically included in the whitelist.
+The root-package is automatically whitelisted.
 
 ## Passthru
 
-The "passthru" mode indicates whether to display console-output from the underlying compilation tasks. It may be set as an environment-variable:
+The "passthru" option indicates whether to display console-output from the underlying compilation tasks. It may be set as an environment-variable:
 
-* `COMPOSER_COMPILE_PASSTHRU=never`: Do not display console-output from individual tasks.
-* `COMPOSER_COMPILE_PASSTHRU=always`: Do  display console-output from individual tasks.
-* `COMPOSER_COMPILE_PASSTHRU=error` (*default*): Don't display compilation information, unless there's an error.
+* `COMPOSER_COMPILE_PASSTHRU=never`: Do __not__ display console-output from individual tasks.
+* `COMPOSER_COMPILE_PASSTHRU=always`: __Do__ display console-output from individual tasks.
+* `COMPOSER_COMPILE_PASSTHRU=error` (*default*): Do __not__ display console-output __unless__ there's an error.
 
 Alternatively, the same option may be added persistently to `composer.json`,  e.g.:
 
