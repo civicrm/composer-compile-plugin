@@ -23,7 +23,7 @@ In `composer.json`, the `extra.compile` section may list multiple *tasks*. Each 
 
 | Field | Type | Default | Description |
 | -- | -- | -- | -- |
-| `run` | `string|array` | | List of commands to execute. Ex: `@sh sed 's/no/yes/g' < pessimist.txt > optimist.txt` |
+| `run` | `string` or `string[]` | | List of commands to execute. Ex: `@sh sed 's/no/yes/g' < pessimist.txt > optimist.txt` |
 | `active` | `bool` | `true` | Whether this task should be executed |
 | `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
 | `watch-files` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
@@ -38,12 +38,12 @@ The `run` property contains a list of steps to execute. Each step uses a prefix 
 | `@composer` | Call a `composer` subcommand | `@composer dump-autoload` |
 | `@putenv` | Add an environment variable | `@putenv VARIABLE=value` |
 
-NOTE: Prior to v0.7, the `run` property did not exist - instead, there were separate fields for certain types of tasks. These fields are deprecated:
+NOTE: Prior to v0.8, the `run` property did not exist - instead, there were separate fields for certain types of tasks. These fields are deprecated:
 
 | Field | Type | Description |
 | -- | -- | -- |
-| `php-method` | `string|array` | PHP class+method. Multiple items may be given. Ex: `\MyModule\Compile::doCompilationStuff` |
-| `shell` | `string|array` | Bash statement to execute. Multiple items may be given Ex: `cat file1.txt file2.txt > file3.txt` |
+| `php-method` | `string` or `string[]` | PHP class+method. Multiple items may be given. Ex: `\MyModule\Compile::doCompilationStuff` |
+| `shell` | `string` or `string[]` | Bash statement to execute. Multiple items may be given Ex: `cat file1.txt file2.txt > file3.txt` |
 
 NOTE: It is valid define new/unrecognized/bespoke fields. To avoid unintended conflicts in the future, bespoke fields should use a prefix.
 
