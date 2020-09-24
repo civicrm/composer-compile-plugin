@@ -65,12 +65,12 @@ an aggregated file is available. This example would produce two aggregate files,
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~1.0"
+    "civicrm/composer-compile-plugin": "~0.8"
   },
   "extra": {
     "compile": [
-      {"run": "@sh cat js/{one,two,three}.js > all.js"},
-      {"run": "@sh cat css/{one,two,three}.css > all.css"}
+      {"run": "@sh cd js; cat one.js two.js three.js > all.js"},
+      {"run": "@sh cd css; cat one.css two.css three.css > all.css"}
     ]
   }
 }
@@ -92,7 +92,7 @@ For the next example, we declare a PHP-based task to compile some SCSS.
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "@dev",
+    "civicrm/composer-compile-plugin": "~0.8",
     "scssphp/scssphp": "1.2.0",
     "padaliyajay/php-autoprefixer": "~1.2"
   },
@@ -128,7 +128,7 @@ If the metadata about the compilation tasks looks a bit long, then you may use a
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~1.0"
+    "civicrm/composer-compile-plugin": "~0.8"
   },
   "extra": {
     "compile-includes": ["module-a/.composer-compile.json", "module-b/.composer-compile.json"]
