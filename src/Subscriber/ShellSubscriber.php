@@ -39,6 +39,9 @@ class ShellSubscriber
         }
 
         $r = new ShellRunner($e->getComposer(), $e->getIO());
-        $r->run($task->definition['shell']);
+        $shellCmds = (array) $task->definition['shell'];
+        foreach ($shellCmds as $shellCmd) {
+            $r->run($shellCmd);
+        }
     }
 }

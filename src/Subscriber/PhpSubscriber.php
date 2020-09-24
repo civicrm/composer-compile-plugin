@@ -22,11 +22,13 @@ class PhpSubscriber
         foreach ($tasks as $task) {
           /** @var Task $task */
             if ($task->callback === null && isset($task->definition['php-method'])) {
-                $phpMethod = $task->definition['php-method'];
-                if (self::isWellFormedMethod($phpMethod)) {
-                    $task->callback = [static::CLASS, 'runTask'];
-                } else {
-                    throw new \InvalidArgumentException("Malformed callback");
+                $phpMethods = (array) $task->definition['php-method'];
+                foreach ($phpMethods as $phpMethod) {
+                    if (self::isWellFormedMethod($phpMethod)) {
+                        $task->callback = [static::CLASS, 'runTask'];
+                    } else {
+                        throw new \InvalidArgumentException("Malformed callback: " . json_encode($phpMethod, JSON_UNESCAPED_SLASHES));
+                    }
                 }
             }
         }
@@ -40,15 +42,19 @@ class PhpSubscriber
         if (!file_exists($autoload)) {
             throw new \RuntimeException("CompilePlugin: Failed to locate autoload.php");
         }
-        $cmd = '@php -r ' . escapeshellarg(sprintf(
-            'require_once %s; %s(json_decode(base64_decode(%s), 1));',
-            var_export($autoload, 1),
-            $event->getTask()->definition['php-method'],
-            var_export(base64_encode(json_encode($event->getTask()->definition)), 1)
-        ));
 
-        $r = new ShellRunner($event->getComposer(), $event->getIO());
-        $r->run($cmd);
+        $phpMethods = (array) $event->getTask()->definition['php-method'];
+        foreach ($phpMethods as $phpMethod) {
+            $cmd = '@php -r ' . escapeshellarg(sprintf(
+                'require_once %s; %s(json_decode(base64_decode(%s), 1));',
+                var_export($autoload, 1),
+                $phpMethod,
+                var_export(base64_encode(json_encode($event->getTask()->definition)), 1)
+            ));
+
+            $r = new ShellRunner($event->getComposer(), $event->getIO());
+            $r->run($cmd);
+        }
     }
 
     /**

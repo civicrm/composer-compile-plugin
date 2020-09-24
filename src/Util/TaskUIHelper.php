@@ -1,6 +1,8 @@
 <?php
 namespace Civi\CompilePlugin\Util;
 
+use Civi\CompilePlugin\Subscriber\PhpSubscriber;
+use Civi\CompilePlugin\Subscriber\ShellSubscriber;
 use Civi\CompilePlugin\Task;
 
 class TaskUIHelper
@@ -58,14 +60,15 @@ class TaskUIHelper
 
         $rows = [];
         $descAction = function ($task) {
+            $delim = ' <info>&&</info> ';
             if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
-                return '<info>(shell)</info> ' . $task->definition['shell'];
-            } elseif (is_array($task->callback)) {
-                return '<info>(php-method)</info> ' . $task->callback[0] . '::' . $task->callback[1];
-            } elseif (is_string($task->callback)) {
-                return '<info>(php-method)</info> ' . $task->callback;
+                $items = (array)$task->definition['shell'];
+                return '<info>(shell)</info> ' . implode($delim, $items);
+            } elseif ($task->callback === [PhpSubscriber::CLASS, 'runTask']) {
+                $items = (array)$task->definition['php-method'];
+                return '<info>(php-method)</info> ' . implode($delim, $items);
             } else {
-                return '<error>(UNRECOGNIZED)</error>';
+                return '<info>(other)</info> ' . json_encode($task->callback, JSON_UNESCAPED_SLASHES);
             }
         };
         foreach ($tasks as $task) {
