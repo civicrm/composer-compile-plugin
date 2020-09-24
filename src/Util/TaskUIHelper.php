@@ -58,6 +58,10 @@ class TaskUIHelper
             $header[] = $availableHeaders[$field];
         }
 
+        $fmtRun = function ($run) {
+            return sprintf('<info>@%s</info> %s', $run['type'], $run['code']);
+        };
+
         $makeMainRow = function (Task $task, $runExpr) use ($fields) {
             $row = [];
             foreach ($fields as $field) {
@@ -98,9 +102,9 @@ class TaskUIHelper
         foreach ($tasks as $task) {
             /** @var Task $task */
             if (in_array('action', $fields)) {
-                foreach ($task->definition['run'] as $n => $runExpr) {
+                foreach ($task->getParsedRun() as $n => $run) {
                     $maker = ($n === 0) ? $makeMainRow : $makeExtraRow;
-                    $rows[] = $maker($task, $runExpr);
+                    $rows[] = $maker($task, $fmtRun($run));
                 }
             } else {
                 $rows[] = $makeMainRow($task, null);
