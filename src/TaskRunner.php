@@ -7,6 +7,7 @@ use Civi\CompilePlugin\Exception\TaskFailedException;
 use Civi\CompilePlugin\Handler\ComposerScriptHandler;
 use Civi\CompilePlugin\Handler\PhpMethodHandler;
 use Civi\CompilePlugin\Util\ComposerIoTrait;
+use Civi\CompilePlugin\Util\EnvHelper;
 use Civi\CompilePlugin\Util\PassthruPolicyFilter;
 use Civi\CompilePlugin\Util\ShellRunner;
 use Civi\CompilePlugin\Util\TaskUIHelper;
@@ -157,6 +158,7 @@ class TaskRunner
     {
         $orig = [
             'pwd' => getcwd(),
+            'env' => EnvHelper::getAll(),
         ];
 
         $passthruPolicyFilter = new PassthruPolicyFilter(
@@ -184,6 +186,7 @@ class TaskRunner
             }
         } finally {
             chdir($orig['pwd']);
+            EnvHelper::setAll($orig['env']);
         }
     }
 

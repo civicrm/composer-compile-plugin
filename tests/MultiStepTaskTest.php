@@ -39,8 +39,12 @@ class MultiStepTaskTest extends IntegrationTestCase
                       '@php-method MultistepEx::doThird',
                       '@php -r \'echo "MARK: PHPCODE\n";\'',
                       '@putenv FOO=123',
-                      '@sh echo MARK: FOO IS $FOO',
+                      '@sh echo "MARK: FOO IS \'$FOO\'"',
                   ],
+              ],
+              [
+                  'title' => 'Do another thing',
+                  'run' => '@sh echo "MARK: FOO IS LATER \'$FOO\'"',
               ],
             ],
           ],
@@ -78,7 +82,9 @@ class MultiStepTaskTest extends IntegrationTestCase
             "^MARK: PHP SECOND",
             "^MARK: PHP THIRD",
             "^MARK: PHPCODE",
-            "^MARK: FOO IS 123",
+            "^MARK: FOO IS '123'",
+            // FOO should not propagate from the environment of task #1 to task #2.
+            "^MARK: FOO IS LATER ''",
         ];
         $this->assertOutputLines($expectLines, ';^MARK:;', $p->getOutput());
     }
