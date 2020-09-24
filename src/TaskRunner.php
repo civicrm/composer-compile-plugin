@@ -6,6 +6,7 @@ use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Exception\TaskFailedException;
 use Civi\CompilePlugin\Handler\ComposerScriptHandler;
 use Civi\CompilePlugin\Handler\ExportHandler;
+use Civi\CompilePlugin\Handler\PhpEvalHandler;
 use Civi\CompilePlugin\Handler\PhpMethodHandler;
 use Civi\CompilePlugin\Util\ComposerIoTrait;
 use Civi\CompilePlugin\Util\EnvHelper;
@@ -35,6 +36,7 @@ class TaskRunner
         $this->constructComposerIo($composer, $io);
         $this->handlers = [
           'export' => new ExportHandler(),
+          'php-eval' => new PhpEvalHandler(),
           'php-method' => new PhpMethodHandler(),
           'sh' => new ComposerScriptHandler(),
           'putenv' => new ComposerScriptHandler(),
