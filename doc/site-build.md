@@ -54,6 +54,8 @@ If the mode is `prompt` or `whitelist`, then any whitelisted packages will run c
 }
 ```
 
+Note: The root-package is automatically included in the whitelist.
+
 ## Passthru
 
 The "passthru" mode indicates whether to display console-output from the underlying compilation tasks. It may be set as an environment-variable:
