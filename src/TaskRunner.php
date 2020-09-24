@@ -4,8 +4,11 @@ namespace Civi\CompilePlugin;
 use Civi\CompilePlugin\Event\CompileEvents;
 use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Exception\TaskFailedException;
+use Civi\CompilePlugin\Handler\ComposerScriptHandler;
+use Civi\CompilePlugin\Handler\PhpMethodHandler;
 use Civi\CompilePlugin\Util\ComposerIoTrait;
 use Civi\CompilePlugin\Util\PassthruPolicyFilter;
+use Civi\CompilePlugin\Util\ShellRunner;
 use Civi\CompilePlugin\Util\TaskUIHelper;
 use Composer\Composer;
 use Composer\IO\IOInterface;
@@ -14,7 +17,33 @@ use Composer\Package\PackageInterface;
 class TaskRunner
 {
 
-    use ComposerIoTrait;
+    use ComposerIoTrait {
+        __construct as constructComposerIo;
+    }
+
+    /**
+     * @var array
+     *   [string $type => object $handler]
+     */
+    private $handlers;
+
+    public function __construct(
+        \Composer\Composer $composer,
+        \Composer\IO\IOInterface $io
+    ) {
+        $this->constructComposerIo($composer, $io);
+        $this->handlers = [
+          'php-method' => new PhpMethodHandler(),
+          'sh' => new ComposerScriptHandler(),
+          'putenv' => new ComposerScriptHandler(),
+          'php' => new ComposerScriptHandler(),
+          'composer' => new ComposerScriptHandler(),
+        ];
+        ksort($this->handlers);
+        if (Task::HANDLERS !== implode('|', array_keys($this->handlers))) {
+            throw new \RuntimeException("Task type list is out-of-date. Validation may not work.");
+        }
+    }
 
     /**
      * Run the items in the $taskList, as per policy.
@@ -143,9 +172,16 @@ class TaskRunner
 
         try {
             chdir($task->pwd);
-            $isDryRun = false;
-            $e = new CompileTaskEvent(null, $this->composer, $passthruPolicyFilter, $package, $task, $isDryRun);
-            call_user_func($task->callback, $e);
+
+            foreach ($task->getParsedRun() as $run) {
+                if (!isset($this->handlers[$run['type']])) {
+                    throw new \InvalidArgumentException("Unrecognized prefix: @" . $run['type']);
+                }
+
+                $isDryRun = false;
+                $e = new CompileTaskEvent(null, $this->composer, $passthruPolicyFilter, $package, $task, $isDryRun);
+                $this->handlers[$run['type']]->runTask($e, $run['type'], $run['code']);
+            }
         } finally {
             chdir($orig['pwd']);
         }

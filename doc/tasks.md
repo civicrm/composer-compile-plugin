@@ -19,24 +19,35 @@ For further details, see the built-in `--help` screen.
 
 ## Task specification
 
-In `composer.json`, the `extra.compile` section may list multiple *tasks*. Each task must define one of the following primary elements:
+In `composer.json`, the `extra.compile` section may list multiple *tasks*. Each task may have these properties:
+
+| Field | Type | Default | Description |
+| -- | -- | -- | -- |
+| `run` | `string|array` | | List of commands to execute. Ex: `@sh sed 's/no/yes/g' < pessimist.txt > optimist.txt` |
+| `active` | `bool` | `true` | Whether this task should be executed |
+| `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
+| `watch-files` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
+
+The `run` property contains a list of steps to execute. Each step uses a prefix to indicate type. Here are some examples:
+
+| Prefix | Description | Example |
+| -- | -- | -- |
+| `@sh` | Run a shell (bash) statement | `@sh sed 's/no/yes/g' < pessimist.txt > optimist.txt` |
+| `@php` | Call the PHP command interpreter | `@php my-script.php` |
+| `@php-method` | Call a PHP class / method | `@php-method MyClass::myMethod` |
+| `@composer` | Call a `composer` subcommand | `@composer dump-autoload` |
+| `@putenv` | Add an environment variable | `@putenv VARIABLE=value` |
+
+NOTE: Prior to v0.7, the `run` property did not exist - instead, there were separate fields for certain types of tasks. These fields are deprecated:
 
 | Field | Type | Description |
 | -- | -- | -- |
 | `php-method` | `string|array` | PHP class+method. Multiple items may be given. Ex: `\MyModule\Compile::doCompilationStuff` |
 | `shell` | `string|array` | Bash statement to execute. Multiple items may be given Ex: `cat file1.txt file2.txt > file3.txt` |
 
-Additionally, there are several optional fields which may modify how the task operates:
+NOTE: It is valid define new/unrecognized/bespoke fields. To avoid unintended conflicts in the future, bespoke fields should use a prefix.
 
-| Field | Type | Default | Description |
-| -- | -- | -- | -- |
-| `active` | `bool` | `true` | Whether this task should be executed |
-| `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
-| `watch-files` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
-
-It is valid define new/unrecognized/bespoke fields. To avoid unintended conflicts in the future, bespoke fields should use a prefix.
-
-Tasks are ordered based on these guidelines:
+NOTE: Tasks are ordered based on these guidelines:
 
 * Dependencies run first.
 * Tasks run in the order listed.
@@ -54,8 +65,8 @@ an aggregated file is available. This example would produce two aggregate files,
   },
   "extra": {
     "compile": [
-      {"shell": "cat js/{one,two,three}.js > all.js"},
-      {"shell": "cat css/{one,two,three}.css > all.css"}
+      {"run": "@sh cat js/{one,two,three}.js > all.js"},
+      {"run": "@sh cat css/{one,two,three}.css > all.css"}
     ]
   }
 }
@@ -83,7 +94,7 @@ For the next example, we declare a PHP-based task to compile some SCSS.
   },
   "autoload": {"psr-4": {"ScssExample\\": "src"}},
   "extra": {
-    "compile": [{"php-method": "\\ScssExample\\ScssExample::make"}]
+    "compile": [{"run": "@php-method \\ScssExample\\ScssExample::make"}]
   }
 }
 ```
@@ -126,7 +137,7 @@ Then, in each file, you may define a `compile` directive like before:
 ```json
 {
   "compile": [
-    {"shell": "cat js/{one,two,three}.js > all.js"}
+    {"run": "@sh cat js/{one,two,three}.js > all.js"}
   ]
 }
 ```

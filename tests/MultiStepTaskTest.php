@@ -29,19 +29,17 @@ class MultiStepTaskTest extends IntegrationTestCase
           'extra' => [
             'compile' => [
               [
-                  'title' => 'Do stuff in shell',
-                  'shell' => [
-                      'echo MARK: SH FIRST; [ -n $ERROR_SH_1 ] && exit $ERROR_SH_1',
-                      'echo MARK: SH SECOND; [ -n $ERROR_SH_2 ] && exit $ERROR_SH_2',
-                      'echo MARK: SH THIRD; [ -n $ERROR_SH_3 ] && exit $ERROR_SH_3',
-                  ],
-              ],
-              [
-                  'title' => 'Do stuff in php',
-                  'php-method' => [
-                      'MultistepEx::doFirst',
-                      'MultistepEx::doSecond',
-                      'MultistepEx::doThird',
+                  'title' => 'Do multiple things',
+                  'run' => [
+                      '@sh echo MARK: SH FIRST; [ -n $ERROR_SH_1 ] && exit $ERROR_SH_1',
+                      '@sh echo MARK: SH SECOND; [ -n $ERROR_SH_2 ] && exit $ERROR_SH_2',
+                      '@sh echo MARK: SH THIRD; [ -n $ERROR_SH_3 ] && exit $ERROR_SH_3',
+                      '@php-method MultistepEx::doFirst',
+                      '@php-method MultistepEx::doSecond',
+                      '@php-method MultistepEx::doThird',
+                      '@php -r \'echo "MARK: PHPCODE\n";\'',
+                      '@putenv FOO=123',
+                      '@sh echo MARK: FOO IS $FOO',
                   ],
               ],
             ],
@@ -79,6 +77,8 @@ class MultiStepTaskTest extends IntegrationTestCase
             "^MARK: PHP FIRST",
             "^MARK: PHP SECOND",
             "^MARK: PHP THIRD",
+            "^MARK: PHPCODE",
+            "^MARK: FOO IS 123",
         ];
         $this->assertOutputLines($expectLines, ';^MARK:;', $p->getOutput());
     }

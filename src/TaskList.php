@@ -129,6 +129,7 @@ class TaskList
             $task->active = $taskDefinition['active'];
             $task->watchFiles = $taskDefinition['watch-files'];
             $task->title = $taskDefinition['title'];
+            $task->run = (array) $taskDefinition['run'];
             $tasks[$task->id] = $task;
             $naturalWeight++;
         }

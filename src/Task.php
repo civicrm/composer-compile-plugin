@@ -6,6 +6,13 @@ class Task
 {
 
     /**
+     * List of supported types
+     *
+     * This is a quick-and-dirty hack.
+     */
+    const HANDLERS = 'composer|php|php-method|putenv|sh';
+
+    /**
      * (Required) A unique ID for this task
      *
      * Ex: 'vendor/package:123'
@@ -63,18 +70,16 @@ class Task
     public $packageName;
 
     /**
-     * (Required) Callback.
+     * (Required) Run commands
      *
-     * The callback property is not necessarily defined in the task-definition.
-     * Instead, event-listeners examine the task definition and fill-in
-     * the callback.
+     * List of commands to run. Each command should begin with an '@type'.
      *
-     * @see \Civi\CompilePlugin\Subscriber\PhpSubscriber
-     * @see \Civi\CompilePlugin\Subscriber\ShellSubscriber
+     * Ex: '@php-method Foo::bar'
+     * Ex: '@sh cp foo bar'
      *
-     * @var callable
+     * @var string[]
      */
-    public $callback;
+    public $run;
 
     /**
      * (Required) The folder in which to execute the task.
@@ -119,7 +124,7 @@ class Task
     public function validate()
     {
         $missing = [];
-        foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd', 'definition', 'callback'] as $requiredField) {
+        foreach (['naturalWeight', 'packageWeight', 'packageName', 'pwd', 'definition', 'run'] as $requiredField) {
             if ($this->{$requiredField} === null || $this->{$requiredField} === '') {
                 $missing[] = $requiredField;
             }
@@ -127,8 +132,12 @@ class Task
         if ($missing) {
             throw new \RuntimeException("Compilation task is missing field(s): " . implode(",", $missing));
         }
-        if (!is_callable($this->callback)) {
-            throw new \RuntimeException("Compilation task has invalid callback: " . json_encode($this->callback));
+
+        $handlers = explode('|', self::HANDLERS);
+        foreach ($this->getParsedRun() as $run) {
+            if (!in_array($run['type'], $handlers)) {
+                throw new \RuntimeException("Compilation task has invalid run expression: " . json_encode($this->run));
+            }
         }
         return $this;
     }
@@ -157,5 +166,35 @@ class Task
         }
 
         return true;
+    }
+
+    /**
+     * Get a list of 'run' values.
+     *
+     * @return array
+     *   List of the 'run' values. Each is parsed.
+     *
+     *   Example: Suppose we have `run => ['@php foo']`
+     *   The output would be: `[['type' => 'php', 'code' => 'foo']]`
+     */
+    public function getParsedRun()
+    {
+        $runs = [];
+        foreach ($this->run as $runExpr) {
+            $runs[] = $this->parseRunExpr($runExpr);
+        }
+        return $runs;
+    }
+
+    protected function parseRunExpr($runExpr)
+    {
+        if (preg_match(';^@([a-z0-9\-]+) (.*)$;', $runExpr, $m)) {
+            return [
+              'type' => $m[1],
+              'code' => $m[2],
+            ];
+        } else {
+            throw new \InvalidArgumentException("Failed to parse run expression: $runExpr");
+        }
     }
 }
