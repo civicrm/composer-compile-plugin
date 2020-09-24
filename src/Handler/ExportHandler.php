@@ -8,6 +8,15 @@ use Civi\CompilePlugin\Util\ShellRunner;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 
+/**
+ * Class ExportHandler
+ * @package Civi\CompilePlugin\Handler
+ *
+ * This implements support for run-steps based on `@export VAR1={{expr1}} VAR2={{expr2}}`.
+ *
+ * The intent is to allow exporting information about the composer runtime, such
+ * as the file-path to upstream packages.
+ */
 class ExportHandler
 {
     /**
@@ -34,7 +43,7 @@ class ExportHandler
         $exports = explode(' ', $exportList);
         foreach ($exports as $export) {
             $envExpr = preg_replace_callback(';\{\{([\w_\-: /]*)\}\};', function ($m) use ($composer, $io) {
-                // Ex: 'pkgs/twbs/bootstrap'
+                // Ex: 'pkgs:twbs/bootstrap'
                 $expr = $m[1];
 
                 if (preg_match('/^pkg:/', $expr)) {
