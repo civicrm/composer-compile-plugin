@@ -85,7 +85,7 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
         self::$origDir = getcwd();
         self::$origEnv = EnvHelper::getAll();
         if (getenv('USE_TEST_PROJECT')) {
-            self::$testDir = getenv('USE_TEST_PROJECT');
+            self::$testDir = rtrim(getenv('USE_TEST_PROJECT'), DIRECTORY_SEPARATOR);
             @unlink(self::$testDir . DIRECTORY_SEPARATOR . 'composer.lock');
         } else {
             self::$testDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'compileplg-' . md5(__DIR__ . time() . rand(
