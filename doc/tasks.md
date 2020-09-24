@@ -1,6 +1,6 @@
 # Composer Compile Plugin: Working with tasks (for library developers)
 
-## Command Line Interface
+## Command-line interface
 
 If you are specifically doing development for the compiled assets, then these subcommands may be helpful:
 
@@ -16,6 +16,30 @@ composer compile:list [-v[v]] [--json]
 ```
 
 For further details, see the built-in `--help` screen.
+
+## Task specification
+
+In `composer.json`, the `extra.compile` section may list multiple *tasks*. Each task must define one of the following primary elements:
+
+| Field | Type | Description |
+| -- | -- | -- |
+| `php-method` | `string|array` | PHP class+method. Multiple items may be given. Ex: `\MyModule\Compile::doCompilationStuff` |
+| `shell` | `string|array` | Bash statement to execute. Multiple items may be given Ex: `cat file1.txt file2.txt > file3.txt` |
+
+Additionally, there are several optional fields which may modify how the task operates:
+
+| Field | Type | Default | Description |
+| -- | -- | -- | -- |
+| `active` | `bool` | `true` | Whether this task should be executed |
+| `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
+| `watch-files` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
+
+It is valid define new/unrecognized/bespoke fields. To avoid unintended conflicts in the future, bespoke fields should use a prefix.
+
+Tasks are ordered based on these guidelines:
+
+* Dependencies run first.
+* Tasks run in the order listed.
 
 ## Example: Shell-based task
 
@@ -109,26 +133,3 @@ Then, in each file, you may define a `compile` directive like before:
 
 Note: The command will run in the same folder as the JSON file.
 
-## Task Specification
-
-The `extra.compile` section may list multiple *tasks*. Each task must define one of the following primary elements:
-
-| Field | Type | Description |
-| -- | -- | -- |
-| `php-method` | `string|array` | PHP class+method. Multiple items may be given. Ex: `\MyModule\Compile::doCompilationStuff` |
-| `shell` | `string|array` | Bash statement to execute. Multiple items may be given Ex: `cat file1.txt file2.txt > file3.txt` |
-
-Additionally, there are several optional fields which may modify how the task operates:
-
-| Field | Type | Default | Description |
-| -- | -- | -- | -- |
-| `active` | `bool` | `true` | Whether this task should be executed |
-| `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
-| `watch-files` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
-
-## Task Ordering
-
-The ordering of tasks aims to meet these intuitions:
-
-* Dependencies run first.
-* Tasks run in the order listed.
