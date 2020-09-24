@@ -4,7 +4,7 @@ namespace Civi\CompilePlugin;
 
 use Civi\CompilePlugin\Command\CompileListCommand;
 use Civi\CompilePlugin\Event\CompileEvents;
-use Civi\CompilePlugin\Subscriber\PhpSubscriber;
+use Civi\CompilePlugin\Subscriber\OldTaskAdapter;
 use Civi\CompilePlugin\Subscriber\ShellSubscriber;
 use Civi\CompilePlugin\Util\TaskUIHelper;
 use Composer\Composer;
@@ -28,6 +28,11 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
      */
     private $io;
 
+    /**
+     * @var EventSubscriberInterface[]
+     */
+    private $extraSubscribers;
+
     public static function getSubscribedEvents()
     {
         return [
@@ -50,16 +55,23 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         $this->composer = $composer;
         $this->io = $io;
         $dispatch = $composer->getEventDispatcher();
-        $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [ShellSubscriber::class, 'applyDefaultCallback']);
-        $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [PhpSubscriber::class, 'applyDefaultCallback']);
+        $this->extraSubscribers = [
+            'oldTask' => new OldTaskAdapter(),
+        ];
+        foreach ($this->extraSubscribers as $subscriber) {
+            $dispatch->addSubscriber($subscriber);
+        }
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
     {
         // NOTE: This method is only valid on composer v2.
         $dispatch = $composer->getEventDispatcher();
-        $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [ShellSubscriber::class, 'applyDefaultCallback']);
-        $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [PhpSubscriber::class, 'applyDefaultCallback']);
+        // This looks asymmetrical, but the meaning: "remove all listeners which involve the given object".
+        foreach ($this->extraSubscribers as $subscriber) {
+            $dispatch->removeListener($subscriber);
+        }
+        $this->extraSubscribers = null;
     }
 
     public function uninstall(Composer $composer, IOInterface $io)

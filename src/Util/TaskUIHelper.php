@@ -1,6 +1,8 @@
 <?php
 namespace Civi\CompilePlugin\Util;
 
+use Civi\CompilePlugin\Subscriber\OldTaskAdapter;
+use Civi\CompilePlugin\Subscriber\ShellSubscriber;
 use Civi\CompilePlugin\Task;
 
 class TaskUIHelper
@@ -56,20 +58,7 @@ class TaskUIHelper
             $header[] = $availableHeaders[$field];
         }
 
-        $rows = [];
-        $descAction = function ($task) {
-            if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
-                return '<info>(shell)</info> ' . $task->definition['shell'];
-            } elseif (is_array($task->callback)) {
-                return '<info>(php-method)</info> ' . $task->callback[0] . '::' . $task->callback[1];
-            } elseif (is_string($task->callback)) {
-                return '<info>(php-method)</info> ' . $task->callback;
-            } else {
-                return '<error>(UNRECOGNIZED)</error>';
-            }
-        };
-        foreach ($tasks as $task) {
-            /** @var Task $task */
+        $makeMainRow = function (Task $task, $runExpr) use ($fields) {
             $row = [];
             foreach ($fields as $field) {
                 switch ($field) {
@@ -78,7 +67,7 @@ class TaskUIHelper
                         break;
 
                     case 'action':
-                        $row[] = $descAction($task);
+                        $row[] = $runExpr;
                         break;
 
                     default:
@@ -86,7 +75,36 @@ class TaskUIHelper
                         break;
                 }
             }
-            $rows[] = $row;
+            return $row;
+        };
+
+        $makeExtraRow = function (Task $task, $runExpr) use ($fields) {
+            $row = [];
+            foreach ($fields as $field) {
+                switch ($field) {
+                    case 'action':
+                        $row[] = $runExpr;
+                        break;
+
+                    default:
+                        $row[] = '';
+                        break;
+                }
+            }
+            return $row;
+        };
+
+        $rows = [];
+        foreach ($tasks as $task) {
+            /** @var Task $task */
+            if (in_array('action', $fields)) {
+                foreach ($task->definition['run'] as $n => $runExpr) {
+                    $maker = ($n === 0) ? $makeMainRow : $makeExtraRow;
+                    $rows[] = $maker($task, $runExpr);
+                }
+            } else {
+                $rows[] = $makeMainRow($task, null);
+            }
         }
 
         return TableHelper::formatTable($header, $rows);
