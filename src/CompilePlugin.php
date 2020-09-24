@@ -28,6 +28,11 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
      */
     private $io;
 
+    /**
+     * @var EventSubscriberInterface[]
+     */
+    private $extraSubscribers;
+
     public static function getSubscribedEvents()
     {
         return [
@@ -50,16 +55,22 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
         $this->composer = $composer;
         $this->io = $io;
         $dispatch = $composer->getEventDispatcher();
-        $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [ShellSubscriber::class, 'applyDefaultCallback']);
-        $dispatch->addListener(CompileEvents::POST_COMPILE_LIST, [PhpSubscriber::class, 'applyDefaultCallback']);
+        $this->extraSubscribers = [
+            'shell' => new ShellSubscriber(),
+            'php' => new PhpSubscriber(),
+        ];
+        $dispatch->addSubscriber($this->extraSubscribers['shell']);
+        $dispatch->addSubscriber($this->extraSubscribers['php']);
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
     {
         // NOTE: This method is only valid on composer v2.
         $dispatch = $composer->getEventDispatcher();
-        $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [ShellSubscriber::class, 'applyDefaultCallback']);
-        $dispatch->removeListener(CompileEvents::POST_COMPILE_LIST, [PhpSubscriber::class, 'applyDefaultCallback']);
+        // This looks asymmetrical, but the meaning: "remove all listeners which involve the given object".
+        $dispatch->removeListener($this->extraSubscribers['shell']);
+        $dispatch->removeListener($this->extraSubscribers['php']);
+        $this->extraSubscribers = null;
     }
 
     public function uninstall(Composer $composer, IOInterface $io)

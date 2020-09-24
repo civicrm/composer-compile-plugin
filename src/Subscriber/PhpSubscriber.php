@@ -2,13 +2,22 @@
 
 namespace Civi\CompilePlugin\Subscriber;
 
+use Civi\CompilePlugin\Event\CompileEvents;
 use Civi\CompilePlugin\Event\CompileListEvent;
 use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Task;
 use Civi\CompilePlugin\Util\ShellRunner;
+use Composer\EventDispatcher\EventSubscriberInterface;
 
-class PhpSubscriber
+class PhpSubscriber implements EventSubscriberInterface
 {
+
+    public static function getSubscribedEvents()
+    {
+        return [
+          CompileEvents::POST_COMPILE_LIST => 'applyDefaultCallback'
+        ];
+    }
 
     /**
      * When evaluating the tasks, any task with a 'php-method'
@@ -16,7 +25,7 @@ class PhpSubscriber
      *
      * @param \Civi\CompilePlugin\Event\CompileListEvent $e
      */
-    public static function applyDefaultCallback(CompileListEvent $e)
+    public function applyDefaultCallback(CompileListEvent $e)
     {
         $tasks = $e->getTasks();
         foreach ($tasks as $task) {
@@ -25,7 +34,7 @@ class PhpSubscriber
                 $phpMethods = (array) $task->definition['php-method'];
                 foreach ($phpMethods as $phpMethod) {
                     if (self::isWellFormedMethod($phpMethod)) {
-                        $task->callback = [static::CLASS, 'runTask'];
+                        $task->callback = [$this, 'runTask'];
                     } else {
                         throw new \InvalidArgumentException("Malformed callback: " . json_encode($phpMethod, JSON_UNESCAPED_SLASHES));
                     }
@@ -34,7 +43,7 @@ class PhpSubscriber
         }
     }
 
-    public static function runTask(CompileTaskEvent $event)
+    public function runTask(CompileTaskEvent $event)
     {
         // Surely there's a smarter way to get this?
         $vendorPath = $event->getComposer()->getConfig()->get('vendor-dir');

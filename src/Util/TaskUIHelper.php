@@ -61,15 +61,19 @@ class TaskUIHelper
         $rows = [];
         $descAction = function ($task) {
             $delim = ' <info>&&</info> ';
-            if ($task->callback === [ShellSubscriber::CLASS, 'runTask']) {
-                $items = (array)$task->definition['shell'];
-                return '<info>(shell)</info> ' . implode($delim, $items);
-            } elseif ($task->callback === [PhpSubscriber::CLASS, 'runTask']) {
-                $items = (array)$task->definition['php-method'];
-                return '<info>(php-method)</info> ' . implode($delim, $items);
-            } else {
-                return '<info>(other)</info> ' . json_encode($task->callback, JSON_UNESCAPED_SLASHES);
+            if (is_array($task->callback)) {
+                list ($obj, $method) = $task->callback;
+                if ($obj instanceof ShellSubscriber) {
+                    $items = (array)$task->definition['shell'];
+                    return '<info>(shell)</info> ' . implode($delim, $items);
+                }
+                if ($obj instanceof PhpSubscriber) {
+                    $items = (array)$task->definition['php-method'];
+                    return '<info>(php-method)</info> ' . implode($delim, $items);
+                }
             }
+
+            return '<info>(other)</info> ' . json_encode($task->callback, JSON_UNESCAPED_SLASHES);
         };
         foreach ($tasks as $task) {
             /** @var Task $task */
