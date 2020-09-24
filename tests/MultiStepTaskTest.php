@@ -38,13 +38,21 @@ class MultiStepTaskTest extends IntegrationTestCase
                       '@php-method MultistepEx::doSecond',
                       '@php-method MultistepEx::doThird',
                       '@php -r \'echo "MARK: PHPCODE\n";\'',
+                      '@export MISSING={{pkg:test/m-i-s-s-i-n-g}} COMPLG={{pkg:civicrm/composer-compile-plugin}}',
+                      '@export SELF={{pkg:test/multi-step-task-test}}',
+                      '@sh echo "MARK: Missing package is \'$MISSING\'"',
+                      '@sh echo "MARK: Test package is \'$SELF\'"',
+                      '@sh echo "MARK: Compile plugin is \'$COMPLG\'"',
                       '@putenv FOO=123',
                       '@sh echo "MARK: FOO IS \'$FOO\'"',
                   ],
               ],
               [
                   'title' => 'Do another thing',
-                  'run' => '@sh echo "MARK: FOO IS LATER \'$FOO\'"',
+                  'run' => [
+                    '@sh echo "MARK: FOO IS LATER \'$FOO\'"',
+                    '@sh echo "MARK: COMPLG IS LATER \'$COMPLG\'"',
+                  ],
               ],
             ],
           ],
@@ -82,9 +90,13 @@ class MultiStepTaskTest extends IntegrationTestCase
             "^MARK: PHP SECOND",
             "^MARK: PHP THIRD",
             "^MARK: PHPCODE",
+            '^MARK: Missing package is \'\'$',
+            '^MARK: Test package is \'' . self::getTestDir() . '\'',
+            '^MARK: Compile plugin is \'' . self::getTestDir() . '/vendor/civicrm/composer-compile-plugin\'',
             "^MARK: FOO IS '123'",
             // FOO should not propagate from the environment of task #1 to task #2.
             "^MARK: FOO IS LATER ''",
+            "^MARK: COMPLG IS LATER ''",
         ];
         $this->assertOutputLines($expectLines, ';^MARK:;', $p->getOutput());
     }

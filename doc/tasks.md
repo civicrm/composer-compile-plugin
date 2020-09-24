@@ -36,7 +36,8 @@ The `run` property contains a list of steps to execute. Each step uses a prefix 
 | `@php` | Call the PHP command interpreter | `@php my-script.php` |
 | `@php-method` | Call a PHP class / method | `@php-method MyClass::myMethod` |
 | `@composer` | Call a `composer` subcommand | `@composer dump-autoload` |
-| `@putenv` | Add an environment variable | `@putenv VARIABLE=value` |
+| `@putenv` | Set an environment variable to a static value | `@putenv VARIABLE=value` |
+| `@export` | Export information about composer (such as package locations). | `@export BOOTSTRAP={{pkg:twbs/bootstrap}} BOOTSTRAP_SASS={{pkg:twbs/bootstrap-sass}}` |
 
 NOTE: Prior to v0.8, the `run` property did not exist - instead, there were separate fields for certain types of tasks. These fields are deprecated:
 

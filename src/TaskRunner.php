@@ -5,11 +5,11 @@ use Civi\CompilePlugin\Event\CompileEvents;
 use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Exception\TaskFailedException;
 use Civi\CompilePlugin\Handler\ComposerScriptHandler;
+use Civi\CompilePlugin\Handler\ExportHandler;
 use Civi\CompilePlugin\Handler\PhpMethodHandler;
 use Civi\CompilePlugin\Util\ComposerIoTrait;
 use Civi\CompilePlugin\Util\EnvHelper;
 use Civi\CompilePlugin\Util\PassthruPolicyFilter;
-use Civi\CompilePlugin\Util\ShellRunner;
 use Civi\CompilePlugin\Util\TaskUIHelper;
 use Composer\Composer;
 use Composer\IO\IOInterface;
@@ -34,6 +34,7 @@ class TaskRunner
     ) {
         $this->constructComposerIo($composer, $io);
         $this->handlers = [
+          'export' => new ExportHandler(),
           'php-method' => new PhpMethodHandler(),
           'sh' => new ComposerScriptHandler(),
           'putenv' => new ComposerScriptHandler(),
