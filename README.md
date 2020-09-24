@@ -1,4 +1,4 @@
-# Composer Compile Plugin [![Build Status](https://travis-ci.com/civicrm/composer-compile-plugin.svg?branch=master)](https://travis-ci.com/civicrm/composer-compile-plugin)
+# Composer Compile Plugin (v0.x) [![Build Status](https://travis-ci.com/civicrm/composer-compile-plugin.svg?branch=master)](https://travis-ci.com/civicrm/composer-compile-plugin)
 
 The "Compile" plugin enables developers of PHP libraries to define free-form "compilation" tasks, such as:
 
@@ -20,8 +20,8 @@ Features:
 * Easy to enable. No manual configuration for downstream site-builders. Framework agnostic.
 * Plays well with [forked repositories](https://matthewsetter.com/series/tooling/composer/forked-repositories/), [composer-patches](https://github.com/cweagans/composer-patches), and [composer-downloads](https://github.com/civicrm/composer-downloads-plugin).
 * Allows library repos to remain "clean" without committing build artifacts.
-* Runs locally. Does not rely on external/hosted services.
-* Supports file monitoring (`composer compile:watch`)
+* Runs locally in PHP. Does not require external/hosted services or additional interpreters.
+* Supports file monitoring for automatic rebuilds (`composer compile:watch`)
 * Enforces permission model to address historical concerns about `composer` hooks and untrusted libraries.
 * Integration-tests pass on both `composer` v1.10 and v2.0-dev (*at time of writing*).
 
