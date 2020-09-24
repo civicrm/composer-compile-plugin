@@ -3,12 +3,15 @@ namespace Civi\CompilePlugin;
 
 use Civi\CompilePlugin\Event\CompileEvents;
 use Civi\CompilePlugin\Event\CompileListEvent;
+use Civi\CompilePlugin\Util\ComposerIoTrait;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 
 class TaskList
 {
+    use ComposerIoTrait;
+
     /**
      * @var Task[]
      */
@@ -24,29 +27,6 @@ class TaskList
      *   Ex: ['foo/upstream' => 1, 'foo/downstream' => 2]
      */
     protected $packageWeights;
-
-    /**
-     * @var Composer
-     */
-    protected $composer;
-
-    /**
-     * @var IOInterface
-     */
-    protected $io;
-
-    /**
-     * TaskList constructor.
-     * @param \Composer\Composer $composer
-     * @param \Composer\IO\IOInterface $io
-     */
-    public function __construct(
-        \Composer\Composer $composer,
-        \Composer\IO\IOInterface $io
-    ) {
-        $this->composer = $composer;
-        $this->io = $io;
-    }
 
     /**
      * Scan the composer data and build a list of compilation tasks.

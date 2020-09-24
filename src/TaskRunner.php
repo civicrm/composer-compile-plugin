@@ -4,6 +4,7 @@ namespace Civi\CompilePlugin;
 use Civi\CompilePlugin\Event\CompileEvents;
 use Civi\CompilePlugin\Event\CompileTaskEvent;
 use Civi\CompilePlugin\Exception\TaskFailedException;
+use Civi\CompilePlugin\Util\ComposerIoTrait;
 use Civi\CompilePlugin\Util\PassthruPolicyFilter;
 use Civi\CompilePlugin\Util\TaskUIHelper;
 use Composer\Composer;
@@ -13,28 +14,7 @@ use Composer\Package\PackageInterface;
 class TaskRunner
 {
 
-    /**
-     * @var Composer
-     */
-    protected $composer;
-
-    /**
-     * @var IOInterface
-     */
-    protected $io;
-
-    /**
-     * TaskRunner constructor.
-     * @param \Composer\Composer $composer
-     * @param \Composer\IO\IOInterface $io
-     */
-    public function __construct(
-        \Composer\Composer $composer,
-        \Composer\IO\IOInterface $io
-    ) {
-        $this->composer = $composer;
-        $this->io = $io;
-    }
+    use ComposerIoTrait;
 
     /**
      * Run the items in the $taskList, as per policy.
