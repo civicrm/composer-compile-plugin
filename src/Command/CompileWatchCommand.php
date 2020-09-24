@@ -60,6 +60,8 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
                         foreach ($changedTasks as $taskId => $task) {
                             $this->runCompile($input, $output, $taskId);
                         }
+                    } else {
+                        $output->writeln("<info>No changed tasks</info>");
                     }
                     $oldTaskList = null;
                 }
@@ -119,6 +121,9 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
         // Note: It is important to run compilation tasks in a subprocess to
         // ensure that (eg) `callback`s run with the latest code.
 
+        $start = microtime(1);
+        $output->writeln(sprintf("<info>Started at <comment>%s</comment></info>", date('Y-m-d H:i:s', (int)$start)));
+
         $cmd = '@composer compile';
         if ($input->getOption('dry-run')) {
             $cmd .= ' --dry-run';
@@ -134,6 +139,13 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
             $r->run($cmd);
         } catch (ScriptExecutionException $e) {
             $this->getIO()->writeError('<error>Compilation failed</error>');
+        } finally {
+            $end = microtime(1);
+            $output->writeln(sprintf(
+                "<info>Finished at <comment>%s</comment> (<comment>%.3f</comment> seconds)</info>",
+                date('Y-m-d H:i:s', $start),
+                $end - $start
+            ));
         }
     }
 
