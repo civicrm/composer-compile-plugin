@@ -41,6 +41,13 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
                 'symlink' => false,
               ],
             ],
+            'test-scss-script' => [
+              'type' => 'path',
+              'url' => self::getPluginSourceDir() . '/tests/pkgs/scss-script',
+              'options' => [
+                'symlink' => false,
+              ],
+            ],
             'test-rosti' => [
               'type' => 'path',
               'url' => self::getPluginSourceDir() . '/tests/pkgs/rosti',
