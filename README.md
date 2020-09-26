@@ -12,7 +12,7 @@ Tasks may be defined in several ways, such as:
 * Shell command (`@sh cat file-{1,2,3} > big-file`)
 * PHP method (`@php-method MyBuilder::build`)
 * PHP eval (`@php-eval file_put_contents('big-file', make_big_file());`)
-* PHP script file (`@php my-script.php`)
+* PHP script file (`@php-script my-script.php`)
 * Composer subcommand (`@composer dump-autoload`)
 
 Features:

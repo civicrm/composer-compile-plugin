@@ -39,6 +39,7 @@ class MultiStepTaskTest extends IntegrationTestCase
                       '@php-method MultistepEx::doThird',
                       '@php -r \'echo "MARK: PHPCMD\n";\'',
                       '@php-eval echo "MARK: PHPEVAL\\n";',
+                      '@php-script example-script.php and stuff',
                       '@export MISSING={{pkg:test/m-i-s-s-i-n-g}} COMPLG={{pkg:civicrm/composer-compile-plugin}}',
                       '@export SELF={{pkg:test/multi-step-task-test}}',
                       '@sh echo "MARK: Missing package is \'$MISSING\'"',
@@ -64,6 +65,17 @@ class MultiStepTaskTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
         self::initTestProject(static::getComposerJson());
+        file_put_contents(
+            self::getTestDir() . '/example-script.php',
+            implode("\n", [
+                '<' . '?php',
+                'echo "MARK: PHPSCRIPT ";',
+                'global $argv; $extra = $argv; array_shift($extra);',
+                'echo implode(" ", $extra);',
+                'echo class_exists("\Civi\CompilePlugin\Task") ? " WITH-AUTOLOAD" : "WITHOUT-AUTLOAD";',
+                'echo "\n";'
+            ])
+        );
         file_put_contents(
             self::getTestDir() . '/example-method.php',
             implode("\n", [
@@ -92,6 +104,7 @@ class MultiStepTaskTest extends IntegrationTestCase
             "^MARK: PHP THIRD",
             "^MARK: PHPCMD",
             "^MARK: PHPEVAL",
+            "^MARK: PHPSCRIPT and stuff WITH-AUTOLOAD",
             '^MARK: Missing package is \'\'$',
             '^MARK: Test package is \'' . realpath(self::getTestDir()) . '\'',
             '^MARK: Compile plugin is \'' . realpath(self::getTestDir()) . '/vendor/civicrm/composer-compile-plugin\'',
