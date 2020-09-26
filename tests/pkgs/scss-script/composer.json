@@ -5,14 +5,15 @@
             "email": "tester@example.org"
         }
     ],
-    "name": "test/gnocchi",
+    "name": "test/scss-script",
     "require": {
         "civicrm/composer-compile-plugin": "@dev",
         "scssphp/scssphp": "1.2.0",
         "padaliyajay/php-autoprefixer": "~1.2"
     },
-    "autoload": {"psr-4": {"ScssExample\\": "src"}},
     "extra": {
-        "compile": [{"php-method": "\\ScssExample\\ScssExample::make"}]
+        "compile": [
+          {"run": "@php-script scripts/compile-scss.php"}
+        ]
     }
 }

@@ -3,6 +3,7 @@
 namespace Civi\CompilePlugin\Handler;
 
 use Civi\CompilePlugin\Event\CompileTaskEvent;
+use Civi\CompilePlugin\TaskTransfer;
 use Civi\CompilePlugin\Util\ShellRunner;
 
 class PhpMethodHandler
@@ -17,10 +18,10 @@ class PhpMethodHandler
         }
 
         $cmd = '@php -r ' . escapeshellarg(sprintf(
-            'require_once %s; %s(json_decode(base64_decode(%s), 1));',
+            'require_once %s; %s %s($GLOBALS["COMPOSER_COMPILE_TASK"]);',
             var_export($autoload, 1),
-            $phpMethod,
-            var_export(base64_encode(json_encode($event->getTask()->definition)), 1)
+            TaskTransfer::createImportStatement(),
+            $phpMethod
         ));
 
         $r = new ShellRunner($event->getComposer(), $event->getIO());

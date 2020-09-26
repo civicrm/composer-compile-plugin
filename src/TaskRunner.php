@@ -8,6 +8,7 @@ use Civi\CompilePlugin\Handler\ComposerScriptHandler;
 use Civi\CompilePlugin\Handler\ExportHandler;
 use Civi\CompilePlugin\Handler\PhpEvalHandler;
 use Civi\CompilePlugin\Handler\PhpMethodHandler;
+use Civi\CompilePlugin\Handler\PhpScriptHandler;
 use Civi\CompilePlugin\Util\ComposerIoTrait;
 use Civi\CompilePlugin\Util\EnvHelper;
 use Civi\CompilePlugin\Util\PassthruPolicyFilter;
@@ -38,6 +39,7 @@ class TaskRunner
           'export' => new ExportHandler(),
           'php-eval' => new PhpEvalHandler(),
           'php-method' => new PhpMethodHandler(),
+          'php-script' => new PhpScriptHandler(),
           'sh' => new ComposerScriptHandler(),
           'putenv' => new ComposerScriptHandler(),
           'php' => new ComposerScriptHandler(),
@@ -177,6 +179,7 @@ class TaskRunner
 
         try {
             chdir($task->pwd);
+            TaskTransfer::export($task);
 
             foreach ($task->getParsedRun() as $run) {
                 if (!isset($this->handlers[$run['type']])) {
@@ -188,6 +191,7 @@ class TaskRunner
                 $this->handlers[$run['type']]->runTask($e, $run['type'], $run['code']);
             }
         } finally {
+            TaskTransfer::cleanup();
             chdir($orig['pwd']);
             EnvHelper::setAll($orig['env']);
         }

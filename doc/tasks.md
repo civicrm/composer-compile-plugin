@@ -33,14 +33,15 @@ The `run` property contains a list of steps to execute. Each step uses a prefix 
 | Prefix | Description | Example |
 | -- | -- | -- |
 | `@sh` | Run a shell (bash) statement | `@sh sed 's/no/yes/g' < pessimist.txt > optimist.txt` |
-| `@php` | Call the PHP command interpreter | `@php my-script.php` |
+| `@php` | Call the PHP command interpreter | `@php <...interpreter-args...>` |
 | `@php-eval` | Evaluate a single line of PHP | `@php-eval echo "Hello world";` |
 | `@php-method` | Call a PHP class / method | `@php-method MyClass::myMethod` |
+| `@php-script` | Run a PHP script/file | `@php-script my-file.php <arguments...>` |
 | `@composer` | Call a `composer` subcommand | `@composer dump-autoload` |
 | `@putenv` | Set an environment variable to a static value | `@putenv VARIABLE=value` |
 | `@export` | Export information about composer (such as package locations). | `@export BOOTSTRAP={{pkg:twbs/bootstrap}} BOOTSTRAP_SASS={{pkg:twbs/bootstrap-sass}}` |
 
-NOTE: `@php-eval` and `@php-method` will automatically employ the composer autoloader. `@php` will not.
+NOTE: `@php-eval`,`@php-method`, and `@php-script` will automatically employ the composer autoloader. `@php` will not.
 
 NOTE: Prior to v0.8, the `run` property did not exist - instead, there were separate fields for certain types of tasks. These fields are deprecated:
 
@@ -65,7 +66,7 @@ an aggregated file is available. This example would produce two aggregate files,
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~0.8"
+    "civicrm/composer-compile-plugin": "~0.9"
   },
   "extra": {
     "compile": [
@@ -84,7 +85,7 @@ Observe that:
 * It does not matter if `foo/bar` is a root-project.
 * Compiled files should not be committed to the origin/git project.
 
-## Example: PHP-based task
+## Example: Compile SCSS via PHP script
 
 For the next example, we declare a PHP-based task to compile some SCSS.
 
@@ -92,7 +93,42 @@ For the next example, we declare a PHP-based task to compile some SCSS.
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~0.8",
+    "civicrm/composer-compile-plugin": "~0.9",
+    "scssphp/scssphp": "1.2.0",
+    "padaliyajay/php-autoprefixer": "~1.2"
+  },
+  "extra": {
+    "compile": [{"run": "@php-script scripts/compile-scss.php"}]
+  }
+}
+```
+
+The file `scripts/compile-scss.php` does the actual work:
+
+```php
+<?php
+Civi\CompilePlugin\Util\Script::assertTask();
+
+$scssCompiler = new \ScssPhp\ScssPhp\Compiler();
+$scss = 'div { .foo { hyphens: auto; } }';
+$css = $scssCompiler->compile($scss);
+$autoprefixer = new \Padaliyajay\PHPAutoprefixer\Autoprefixer($css);
+file_put_contents("build.css", $autoprefixer->compile());
+```
+
+> TIP: If you're publishing a library, it may be hard to guarantee that the script-file remains private/sequestered when deployed by
+> downstream projects.  The call to `Civi\CompilePlugin\Util\Script::assertTask()` ensures that the script only runs as intended.
+
+## Example: Compile SCSS via PHP method
+
+This is very similar to the previous example, but (instead of *script file*) we use a PHP class/method.
+It's slightly more verbose, but it's also easier to unit-test and re-use the method.
+
+```json
+{
+  "name": "foo/bar",
+  "require": {
+    "civicrm/composer-compile-plugin": "~0.9",
     "scssphp/scssphp": "1.2.0",
     "padaliyajay/php-autoprefixer": "~1.2"
   },
@@ -106,6 +142,7 @@ For the next example, we declare a PHP-based task to compile some SCSS.
 The method goes in `src/ScssExample.php`:
 
 ```php
+<?php
 namespace ScssExample;
 class ScssExample
 {
@@ -128,7 +165,7 @@ If the metadata about the compilation tasks looks a bit long, then you may use a
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~0.8"
+    "civicrm/composer-compile-plugin": "~0.9"
   },
   "extra": {
     "compile-includes": ["module-a/.composer-compile.json", "module-b/.composer-compile.json"]

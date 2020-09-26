@@ -6,13 +6,13 @@ use Composer\Plugin\PluginInterface;
 use ProcessHelper\ProcessHelper as PH;
 
 /**
- * Class ScssPhpMethodTest
+ * Class ScssPhpScriptTest
  * @package Civi\CompilePlugin\Tests
  *
- * This is general integration test of the plugin. It uses a 'php-method'
+ * This is general integration test of the plugin. It uses a 'php-script'
  * to compile some SCSS.
  */
-class ScssPhpMethodTest extends IntegrationTestCase
+class ScssPhpScriptTest extends IntegrationTestCase
 {
 
     public static function getComposerJson()
@@ -20,7 +20,7 @@ class ScssPhpMethodTest extends IntegrationTestCase
         return parent::getComposerJson() + [
             'name' => 'test/patch-test',
             'require' => [
-                'test/scss-method' => '@dev',
+                'test/scss-script' => '@dev',
             ],
             'minimum-stability' => 'dev',
         ];
@@ -33,19 +33,19 @@ class ScssPhpMethodTest extends IntegrationTestCase
     }
 
     /**
-     * When running 'composer install', it should generate scss-method's "build.css".
+     * When running 'composer install', it should generate scss-script's "build.css".
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('vendor/test/scss-method/build.css');
+        $this->assertFileNotExists('vendor/test/scss-script/build.css');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 
         $normalize = function ($s) {
             return trim(preg_replace(';\s+;', ' ', $s));
         };
-        $actual = $normalize(file_get_contents('vendor/test/scss-method/build.css'));
-        $expected = $normalize(file_get_contents('vendor/test/scss-method/build.css-expected'));
+        $actual = $normalize(file_get_contents('vendor/test/scss-script/build.css'));
+        $expected = $normalize(file_get_contents('vendor/test/scss-script/build.css-expected'));
         $this->assertNotEmpty($expected);
         $this->assertEquals($expected, $actual);
     }

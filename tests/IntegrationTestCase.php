@@ -34,9 +34,16 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
               'type' => 'path',
               'url' => self::getPluginSourceDir() . '/tests/pkgs/strawberry-jam',
             ],
-            'test-gnocchi' => [
+            'test-scss-method' => [
               'type' => 'path',
-              'url' => self::getPluginSourceDir() . '/tests/pkgs/gnocchi',
+              'url' => self::getPluginSourceDir() . '/tests/pkgs/scss-method',
+              'options' => [
+                'symlink' => false,
+              ],
+            ],
+            'test-scss-script' => [
+              'type' => 'path',
+              'url' => self::getPluginSourceDir() . '/tests/pkgs/scss-script',
               'options' => [
                 'symlink' => false,
               ],
