@@ -5,6 +5,7 @@ sudo: false
 cache:
   directories:
     - $HOME/.composer/cache/files
+    - $HOME/.cache/phar
 
 matrix:
   include:
@@ -26,11 +27,7 @@ matrix:
       env: COMPOSER_VERSION=--1
 
 before_script:
-  - mkdir -p "$HOME/phar-bin"
-  - curl -sSfL -o "$HOME/phar-bin/phpunit" https://phar.phpunit.de/phpunit-6.phar ; chmod 755 "$HOME/phar-bin/phpunit"
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then php --version; brew install composer ; fi
-  - "composer self-update $COMPOSER_VERSION"
-  - "composer install --no-progress --no-interaction"
+  - ./scripts/travis-ci.sh before_script
 
 script:
-  - "$HOME/phar-bin/phpunit"
+  - ./scripts/travis-ci.sh script
