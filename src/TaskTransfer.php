@@ -59,6 +59,7 @@ class TaskTransfer
     {
         $raw = getenv(self::ENV_VAR);
         if ($raw === false || $raw === '') {
+            fprintf(STDERR, "WARNING: Failed to read compilation-task from %s. Please use \"composer compile\".\n", self::ENV_VAR);
             $GLOBALS[self::GLOBAL_VAR] = [];
             return;
         }
