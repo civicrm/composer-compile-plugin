@@ -136,7 +136,7 @@ class Task
         $handlers = explode('|', self::HANDLERS);
         foreach ($this->getParsedRun() as $run) {
             if (!in_array($run['type'], $handlers)) {
-                throw new \RuntimeException("Compilation task has invalid run expression: " . json_encode($this->run));
+                throw new \RuntimeException("Compilation task has invalid run expression: " . json_encode($run['expr']));
             }
         }
         return $this;
@@ -192,6 +192,7 @@ class Task
             return [
               'type' => $m[1],
               'code' => $m[2],
+              'expr' => $runExpr,
             ];
         } else {
             throw new \InvalidArgumentException("Failed to parse run expression: $runExpr");
