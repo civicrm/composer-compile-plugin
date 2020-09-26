@@ -3,6 +3,7 @@
 namespace Civi\CompilePlugin\Handler;
 
 use Civi\CompilePlugin\Event\CompileTaskEvent;
+use Civi\CompilePlugin\TaskTransfer;
 use Civi\CompilePlugin\Util\ShellRunner;
 
 /**
@@ -21,6 +22,19 @@ class PhpEvalHandler
      */
     public function runTask(CompileTaskEvent $event, $runType, $phpEval)
     {
+        $cmd = $this->createCommand($event, $runType, $phpEval);
+        $r = new ShellRunner($event->getComposer(), $event->getIO());
+        $r->run($cmd);
+    }
+
+    /**
+     * @param \Civi\CompilePlugin\Event\CompileTaskEvent $event
+     * @param string $runType
+     * @param string $phpEval
+     *   Ex: 'echo "Hello world";'
+     */
+    protected function createCommand($event, $runType, $phpEval)
+    {
         // Surely there's a smarter way to get this?
         $vendorPath = $event->getComposer()->getConfig()->get('vendor-dir');
         $autoload =  $vendorPath . '/autoload.php';
@@ -33,13 +47,11 @@ class PhpEvalHandler
             throw new \RuntimeException("CompilePlugin: Multiline eval is not permitted");
         }
 
-        $cmd = '@php -r ' . escapeshellarg(sprintf(
-            'require_once %s; %s',
+        return '@php -r ' . escapeshellarg(sprintf(
+            'require_once %s; %s %s',
             var_export($autoload, 1),
+            TaskTransfer::createImportStatement(),
             $phpEval
         ));
-
-        $r = new ShellRunner($event->getComposer(), $event->getIO());
-        $r->run($cmd);
     }
 }

@@ -11,23 +11,16 @@ use Civi\CompilePlugin\Util\ShellRunner;
  *
  * This implements support for run-steps based on `@php-script <filename> [<cli-args>]`.
  */
-class PhpScriptHandler
+class PhpScriptHandler extends PhpEvalHandler
 {
     /**
      * @param \Civi\CompilePlugin\Event\CompileTaskEvent $event
      * @param string $runType
-     * @param string $phpScript
-     *   Ex: 'echo "Hello world";'
+     * @param string $phpScriptExpr
+     *   Ex: 'foo/bar.php arg1 arg2'
      */
-    public function runTask(CompileTaskEvent $event, $runType, $phpScriptExpr)
+    protected function createCommand($event, $runType, $phpScriptExpr)
     {
-        // Surely there's a smarter way to get this?
-        $vendorPath = $event->getComposer()->getConfig()->get('vendor-dir');
-        $autoload =  $vendorPath . '/autoload.php';
-        if (!file_exists($autoload)) {
-            throw new \RuntimeException("CompilePlugin: Failed to locate autoload.php");
-        }
-
         if (strpos($phpScriptExpr, "\n") !== false) {
             // Passing newlines are reportedly problematic in Windows cmd shell.
             throw new \RuntimeException("CompilePlugin: Multiline script call is not permitted");
@@ -41,17 +34,13 @@ class PhpScriptHandler
         }
 
         if (!file_exists($scriptFile)) {
+            // It's prettier if we report the error rather than letting the subprocess fail.
             throw new \RuntimeException(sprintf("CompilePlugin: Script %s does not exist in %s", $scriptFile, getcwd()));
         }
 
-        $cmd = sprintf(
-            '@php -dauto_prepend_file=%s %s %s',
-            escapeshellarg($autoload),
-            escapeshellarg($scriptFile),
-            $scriptArgs
-        );
-
-        $r = new ShellRunner($event->getComposer(), $event->getIO());
-        $r->run($cmd);
+        return parent::createCommand($event, 'php-eval', sprintf(
+            'require %s;',
+            var_export($scriptFile, 1)
+        )) . ' ' . $scriptArgs;
     }
 }

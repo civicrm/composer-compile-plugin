@@ -72,7 +72,8 @@ class MultiStepTaskTest extends IntegrationTestCase
                 'echo "MARK: PHPSCRIPT ";',
                 'global $argv; $extra = $argv; array_shift($extra);',
                 'echo implode(" ", $extra);',
-                'echo class_exists("\Civi\CompilePlugin\Task") ? " WITH-AUTOLOAD" : "WITHOUT-AUTLOAD";',
+                'echo class_exists("\Civi\CompilePlugin\Task") ? " WITH-AUTOLOAD" : " WITHOUT-AUTLOAD";',
+                'echo !empty($GLOBALS["COMPOSER_COMPILE_TASK"]["run"]) ? " WITH-TASK" : " WITHOUT-TASK";',
                 'echo "\n";'
             ])
         );
@@ -104,7 +105,7 @@ class MultiStepTaskTest extends IntegrationTestCase
             "^MARK: PHP THIRD",
             "^MARK: PHPCMD",
             "^MARK: PHPEVAL",
-            "^MARK: PHPSCRIPT and stuff WITH-AUTOLOAD",
+            "^MARK: PHPSCRIPT and stuff WITH-AUTOLOAD WITH-TASK",
             '^MARK: Missing package is \'\'$',
             '^MARK: Test package is \'' . realpath(self::getTestDir()) . '\'',
             '^MARK: Compile plugin is \'' . realpath(self::getTestDir()) . '/vendor/civicrm/composer-compile-plugin\'',

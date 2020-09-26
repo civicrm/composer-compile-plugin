@@ -179,6 +179,7 @@ class TaskRunner
 
         try {
             chdir($task->pwd);
+            TaskTransfer::export($task);
 
             foreach ($task->getParsedRun() as $run) {
                 if (!isset($this->handlers[$run['type']])) {
@@ -190,6 +191,7 @@ class TaskRunner
                 $this->handlers[$run['type']]->runTask($e, $run['type'], $run['code']);
             }
         } finally {
+            TaskTransfer::cleanup();
             chdir($orig['pwd']);
             EnvHelper::setAll($orig['env']);
         }
