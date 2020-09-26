@@ -5,7 +5,7 @@
             "email": "tester@example.org"
         }
     ],
-    "name": "test/gnocchi",
+    "name": "test/scss-method",
     "require": {
         "civicrm/composer-compile-plugin": "@dev",
         "scssphp/scssphp": "1.2.0",

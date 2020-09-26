@@ -20,7 +20,7 @@ class ScssPhpMethodTest extends IntegrationTestCase
         return parent::getComposerJson() + [
             'name' => 'test/patch-test',
             'require' => [
-                'test/gnocchi' => '@dev',
+                'test/scss-method' => '@dev',
             ],
             'minimum-stability' => 'dev',
         ];
@@ -33,19 +33,19 @@ class ScssPhpMethodTest extends IntegrationTestCase
     }
 
     /**
-     * When running 'composer install', it should generate gnocchi's "build.css".
+     * When running 'composer install', it should generate scss-method's "build.css".
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('vendor/test/gnocchi/build.css');
+        $this->assertFileNotExists('vendor/test/scss-method/build.css');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 
         $normalize = function ($s) {
             return trim(preg_replace(';\s+;', ' ', $s));
         };
-        $actual = $normalize(file_get_contents('vendor/test/gnocchi/build.css'));
-        $expected = $normalize(file_get_contents('vendor/test/gnocchi/build.css-expected'));
+        $actual = $normalize(file_get_contents('vendor/test/scss-method/build.css'));
+        $expected = $normalize(file_get_contents('vendor/test/scss-method/build.css-expected'));
         $this->assertNotEmpty($expected);
         $this->assertEquals($expected, $actual);
     }
