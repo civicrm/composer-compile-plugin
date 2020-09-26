@@ -8,14 +8,30 @@ cache:
 
 matrix:
   include:
-    - php: 7.1
+    - os: linux
+      dist: xenial
+      php: 7.1
       env: COMPOSER_VERSION=--1
-    - php: 7.1
+    - os: linux
+      dist: xenial
+      php: 7.1
       env: COMPOSER_VERSION=--snapshot
-    - php: 7.4
+    - os: linux
+      dist: xenial
+      php: 7.4
       env: COMPOSER_VERSION=--snapshot
+    #- os: osx
+    #  language: generic
+    #  env:
+    #    - COMPOSER_VERSION=--1
+    #    - BREWPHP=7.3
 
 before_script:
-  - curl -sSfL -o ~/.phpenv/versions/$(phpenv version-name)/bin/phpunit https://phar.phpunit.de/phpunit-6.phar
+  - mkdir -p "$HOME/phar-bin"
+  - curl -sSfL -o "$HOME/phar-bin/phpunit" https://phar.phpunit.de/phpunit-6.phar ; chmod 755 "$HOME/phar-bin/phpunit"
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install php@$BREWPHP ; brew install composer ; fi
   - "composer self-update $COMPOSER_VERSION"
   - "composer install --no-progress --no-interaction"
+
+script:
+  - "$HOME/phar-bin/phpunit"
