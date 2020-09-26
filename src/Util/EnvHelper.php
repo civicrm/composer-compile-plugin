@@ -17,18 +17,23 @@ class EnvHelper
     /**
      * Set the full environment, precisely.
      *
-     * @param array $vars
+     * @param array $newEnv
      *   The new environment. Key-value pairs.
      *   All other environment variables will be removed.
      */
-    public static function setAll($vars)
+    public static function setAll($newEnv)
     {
-        $current = self::getAll();
-        $removed = array_diff(array_keys($current), array_keys($vars));
-        foreach ($removed as $key) {
-            putenv("$key");
+        $currentEnv = self::getAll();
+        $allKeys = array_unique(array_merge(array_keys($currentEnv), array_keys($newEnv)));
+        foreach ($allKeys as $key) {
+            if (!isset($currentEnv[$key])) {
+                putenv("$key=" . $newEnv[$key]);
+            } elseif (!isset($newEnv[$key])) {
+                putenv("$key");
+            } elseif ($currentEnv[$key] !== $newEnv[$key]) {
+                putenv("$key=" . $newEnv[$key]);
+            }
         }
-        self::add($vars);
     }
 
     /**
