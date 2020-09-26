@@ -93,8 +93,8 @@ class MultiStepTaskTest extends IntegrationTestCase
             "^MARK: PHPCMD",
             "^MARK: PHPEVAL",
             '^MARK: Missing package is \'\'$',
-            '^MARK: Test package is \'' . self::getTestDir() . '\'',
-            '^MARK: Compile plugin is \'' . self::getTestDir() . '/vendor/civicrm/composer-compile-plugin\'',
+            '^MARK: Test package is \'' . realpath(self::getTestDir()) . '\'',
+            '^MARK: Compile plugin is \'' . realpath(self::getTestDir()) . '/vendor/civicrm/composer-compile-plugin\'',
             "^MARK: FOO IS '123'",
             // FOO should not propagate from the environment of task #1 to task #2.
             "^MARK: FOO IS LATER ''",
