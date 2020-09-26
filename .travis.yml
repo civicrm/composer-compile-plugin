@@ -20,16 +20,15 @@ matrix:
       dist: xenial
       php: 7.4
       env: COMPOSER_VERSION=--snapshot
-    #- os: osx
-    #  language: generic
-    #  env:
-    #    - COMPOSER_VERSION=--1
-    #    - BREWPHP=7.3
+    - os: osx
+      osx_image: xcode12
+      language: generic
+      env: COMPOSER_VERSION=--1
 
 before_script:
   - mkdir -p "$HOME/phar-bin"
   - curl -sSfL -o "$HOME/phar-bin/phpunit" https://phar.phpunit.de/phpunit-6.phar ; chmod 755 "$HOME/phar-bin/phpunit"
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install php@$BREWPHP ; brew install composer ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then php --version; brew install composer ; fi
   - "composer self-update $COMPOSER_VERSION"
   - "composer install --no-progress --no-interaction"
 
