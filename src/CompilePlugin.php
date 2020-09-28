@@ -36,10 +36,10 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
     public static function getSubscribedEvents()
     {
         return [
-            ScriptEvents::PRE_INSTALL_CMD => ['validateMode', 5],
-            ScriptEvents::PRE_UPDATE_CMD => ['validateMode', 5],
-            ScriptEvents::POST_INSTALL_CMD => ['runTasks', 5],
-            ScriptEvents::POST_UPDATE_CMD => ['runTasks', 5],
+            ScriptEvents::PRE_INSTALL_CMD => ['validateMode', -5],
+            ScriptEvents::PRE_UPDATE_CMD => ['validateMode', -5],
+            ScriptEvents::POST_INSTALL_CMD => ['runTasks', -5],
+            ScriptEvents::POST_UPDATE_CMD => ['runTasks', -5],
         ];
     }
 

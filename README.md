@@ -18,7 +18,7 @@ Tasks may be defined in several ways, such as:
 Features:
 
 * Easy to enable. No manual configuration for downstream site-builders. Framework agnostic.
-* Plays well with [forked repositories](https://matthewsetter.com/series/tooling/composer/forked-repositories/), [composer-patches](https://github.com/cweagans/composer-patches), and [composer-downloads](https://github.com/civicrm/composer-downloads-plugin).
+* Plays well with other `composer` tooling, like [forked repositories](https://matthewsetter.com/series/tooling/composer/forked-repositories/), [composer-patches](https://github.com/cweagans/composer-patches), [composer-locator](https://github.com/mindplay-dk/composer-locator), and [composer-downloads](https://github.com/civicrm/composer-downloads-plugin).
 * Allows library repos to remain "clean" without committing build artifacts.
 * Runs locally in PHP. Does not require external/hosted services or additional interpreters.
 * Supports file monitoring for automatic rebuilds (`composer compile:watch`)
