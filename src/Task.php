@@ -153,6 +153,9 @@ class Task
     {
         list ($tgtVendorPackage, $tgtId) = explode(':', "{$filter}:");
         list ($tgtVendor, $tgtPackage) = explode('/', $tgtVendorPackage . '/');
+        if ($this->packageName === '__root__' && $filter === '__root__') {
+            return true;
+        }
         list ($actualVendor, $actualPackage) = explode('/', $this->packageName);
 
         if ($tgtVendor !== '*' && $tgtVendor !== $actualVendor) {
