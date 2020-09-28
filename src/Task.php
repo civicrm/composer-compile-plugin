@@ -151,11 +151,12 @@ class Task
      */
     public function matchesFilter($filter)
     {
+        if ($this->packageName === '__root__') {
+            return $filter === '__root__';
+        }
+
         list ($tgtVendorPackage, $tgtId) = explode(':', "{$filter}:");
         list ($tgtVendor, $tgtPackage) = explode('/', $tgtVendorPackage . '/');
-        if ($this->packageName === '__root__' && $filter === '__root__') {
-            return true;
-        }
         list ($actualVendor, $actualPackage) = explode('/', $this->packageName);
 
         if ($tgtVendor !== '*' && $tgtVendor !== $actualVendor) {
