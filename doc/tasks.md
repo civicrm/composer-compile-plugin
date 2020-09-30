@@ -157,11 +157,11 @@ class ScssExample
 }
 ```
 
-## Example: Compile SCSS via reusable PHP method
+### Example: Compile SCSS via reusable PHP method
 
 It would be silly to write a similar PHP script or method for *every* SCSS file. Instead, we might prefer a reusable method.
 
-For example, [CiviCRM's Composer Compile Library](https://github.com/civicrm/composer-compile-lib) provides a method `\CCL\Tasks::scss`. It can be used like so:
+For example, the sister package [CiviCRM Composer Compile Library](https://github.com/civicrm/composer-compile-lib) provides a handful of reusable methods, including `\CCL\Tasks::scss`. It can be used like so:
 
 ```json
 {
@@ -183,7 +183,7 @@ For example, [CiviCRM's Composer Compile Library](https://github.com/civicrm/com
 
 The upshot -- this method bakes-in several common requirements -- e.g. it compiles SCSS=>CSS and *also* runs php-autoprefixer and *also* generates a minified file.
 
-The convenience comes with a cost -- less control. Maybe you disagree with its opinion, or maybe it has a bug. Fortunately, it's open-source. So you can make your own `scss()` method by copying or wrapping-around it, or you can send patches upstream.
+The convenience comes with a cost -- less control. Maybe you disagree with its opinions, or maybe you need another step, or maybe it has a bug. Fortunately, it's open-source. So you can make your own `scss()` method by copying or wrapping-around it, or you can send patches upstream.
 
 ### Example: Include Files
 
