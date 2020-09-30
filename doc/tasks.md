@@ -57,7 +57,11 @@ NOTE: Tasks are ordered based on these guidelines:
 * Dependencies run first.
 * Tasks run in the order listed.
 
-## Example: Shell-based task
+## Examples
+
+Let's consider a few examples. We'll start with a *simple* task (i.e. with the fewest moving parts), and then build up to more *robust* tasks (i.e. more useful/maintainable in more projects).
+
+### Example: Shell-based task
 
 Suppose you publish a library (package), `foo/bar`, which includes a handful of JS files and CSS files. You want to ensure that
 an aggregated file is available. This example would produce two aggregate files, `all.js` and `all.css`.
@@ -85,7 +89,7 @@ Observe that:
 * It does not matter if `foo/bar` is a root-project.
 * Compiled files should not be committed to the origin/git project.
 
-## Example: Compile SCSS via PHP script
+### Example: Compile SCSS via custom PHP script
 
 For the next example, we declare a PHP-based task to compile some SCSS.
 
@@ -94,8 +98,7 @@ For the next example, we declare a PHP-based task to compile some SCSS.
   "name": "foo/bar",
   "require": {
     "civicrm/composer-compile-plugin": "~0.9",
-    "scssphp/scssphp": "1.2.0",
-    "padaliyajay/php-autoprefixer": "~1.2"
+    "scssphp/scssphp": "1.2.0"
   },
   "extra": {
     "compile": [{"run": "@php-script scripts/compile-scss.php"}]
@@ -112,14 +115,13 @@ Civi\CompilePlugin\Util\Script::assertTask();
 $scssCompiler = new \ScssPhp\ScssPhp\Compiler();
 $scss = 'div { .foo { hyphens: auto; } }';
 $css = $scssCompiler->compile($scss);
-$autoprefixer = new \Padaliyajay\PHPAutoprefixer\Autoprefixer($css);
-file_put_contents("build.css", $autoprefixer->compile());
+file_put_contents("build.css", $css);
 ```
 
 > TIP: If you're publishing a library, it may be hard to guarantee that the script-file remains private/sequestered when deployed by
 > downstream projects.  The call to `Civi\CompilePlugin\Util\Script::assertTask()` ensures that the script only runs as intended.
 
-## Example: Compile SCSS via PHP method
+### Example: Compile SCSS via custom PHP method
 
 This is very similar to the previous example, but (instead of *script file*) we use a PHP class/method.
 It's slightly more verbose, but it's also easier to unit-test and re-use the method.
@@ -129,8 +131,7 @@ It's slightly more verbose, but it's also easier to unit-test and re-use the met
   "name": "foo/bar",
   "require": {
     "civicrm/composer-compile-plugin": "~0.9",
-    "scssphp/scssphp": "1.2.0",
-    "padaliyajay/php-autoprefixer": "~1.2"
+    "scssphp/scssphp": "1.2.0"
   },
   "autoload": {"psr-4": {"ScssExample\\": "src"}},
   "extra": {
@@ -151,13 +152,40 @@ class ScssExample
     $scssCompiler = new \ScssPhp\ScssPhp\Compiler();
     $scss = 'div { .foo { hyphens: auto; } }';
     $css = $scssCompiler->compile($scss);
-    $autoprefixer = new \Padaliyajay\PHPAutoprefixer\Autoprefixer($css);
-    file_put_contents("build.css", $autoprefixer->compile());
+    file_put_contents("build.css", $css);
   }
 }
 ```
 
-## Example: Includes
+## Example: Compile SCSS via reusable PHP method
+
+It would be silly to write a similar PHP script or method for *every* SCSS file. Instead, we might prefer a reusable method.
+
+For example, [CiviCRM's Composer Compile Library](https://github.com/civicrm/composer-compile-lib) provides a method `\CCL\Tasks::scss`. It can be used like so:
+
+```json
+{
+ "require": {
+    "civicrm/composer-compile-lib": "~1.0"
+  },
+  "extra": {
+    "compile": [
+      {
+        "run": "@php-method \\CCL\\Tasks::scss",
+        "scss-files": {"dist/output.css": "my-scss-dir/input.scss" },
+        "scss-imports": ["my-scss-dir"],
+        "watch-files": ["my-scss-dir"]
+      }
+    ]
+  }
+}
+```
+
+The upshot -- this method bakes-in several common requirements -- e.g. it compiles SCSS=>CSS and *also* runs php-autoprefixer and *also* generates a minified file.
+
+The convenience comes with a cost -- less control. Maybe you disagree with its opinion, or maybe it has a bug. Fortunately, it's open-source. So you can make your own `scss()` method by copying or wrapping-around it, or you can send patches upstream.
+
+### Example: Include Files
 
 If the metadata about the compilation tasks looks a bit long, then you may use an include file.
 
@@ -173,7 +201,7 @@ If the metadata about the compilation tasks looks a bit long, then you may use a
 }
 ```
 
-Then, in each file, you may define a `compile` directive like before:
+Then, in each file, you may define a `compile` directive like before, e.g.:
 
 ```json
 {
@@ -184,4 +212,3 @@ Then, in each file, you may define a `compile` directive like before:
 ```
 
 Note: The command will run in the same folder as the JSON file.
-
