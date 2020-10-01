@@ -6,6 +6,7 @@ use Civi\CompilePlugin\Command\CompileListCommand;
 use Civi\CompilePlugin\Event\CompileEvents;
 use Civi\CompilePlugin\Subscriber\OldTaskAdapter;
 use Civi\CompilePlugin\Subscriber\ShellSubscriber;
+use Civi\CompilePlugin\Util\ComposerPassthru;
 use Civi\CompilePlugin\Util\TaskUIHelper;
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -96,21 +97,23 @@ class CompilePlugin implements PluginInterface, EventSubscriberInterface, Capabl
 
     public function runTasks(Event $event)
     {
+        $io = $event->getIO();
+
         if (!class_exists('Civi\CompilePlugin\TaskList')) {
             // Likely a problem in composer v1 uninstall process?
-            $event->getIO()->write("<warning>Skip CompilePlugin::runTasks. Environment does not appear well-formed.</warning>");
-            return;
-        }
-        $taskList = new TaskList($this->composer, $this->io);
-        $taskList->load()->validateAll();
-
-        $taskRunner = new TaskRunner($this->composer, $this->io);
-
-        if (empty($taskList->getAll())) {
+            $io->write("<warning>Skip CompilePlugin::runTasks. Environment does not appear well-formed.</warning>");
             return;
         }
 
-        $this->io->write("<info>Running compilation tasks</info>");
-        $taskRunner->runDefault($taskList);
+        // We need to propagate some of our process's options to the subprocess...
+
+        // The "soft" options should be safer for passing options between different versions.
+        // The "soft" options will be used if recognized by the recipient, and ignored otherwise.
+        // Ex: $soft['o']['dry-run'] = true;
+        $soft = [];
+        $softEsc = $soft ? '--soft-options=' . escapeshellarg(base64_encode(json_encode($soft))) : '';
+
+        $runner = new ComposerPassthru($event->getComposer(), $io);
+        $runner->run("@composer compile $softEsc");
     }
 }
