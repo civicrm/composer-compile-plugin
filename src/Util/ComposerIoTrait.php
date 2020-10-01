@@ -28,8 +28,8 @@ trait ComposerIoTrait
      * @param \Composer\IO\IOInterface $io
      */
     public function __construct(
-        \Composer\Composer $composer,
-        \Composer\IO\IOInterface $io
+        $composer,
+        $io
     ) {
         $this->composer = $composer;
         $this->io = $io;

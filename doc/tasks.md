@@ -27,6 +27,7 @@ In `composer.json`, the `extra.compile` section may list multiple *tasks*. Each 
 | `active` | `bool` | `true` | Whether this task should be executed |
 | `title` | `string` | `my/pkg#pos` | Printable title display on the console. May be decorated with `<info>` and `<comment>` tags. |
 | `watch-files` | `string[]` | `[]` | List of files or directories which are used as input to this task. |
+| `out-files` | `string[]` | `[]` | List of files or directories which are created by this task. (Experimental) |
 
 The `run` property contains a list of steps to execute. Each step uses a prefix to indicate type. Here are some examples:
 
@@ -49,6 +50,10 @@ NOTE: Prior to v0.8, the `run` property did not exist - instead, there were sepa
 | -- | -- | -- |
 | `php-method` | `string` or `string[]` | PHP class+method. Multiple items may be given. Ex: `\MyModule\Compile::doCompilationStuff` |
 | `shell` | `string` or `string[]` | Bash statement to execute. Multiple items may be given Ex: `cat file1.txt file2.txt > file3.txt` |
+
+NOTE: If `watch-files` is given, then `composer compile:watch` will support live rebuilding.
+
+NOTE: If both `watch-files` and `out-files` are given, then `composer install` and `composer compile` will use the experimental support for incremental compilation. Incremental behavior may or may not be preserved in the future.
 
 NOTE: It is valid define new/unrecognized/bespoke fields. To avoid unintended conflicts in the future, bespoke fields should use a prefix.
 
