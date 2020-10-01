@@ -21,6 +21,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
           ->setDescription('Run compilation tasks')
           ->addOption('all', null, InputOption::VALUE_NONE, 'Run all tasks, regardless of configuration')
           ->addOption('dry-run', 'N', InputOption::VALUE_NONE, 'Dry-run: Print a list of steps to be run')
+          ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force: Generate files even if the existing outputs look sufficiently fresh')
           ->addArgument('filterExpr', InputArgument::IS_ARRAY, 'Optional filter to match. Ex: \'vendor/package\' or \'vendor/package:id\'')
           ->setHelp(
               "Run compilation steps in all packages\n" .
@@ -36,7 +37,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
         $taskList = new TaskList($this->getComposer(), $this->getIO());
         $taskList->load()->validateAll();
 
-        $taskRunner = new TaskRunner($this->getComposer(), $this->getIO());
+        $taskRunner = new TaskRunner($this->getComposer(), $this->getIO(), $input->getOption('force'));
         $filters = $input->getArgument('filterExpr');
         if ($input->getOption('all') && !empty($filters)) {
             throw new \InvalidArgumentException("The --all option does not accept filters.");

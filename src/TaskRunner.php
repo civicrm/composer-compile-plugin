@@ -13,6 +13,7 @@ use Civi\CompilePlugin\Util\ComposerIoTrait;
 use Civi\CompilePlugin\Util\EnvHelper;
 use Civi\CompilePlugin\Util\PassthruPolicyFilter;
 use Civi\CompilePlugin\Util\TaskUIHelper;
+use Civi\CompilePlugin\Util\TsHelper;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
@@ -25,16 +26,33 @@ class TaskRunner
     }
 
     /**
+     * In "force" mode, compilation will be performed regardless of timestamps/freshness.
+     * In the un-forced mode, compilation depends on timestamps/freshness.
+     *
+     * @var bool
+     */
+    private $force;
+
+    /**
      * @var array
      *   [string $type => object $handler]
      */
     private $handlers;
 
+    /**
+     *
+     * @var TsHelper
+     */
+    private $tsHelper;
+
     public function __construct(
         \Composer\Composer $composer,
-        \Composer\IO\IOInterface $io
+        \Composer\IO\IOInterface $io,
+        $force = true
     ) {
         $this->constructComposerIo($composer, $io);
+        $this->force = $force;
+        $this->tsHelper = new TsHelper($composer, $io);
         $this->handlers = [
           'export' => new ExportHandler(),
           'php-eval' => new PhpEvalHandler(),
@@ -141,9 +159,16 @@ class TaskRunner
 
             if (!$task->active) {
                 $io->write(
-                    $dryRunText . '<error>Skip</error>: ' . ($task->title),
+                    $dryRunText . '<info>Compile</info>: <error>Not active</error>: ' . ($task->title),
                     true,
                     IOInterface::VERBOSE
+                );
+                continue;
+            }
+
+            if (!$this->force && $this->isFresh($task)) {
+                $io->write(
+                    $dryRunText . '<info>Compile</info>: Already built: ' . ($task->title)
                 );
                 continue;
             }
@@ -278,6 +303,33 @@ class TaskRunner
             $passthru = 'error';
         }
         return $passthru;
+    }
+
+    /**
+     * @param \Civi\CompilePlugin\Task $task
+     * @return bool
+     *   TRUE if the outputs of the task appear "fresh" (newer than the inputs).
+     *   FALSE if the outputs of the task appear "stale" (older than the inputs).
+     */
+    protected function isFresh(Task $task)
+    {
+        if (empty($task->definition['watch-files']) || empty($task->definition['out-files'])) {
+            // We can't really make a determination...
+            return false;
+        }
+
+        // Todo: We should probably check the dependencies of the origin package and
+        // treat them as de-facto inputs. If they change, then all downstream tasks are stale.
+
+        $relToPwd = function ($p) use ($task) {
+            return $task->pwd . '/' . rtrim($p, '/' . DIRECTORY_SEPARATOR);
+        };
+        $inputs = array_map($relToPwd, $task->definition['watch-files']);
+        $inputs[] = $task->sourceFile;
+        $outputs = array_map($relToPwd, $task->definition['out-files']);
+
+        $fr = $this->tsHelper->isFresh($outputs, $inputs);
+        return $fr;
     }
 
     /**
