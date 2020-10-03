@@ -30,30 +30,35 @@ class PackageSorter
             return strnatcmp($a->getName(), $b->getName());
         });
 
-        // Valid names for the installed packages, inclusive of aliases.
-        // Array(string $packageName => bool)
-        $validNames = [];
+        // Index mapping all known aliases (provides/replaces) to real names.
+        // Array(string $logicalName => string $realName)
+        $realNames = [];
         foreach ($installedPackages as $package) {
             /** @var PackageInterface $package */
-            $validNames[$package->getName()] = true;
-            foreach ($package->getProvides() as $link) {
-                $validNames[$link->getTarget()] = true;
-            }
-            foreach ($package->getReplaces() as $link) {
-                $validNames[$link->getTarget()] = true;
+            foreach ($package->getNames() as $alias) {
+                $realNames[$alias] = $package->getName();
             }
         }
 
-        // Any unrecognized/virtualized packages (e.g. PECL) that we should ignore.
-        // Array(string $package => bool)
-        $ignoredNames = [];
+        // Array(string $realName => string[] $realNames)
+        $realRequires = [];
+        $addRealRequires = function ($package, $target) use (&$realRequires, &$realNames) {
+            if (isset($realNames[$target]) && $realNames[$target] !== $package) {
+                $realRequires[$package][] = $realNames[$target];
+            }
+        };
         foreach ($installedPackages as $package) {
             /** @var PackageInterface $package */
             foreach ($package->getRequires() as $link) {
-                if (!isset($validNames[$link->getTarget()])) {
-                    $ignoredNames[$link->getTarget()] = true;
-                }
+                $addRealRequires($package->getName(), $link->getTarget());
             }
+            // Unfortunately, cycles are common among suggests/dev-requires... ex: phpunit
+            //foreach ($package->getDevRequires() as $link) {
+            //    $addRealRequires($package->getName(), $link->getTarget());
+            //}
+            //foreach ($package->getSuggests() as $target => $comment) {
+            //    $addRealRequires($package->getName(), $target);
+            //}
         }
 
         // Unsorted list of packages that need to be visited.
@@ -68,10 +73,10 @@ class PackageSorter
         $sortedPackages = [];
 
         // A package is "ripe" when all its requirements are met.
-        $isRipe = function (PackageInterface $pkg) use (&$sortedPackages, &$ignoredNames) {
-            foreach ($pkg->getRequires() as $link) {
-                if (!isset($sortedPackages[$link->getTarget()]) && !isset($ignoredNames[$link->getTarget()])) {
-                    // printf("[%s] is not ripe due to [%s]\n", $pkg->getName(), $link->getTarget());
+        $isRipe = function (PackageInterface $pkg) use (&$sortedPackages, &$realRequires) {
+            foreach ($realRequires[$pkg->getName()] ?? [] as $target) {
+                if (!isset($sortedPackages[$target])) {
+                     // printf("[%s] is not ripe due to [%s]\n", $pkg->getName(), $target);
                     return false;
                 }
             }
@@ -80,23 +85,22 @@ class PackageSorter
         };
 
         // A package is "consumed" when we move it from $todoPackages to $sortedPackages.
-        $consumePackage = function (PackageInterface $pkg) use (&$sortedPackages, &$todoPackages, &$ignoredNames) {
+        $consumePackage = function (PackageInterface $pkg) use (&$sortedPackages, &$todoPackages) {
             $sortedPackages[$pkg->getName()] = $pkg;
             unset($todoPackages[$pkg->getName()]);
-
-            foreach ($pkg->getProvides() as $link) {
-                $ignoredNames[$link->getTarget()] = true;
-            }
-            foreach ($pkg->getReplaces() as $link) {
-                $ignoredNames[$link->getTarget()] = true;
-            }
         };
 
         // Main loop: Progressively move ripe packages from $todoPackages to $sortedPackages.
         while (!empty($todoPackages)) {
             $ripePackages = array_filter($todoPackages, $isRipe);
             if (empty($ripePackages)) {
-                throw new \RuntimeException("Error: Failed to find next installable package.");
+                $todoStr = implode(' ', array_map(
+                    function ($p) {
+                        return $p->getName();
+                    },
+                    $todoPackages
+                ));
+                throw new \RuntimeException("Error: Failed to find next installable package. Remaining: $todoStr");
             }
             foreach ($ripePackages as $package) {
                 $consumePackage($package);
