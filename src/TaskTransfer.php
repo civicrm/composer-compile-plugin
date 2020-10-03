@@ -64,7 +64,7 @@ class TaskTransfer
             return;
         }
 
-        if ($raw{0} === '@') {
+        if ($raw[0] === '@') {
             $file = substr($raw, 1);
             $GLOBALS[self::GLOBAL_VAR] = json_decode(file_get_contents($file), 1);
         } else {
@@ -78,7 +78,7 @@ class TaskTransfer
     public static function cleanup()
     {
         $raw = getenv(self::ENV_VAR);
-        if ($raw{0} === '@') {
+        if ($raw[0] === '@') {
             $file = substr($raw, 1);
             unlink($file);
         }
