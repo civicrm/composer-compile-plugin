@@ -127,6 +127,21 @@ class TaskRunner
 
         $dryRunText = $isDryRun ? '<error>(DRY-RUN)</error> ' : '';
 
+        if (empty($tasks)) {
+            return;
+        }
+
+        switch ($this->getPassthruMode()) {
+            case 'never':
+            case 'error':
+                $io->write('<info>Compiling additional files</info> (<comment>For full details, use verbose "-v" mode.</comment>)');
+                break;
+
+            case 'always':
+                $io->write('<info>Compiling additional files</info>');
+                break;
+        }
+
         $tasks = $this->sortTasks($tasks);
         foreach ($tasks as $task) {
             /** @var \Civi\CompilePlugin\Task $task */

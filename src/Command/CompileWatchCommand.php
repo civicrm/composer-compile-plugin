@@ -28,6 +28,10 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($output->isVerbose()) {
+            putenv('COMPOSER_COMPILE_PASSTHRU=always');
+        }
+
         $intervalMicroseconds = 1000 * $input->getOption('interval');
         $watcher = $taskList = null;
         $stale = true;

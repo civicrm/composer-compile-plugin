@@ -52,6 +52,10 @@ class CompileCommand extends \Composer\Command\BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($output->isVerbose()) {
+            putenv('COMPOSER_COMPILE_PASSTHRU=always');
+        }
+
         $taskList = new TaskList($this->getComposer(), $this->getIO());
         $taskList->load()->validateAll();
 

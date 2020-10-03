@@ -81,5 +81,7 @@ or
 }
 ```
 
-If both the environment variable (`COMPOSER_COMPILE_PASSTHRU`) and the JSON option (`extra.compile-passthru`) are set, then
-the environment-variable takes precedence.
+Additionally, the verbose (`-v`) flag will enable `COMPOSER_COMPILE_PASSTHRU=always`.
+
+If the value is set in multiple ways, the order of preceduce (highest to lowest) is: (1) verbose flag (`-v`),
+(2) environment variable (`COMPOSER_COMPILE_PASSTHRU`), and (3) the JSON option (`extra.compile-passthru`).
