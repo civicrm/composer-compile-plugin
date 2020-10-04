@@ -27,9 +27,14 @@ Features:
 
 The plugin is currently in version `0.x`. The integration-tests are passing, and it seems to be working for the original need, but it's also new and hasn't seen wide-spread testing yet.
 
-## More information
+## Documentation
 
-* [doc/site-build.md](doc/site-build.md): Managing the root package (for site-builders)
-* [doc/tasks.md](doc/tasks.md): Working with tasks (for library developers)
-* [doc/evaluation.md](doc/evaluation.md): Evaluate and compare against similar options
-* [doc/develop.md](doc/develop.md): How to work with `composer-compile-plugin.git` (for plugin-development)
+* [site-build.md](doc/site-build.md): Managing the root package (for site-builders)
+* [tasks.md](doc/tasks.md): Working with tasks (for library developers)
+* [evaluation.md](doc/evaluation.md): Evaluate and compare against similar options
+* [develop.md](doc/develop.md): How to work with `composer-compile-plugin.git` (for plugin-development)
+
+## See also
+
+* [composer-compile-lib](https://github.com/civicrm/composer-compile-lib): Small library of helpers/examples for specific compilation tasks -- meta-PHP, SCSS, etc
+* [composer#1193](https://github.com/composer/composer/issues/1193): Old discussion thread about post-install hooks for dependencies
