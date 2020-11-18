@@ -70,7 +70,7 @@ an aggregated file is available. This example would produce two aggregate files,
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~0.9"
+    "civicrm/composer-compile-plugin": "~0.14"
   },
   "extra": {
     "compile": [
@@ -97,7 +97,7 @@ For the next example, we declare a PHP-based task to compile some SCSS.
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~0.9",
+    "civicrm/composer-compile-plugin": "~0.14",
     "scssphp/scssphp": "1.2.0"
   },
   "extra": {
@@ -130,7 +130,7 @@ It's slightly more verbose, but it's also easier to unit-test and re-use the met
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~0.9",
+    "civicrm/composer-compile-plugin": "~0.14",
     "scssphp/scssphp": "1.2.0"
   },
   "autoload": {"psr-4": {"ScssExample\\": "src"}},
@@ -193,7 +193,7 @@ If the metadata about the compilation tasks looks a bit long, then you may use a
 {
   "name": "foo/bar",
   "require": {
-    "civicrm/composer-compile-plugin": "~0.9"
+    "civicrm/composer-compile-plugin": "~0.14"
   },
   "extra": {
     "compile-includes": ["module-a/.composer-compile.json", "module-b/.composer-compile.json"]
