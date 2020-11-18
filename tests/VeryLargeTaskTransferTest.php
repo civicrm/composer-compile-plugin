@@ -32,7 +32,7 @@ class VeryLargeTaskTransferTest extends IntegrationTestCase
                 'title' => 'Compile first',
                 'run' => [
                   '@php-eval printf("PAYLOAD: SIZE: %d\n", strlen($GLOBALS["COMPOSER_COMPILE_TASK"]["payload"]));',
-                  '@php-eval printf("PAYLOAD: MODE: %s\n", getenv("COMPOSER_COMPILE_TASK"){0} === "@" ? "file" : "b64-gz-js");',
+                  '@php-eval printf("PAYLOAD: MODE: %s\n", getenv("COMPOSER_COMPILE_TASK")[0] === "@" ? "file" : "b64-gz-js");',
                 ],
                 'payload' => self::computeLargePayload()
               ],
@@ -76,7 +76,7 @@ class VeryLargeTaskTransferTest extends IntegrationTestCase
             $compressionBuster = function ($base, $delta) {
                 $r = '';
                 for ($i = 0; $i < strlen($base); $i++) {
-                    $r .= chr($delta + ord($base{$i}));
+                    $r .= chr($delta + ord($base[$i]));
                 }
                 return $r;
             };
