@@ -25,8 +25,6 @@ Features:
 * Enforces permission model to address historical concerns about `composer` hooks and untrusted libraries.
 * Integration-tests pass on both `composer` v1.10 and v2.0-dev (*at time of writing*).
 
-The plugin is currently in version `0.x`. The integration-tests are passing, and it seems to be working for the original need, but it's also new and hasn't seen wide-spread testing yet.
-
 ## Documentation
 
 * [site-build.md](doc/site-build.md): Managing the root package (for site-builders)
@@ -36,5 +34,5 @@ The plugin is currently in version `0.x`. The integration-tests are passing, and
 
 ## See also
 
-* [composer-compile-lib](https://github.com/civicrm/composer-compile-lib): Small library of helpers/examples for specific compilation tasks -- meta-PHP, SCSS, etc
+* [composer-compile-lib](https://github.com/civicrm/composer-compile-lib): Small library of opinionated helpers/examples for specific compilation tasks -- meta-PHP, SCSS, etc
 * [composer#1193](https://github.com/composer/composer/issues/1193): Old discussion thread about post-install hooks for dependencies
