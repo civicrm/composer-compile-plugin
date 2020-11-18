@@ -40,11 +40,6 @@ class DownloadTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $version = PH::runOk('composer --version')->getOutput();
-        if (!preg_match(';version 1;', $version)) {
-            $this->markTestSkipped('Cannot test civicrm/composer-downloads-plugin on composer v2. It does not yet support v2.');
-        }
-
         $this->assertFileNotExists('vendor/test/rosti/potato.in');
         $this->assertFileNotExists('vendor/test/rosti/rosti.out');
 
