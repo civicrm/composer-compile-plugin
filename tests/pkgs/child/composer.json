@@ -1,0 +1,27 @@
+{
+    "description": "(MOCK) Child implementation",
+    "authors": [
+        {
+            "name": "Tester McFakus",
+            "email": "tester@example.org"
+        }
+    ],
+    "name": "test/child",
+    "provide": {
+        "test/child-implementation": "1.0.10"
+    },
+    "require": {
+	"civicrm/composer-compile-plugin": "@dev",
+	"test/parent": "*"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+	"compile": [
+	    {
+		"tag": ["DependencyOrder"],
+		"title": "Child",
+		"shell": "pwd; if [ -f ../parent/parent.out ]; then echo ': Parent ran first' > child.out; fi"
+	    }
+	]
+    }
+}
