@@ -117,6 +117,7 @@ class TaskList
         }
 
         foreach ($extra['compile-includes'] as $includeFile) {
+            $includePathFull = "$installPath/$includeFile";
             if (!file_exists($includePathFull) || !is_readable($includePathFull)) {
                 $this->io->writeError("<warning>Failed to read $includePathFull</warning>");
                 continue;
