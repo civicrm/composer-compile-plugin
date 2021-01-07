@@ -47,7 +47,6 @@ class CircularReferenceTest extends IntegrationTestCase
               ],
           ],
         ];
-        var_export($returning);
         return $returning;
     }
 
