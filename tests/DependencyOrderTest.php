@@ -82,7 +82,7 @@ class DependencyOrderTest extends IntegrationTestCase
         $p = PH::runOk('COMPOSER_COMPILE=1 composer install');
 
         $this->assertFileExists(self::getPluginSourceDir() . '/tests/pkgs/parent/parent.out');
-        $this->assertFileExists(self::getPluginSourceDir() . '/tests/pkgs/child/child.out');                
+        $this->assertFileExists(self::getPluginSourceDir() . '/tests/pkgs/child/child.out');
     }
 
     protected static function resetCompileFiles()
@@ -91,4 +91,3 @@ class DependencyOrderTest extends IntegrationTestCase
         self::cleanFile(self::getPluginSourceDir() . '/tests/pkgs/child/child.out');
     }
 }
-

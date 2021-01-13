@@ -95,7 +95,8 @@ class TaskList
      * @param string $installPath The package's location on disk.
      * @return True if compile tasks are defined for this package.
      */
-    protected function packageHasCompileTasks(PackageInterface $package, $installPath) {
+    protected function packageHasCompileTasks(PackageInterface $package, $installPath)
+    {
         $extra = null;
 
         // Replicate behaviour from loadPackage which prefers
@@ -109,11 +110,11 @@ class TaskList
             $extra = $package->getExtra();
         }
         if (!empty($extra['compile'])) {
-            return TRUE;
+            return true;
         }
 
         if (empty($extra['compile-includes'])) {
-            return FALSE;
+            return false;
         }
 
         foreach ($extra['compile-includes'] as $includeFile) {
@@ -124,7 +125,7 @@ class TaskList
             }
             $inc = json_decode(file_get_contents($includePathFull), 1);
             if (!empty($inc['compile'])) {
-                return TRUE;
+                return true;
             }
         }
     }
