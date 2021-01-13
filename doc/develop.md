@@ -87,8 +87,17 @@ for third party enhancements. These events are:
 * `pre-compile-task`: Fires before executing a specific `task`.
 * `post-compile-task`: Fires after executing a specific `task`.
 
-Note: The `compile` command supports a dry-run mode. All events will fire
-normally during dry-run. This is important to support subscribers which
-manipulate task definitions. However, if (hypothetically), a subscriber had
-some significant side-effects (like creating files), then it would be
-important to consult `$event->isDryRun()`.
+### pre/post-compile-list
+
+* The `-compile-list` events fire sometime after all packages are downloaded (but sometime before the tasks are executed).
+* The `-compile-list` events fire separately for each package.
+* Currently, there are some limitations in how packages are visited. (*If the limitations become problematic, they may change with only a minor version increment.*)
+    * The `-compile-list` events only fire for packages which have an explicit task-list. (*This may change to fire for all installed packages, even if they initially have an empty task-list.*)
+    * The order of visited packages is not guaranteed. Package A may fire before or after package B. (*This may change to some trivial but
+      reproducible ordering -- e.g. alphabetical.)
+
+### Tip: Dry Run
+
+The `compile` command supports a dry-run mode.  All events will fire normally during dry-run.  This is important to support subscribers
+which manipulate task definitions.  However, if (hypothetically), a subscriber had some significant side-effects (like creating files),
+then it would be important to consult `$event->isDryRun()`.
