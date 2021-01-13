@@ -91,7 +91,8 @@ class EventTest extends IntegrationTestCase
 
     protected function startupLines()
     {
-        $pkgCount = 3;
+        // $pkgCount = 3; // All installed packages
+        $pkgCount = 1; // Only packages with predefined tasks
         $r = [];
         for ($i = 0; $i < $pkgCount; $i++) {
             $r[] = "^MARK: PRE_COMPILE_LIST";

@@ -1,0 +1,26 @@
+{
+    "description": "(MOCK) Parent implementation",
+    "authors": [
+        {
+            "name": "Tester McFakus",
+            "email": "tester@example.org"
+        }
+    ],
+    "name": "test/parent",
+    "provide": {
+        "test/parent-implementation": "1.0.10"
+    },
+    "requires" : {
+	"civicrm/composer-compile-plugin": "@dev"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+	"compile": [
+	    {
+		"tag": ["DependencyOrder"],
+		"title": "Parent",
+		"shell": "pwd; echo 'PARENT' >> parent.out"
+	    }
+	]
+    }
+}

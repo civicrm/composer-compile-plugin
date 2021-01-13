@@ -1,0 +1,17 @@
+{
+    "description": "(MOCK) chicken implementation",
+    "authors": [
+        {
+            "name": "Tester McFakus",
+            "email": "tester@example.org"
+        }
+    ],
+    "name": "test/chicken",
+    "provide": {
+        "test/chicken-implementation": "1.0.10"
+    },
+    "require": {
+        "test/egg": "*"
+    },
+    "minimum-stability": "dev"
+}
