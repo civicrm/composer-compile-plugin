@@ -46,7 +46,12 @@ class TaskTransfer
     {
         $data = base64_encode(gzencode(json_encode($task->definition)));
         if (strlen($data) < self::MAX_ENV_SIZE) {
-            Platform::putEnv(self::ENV_VAR, $data);
+            if (method_exists(Platform::class, 'putEnv')) {
+              Platform::putEnv(self::ENV_VAR, $data);
+            }
+            else {
+              putenv(self::ENV_VAR . '=' . $data);
+            }
         } else {
             $tempFile = tempnam(sys_get_temp_dir(), 'composer-compile-');
             file_put_contents($tempFile, json_encode($task->definition));
