@@ -52,19 +52,19 @@ class DependencyOrderTest extends IntegrationTestCase
         return $returning;
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::initTestProject(static::getComposerJson());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         self::resetCompileFiles();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         self::resetCompileFiles();
         parent::tearDown();
