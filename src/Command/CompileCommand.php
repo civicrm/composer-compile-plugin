@@ -74,5 +74,6 @@ class CompileCommand extends \Composer\Command\BaseCommand
         } else {
             $taskRunner->runDefault($taskList, $input->getOption('dry-run'));
         }
+        return 0;
     }
 }

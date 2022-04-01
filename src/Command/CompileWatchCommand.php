@@ -109,6 +109,7 @@ class CompileWatchCommand extends \Composer\Command\BaseCommand
             $output->writeln("Polling", OutputInterface::VERBOSITY_VERY_VERBOSE);
             $watcher->start($intervalMicroseconds, $intervalMicroseconds);
         }
+        return 0;
     }
 
     /**
