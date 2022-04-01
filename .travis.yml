@@ -21,6 +21,10 @@ matrix:
       dist: xenial
       php: 7.4
       env: COMPOSER_VERSION=--snapshot
+    - os: linux
+      dist: xenial
+      php: 8.0
+      env: COMPOSER_VERSION=--snapshot
     - os: osx
       osx_image: xcode12
       language: generic
