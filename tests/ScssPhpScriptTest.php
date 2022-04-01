@@ -26,7 +26,7 @@ class ScssPhpScriptTest extends IntegrationTestCase
         ];
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::initTestProject(static::getComposerJson());

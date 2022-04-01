@@ -116,7 +116,7 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
         return self::$testDir;
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
 
@@ -147,12 +147,12 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
      *
      * @param string $dir
      */
-    protected static function cleanDir($dir)
+    protected static function cleanDir($dir): void
     {
         PH::runOk(['if [ -d @DIR ]; then rm -rf @DIR ; fi', 'DIR' => $dir]);
     }
 
-    protected static function cleanFile($file)
+    protected static function cleanFile($file): void
     {
         if (file_exists($file)) {
             unlink($file);
@@ -166,13 +166,13 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
      */
     private $origEnvTestCase;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->origEnvTestCase = EnvHelper::getAll();
         parent::setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         EnvHelper::setAll($this->origEnvTestCase);

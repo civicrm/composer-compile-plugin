@@ -63,7 +63,7 @@ class MultiStepTaskTest extends IntegrationTestCase
         ];
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::initTestProject(static::getComposerJson());
@@ -84,9 +84,9 @@ class MultiStepTaskTest extends IntegrationTestCase
             implode("\n", [
                 '<' . '?php',
                 'class MultistepEx {',
-                'function doFirst($task){ echo "MARK: PHP FIRST\n"; if (getenv("ERROR_PHP_1")){ exit(1); } }',
-                'function doSecond($task){ echo "MARK: PHP SECOND\n"; if (getenv("ERROR_PHP_2")){ exit(1); } }',
-                'function doThird($task){ echo "MARK: PHP THIRD\n"; if (getenv("ERROR_PHP_3")){ exit(1); } }',
+                'public static function doFirst($task){ echo "MARK: PHP FIRST\n"; if (getenv("ERROR_PHP_1")){ exit(1); } }',
+                'public static function doSecond($task){ echo "MARK: PHP SECOND\n"; if (getenv("ERROR_PHP_2")){ exit(1); } }',
+                'public static function doThird($task){ echo "MARK: PHP THIRD\n"; if (getenv("ERROR_PHP_3")){ exit(1); } }',
                 '}',
             ])
         );
