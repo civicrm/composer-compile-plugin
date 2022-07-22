@@ -1,4 +1,5 @@
 <?php
+
 Civi\CompilePlugin\Util\Script::assertTask();
 
 $scssCompiler = new \ScssPhp\ScssPhp\Compiler();

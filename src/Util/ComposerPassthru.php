@@ -1,4 +1,5 @@
 <?php
+
 namespace Civi\CompilePlugin\Util;
 
 use Composer\Composer;
@@ -19,7 +20,6 @@ use Composer\IO\IOInterface;
  */
 class ComposerPassthru
 {
-
     use ComposerIoTrait {
         __construct as constructComposerIo;
     }
@@ -75,7 +75,7 @@ class ComposerPassthru
 
     protected function getPhpExecCommand()
     {
-        $d = new class($this->composer, $this->io) extends EventDispatcher
+        $d = new class ($this->composer, $this->io) extends EventDispatcher
         {
             public function exfiltratePhpExec()
             {
