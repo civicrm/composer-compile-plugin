@@ -44,6 +44,8 @@ class PatchTest extends IntegrationTestCase
             'symlink' => false,
         ];
 
+        $r['config']['allow-plugins']['cweagans/composer-patches'] = true;
+
         return $r;
     }
 
