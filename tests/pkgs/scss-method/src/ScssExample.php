@@ -1,4 +1,5 @@
 <?php
+
 namespace ScssExample;
 
 class ScssExample
