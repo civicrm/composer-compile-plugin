@@ -1,4 +1,5 @@
 <?php
+
 namespace Civi\CompilePlugin\Tests;
 
 use Civi\CompilePlugin\Util\EnvHelper;
@@ -16,7 +17,11 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
               'email' => 'tester@example.org',
             ],
           ],
-
+          'config' => [
+            'allow-plugins' => [
+              'civicrm/composer-compile-plugin' => true,
+            ],
+          ],
           'repositories' => [
             'composer-compile-plugin' => [
               'type' => 'path',

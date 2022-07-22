@@ -21,6 +21,7 @@ class CivicrmAssetTest extends ScssPhpMethodTest
         $json['name'] = 'test/civicrm-asset-test';
         $json['require']['civicrm/civicrm-asset-plugin'] = '@stable';
         $json['extra']['civicrm-asset']['path'] = 'web/civi';
+        $json['config']['allow-plugins']['civicrm/civicrm-asset-plugin'] = true;
         return $json;
     }
 

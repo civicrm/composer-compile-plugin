@@ -19,7 +19,7 @@ class DownloadTest extends IntegrationTestCase
 
     public static function getComposerJson()
     {
-        return parent::getComposerJson() + [
+        $json = parent::getComposerJson() + [
             'name' => 'test/download-test',
             'require' => [
                 'civicrm/composer-compile-plugin' => '@dev',
@@ -27,6 +27,8 @@ class DownloadTest extends IntegrationTestCase
             ],
             'minimum-stability' => 'dev',
         ];
+        $json['config']['allow-plugins']['civicrm/composer-downloads-plugin'] = true;
+        return $json;
     }
 
     public static function setUpBeforeClass(): void

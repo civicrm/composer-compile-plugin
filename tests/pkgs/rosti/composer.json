@@ -15,6 +15,11 @@
         "civicrm/composer-compile-plugin": "@dev"
     },
     "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "civicrm/composer-downloads-plugin": true
+        }
+    },
     "extra": {
         "downloads": {
             "potato.in": {

@@ -18,7 +18,7 @@ class DependencyOrderTest extends IntegrationTestCase
     public static function getComposerJson()
     {
         $composer_json = parent::getComposerJson();
-        
+
         if (empty($composer_json['repositories'])) {
             $composer_json['repositories'] = [];
         }
@@ -78,7 +78,7 @@ class DependencyOrderTest extends IntegrationTestCase
     {
         $this->assertFileNotExists(self::getPluginSourceDir() . '/tests/pkgs/parent/parent.out');
         $this->assertFileNotExists(self::getPluginSourceDir() . '/tests/pkgs/child/child.out');
-        
+
         $p = PH::runOk('COMPOSER_COMPILE=1 composer install');
 
         $this->assertFileExists(self::getPluginSourceDir() . '/tests/pkgs/parent/parent.out');
