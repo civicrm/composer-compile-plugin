@@ -37,7 +37,7 @@ class ScssPhpMethodTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('vendor/test/scss-method/build.css');
+        $this->assertFileDoesNotExist('vendor/test/scss-method/build.css');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 

@@ -76,8 +76,8 @@ class DependencyOrderTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists(self::getPluginSourceDir() . '/tests/pkgs/parent/parent.out');
-        $this->assertFileNotExists(self::getPluginSourceDir() . '/tests/pkgs/child/child.out');
+        $this->assertFileDoesNotExist(self::getPluginSourceDir() . '/tests/pkgs/parent/parent.out');
+        $this->assertFileDoesNotExist(self::getPluginSourceDir() . '/tests/pkgs/child/child.out');
 
         $p = PH::runOk('COMPOSER_COMPILE=1 composer install');
 

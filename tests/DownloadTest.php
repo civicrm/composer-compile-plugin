@@ -42,8 +42,8 @@ class DownloadTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('vendor/test/rosti/potato.in');
-        $this->assertFileNotExists('vendor/test/rosti/rosti.out');
+        $this->assertFileDoesNotExist('vendor/test/rosti/potato.in');
+        $this->assertFileDoesNotExist('vendor/test/rosti/rosti.out');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 

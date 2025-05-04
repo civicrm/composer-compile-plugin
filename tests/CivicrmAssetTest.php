@@ -27,7 +27,7 @@ class CivicrmAssetTest extends ScssPhpMethodTest
 
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('web/civi/org.example.scssmethodtest/build.css');
+        $this->assertFileDoesNotExist('web/civi/org.example.scssmethodtest/build.css');
         parent::testComposerInstall();
         $this->assertSameCssFile('vendor/test/scss-method/build.css-expected', 'web/civi/org.example.scssmethodtest/build.css');
     }

@@ -56,7 +56,7 @@ class LocatorTest extends IntegrationTestCase
             $this->markTestSkipped('Cannot test mindplay/composer-locator on composer v2. It does not yet support v2.');
         }
 
-        $this->assertFileNotExists('vendor/test/cherry-jam/jam.out');
+        $this->assertFileDoesNotExist('vendor/test/cherry-jam/jam.out');
 
         $p = PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 

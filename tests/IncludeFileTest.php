@@ -49,7 +49,7 @@ class IncludeFileTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('vendor/test/strawberry-jam/subordinate/jam.out');
+        $this->assertFileDoesNotExist('vendor/test/strawberry-jam/subordinate/jam.out');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 

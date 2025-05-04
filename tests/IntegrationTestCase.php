@@ -212,7 +212,7 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
     public function assertFileContent($file, $content, $message = null)
     {
         if ($content === null) {
-            $this->assertFileNotExists(
+            $this->assertFileDoesNotExist(
                 $file,
                 "($message) File should not exist"
             );
@@ -313,7 +313,7 @@ class IntegrationTestCase extends \PHPUnit\Framework\TestCase
             "Compare line count in $serialize"
         );
         foreach ($expectLines as $offset => $expectLine) {
-            $this->assertRegExp(
+            $this->assertMatchesRegularExpression(
                 ";$expectLine;",
                 $actualLines[$offset],
                 "Check line $offset in $serialize"

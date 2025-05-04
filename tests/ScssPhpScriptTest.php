@@ -37,7 +37,7 @@ class ScssPhpScriptTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('vendor/test/scss-script/build.css');
+        $this->assertFileDoesNotExist('vendor/test/scss-script/build.css');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 

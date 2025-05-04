@@ -16,10 +16,10 @@ To run the tests, you will need `composer` and `phpunit` in the `PATH`.
 [~/src/composer-compile-plugin] which composer
 /Users/myuser/bin/composer
 
-[~/src/composer-compile-plugin] which phpunit6
-/Users/myuser/bin/phpunit6
+[~/src/composer-compile-plugin] which phpunit9
+/Users/myuser/bin/phpunit9
 
-[~/src/composer-compile-plugin] phpunit6
+[~/src/composer-compile-plugin] phpunit9
 PHPUnit 6.5.14 by Sebastian Bergmann and contributors.
 
 ...                                                                 3 / 3 (100%)
@@ -33,7 +33,7 @@ The integration tests may have a lot going on under the hood.  To monitor
 the tests more closesly, set the `DEBUG` variable, as in:
 
 ```
-[~/src/composer-compile-plugin] env DEBUG=2 phpunit6
+[~/src/composer-compile-plugin] env DEBUG=2 phpunit9
 ```
 
 ## Local Dev Sandbox

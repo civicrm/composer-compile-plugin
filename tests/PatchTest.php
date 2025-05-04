@@ -64,7 +64,7 @@ class PatchTest extends IntegrationTestCase
    */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('vendor/test/cherry-jam/jam.out');
+        $this->assertFileDoesNotExist('vendor/test/cherry-jam/jam.out');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 

@@ -65,7 +65,7 @@ class CompileCommandTest extends IntegrationTestCase
      */
     public function testComposerInstall()
     {
-        $this->assertFileNotExists('fondue.out');
+        $this->assertFileDoesNotExist('fondue.out');
 
         PH::runOk('COMPOSER_COMPILE=1 composer install -v');
 
@@ -79,11 +79,11 @@ class CompileCommandTest extends IntegrationTestCase
      */
     public function testComposerCompile()
     {
-        $this->assertFileNotExists('fondue.out');
+        $this->assertFileDoesNotExist('fondue.out');
 
         // We need to make sure the project is setup.
         PH::runOk('COMPOSER_COMPILE=0 composer install -v');
-        $this->assertFileNotExists('fondue.out');
+        $this->assertFileDoesNotExist('fondue.out');
 
         // First pass at compilation in a clean-ish environment
         PH::runOk('COMPOSER_COMPILE=1 composer compile -v');
@@ -124,13 +124,13 @@ class CompileCommandTest extends IntegrationTestCase
         };
 
         // We need to make sure the project is setup.
-        $assertAll('assertFileNotExists', $allFiles);
+        $assertAll('assertFileDoesNotExist', $allFiles);
         PH::runOk('COMPOSER_COMPILE=0 composer install -v');
-        $assertAll('assertFileNotExists', $allFiles);
+        $assertAll('assertFileDoesNotExist', $allFiles);
 
         PH::runOk('composer compile ' . escapeshellarg($inputFilterExpr));
         $this->assertFileContent($expectFile, $expectFileContent);
-        $assertAll('assertFileNotExists', $otherFiles);
+        $assertAll('assertFileDoesNotExist', $otherFiles);
     }
 
     public function getExampleIds()
