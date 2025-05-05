@@ -8,7 +8,7 @@
     "name": "test/scss-method",
     "require": {
         "civicrm/composer-compile-plugin": "@dev",
-        "scssphp/scssphp": "1.2.0",
+        "scssphp/scssphp": "~1.2",
         "padaliyajay/php-autoprefixer": "~1.2"
     },
     "autoload": {"psr-4": {"ScssExample\\": "src"}},

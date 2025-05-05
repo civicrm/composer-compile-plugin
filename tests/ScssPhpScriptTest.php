@@ -21,6 +21,7 @@ class ScssPhpScriptTest extends IntegrationTestCase
             'name' => 'test/patch-test',
             'require' => [
                 'test/scss-script' => '@dev',
+                'sabberworm/php-css-parser' => '@stable',
             ],
             'minimum-stability' => 'dev',
         ];

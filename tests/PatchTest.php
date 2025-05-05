@@ -24,7 +24,7 @@ class PatchTest extends IntegrationTestCase
             'require' => [
                 'civicrm/composer-compile-plugin' => '@dev',
                 'test/cherry-jam' => '@dev',
-                'cweagans/composer-patches' => '*',
+                'cweagans/composer-patches' => '~1.7',
             ],
             'minimum-stability' => 'dev',
             'extra' => [

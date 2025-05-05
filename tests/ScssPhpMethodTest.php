@@ -21,6 +21,7 @@ class ScssPhpMethodTest extends IntegrationTestCase
             'name' => 'test/scss-php-method-test',
             'require' => [
                 'test/scss-method' => '@dev',
+                'sabberworm/php-css-parser' => '@stable',
             ],
             'minimum-stability' => 'dev',
         ];
