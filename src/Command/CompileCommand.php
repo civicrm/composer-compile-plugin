@@ -38,7 +38,7 @@ class CompileCommand extends \Composer\Command\BaseCommand
     protected function initialize(
         InputInterface $input,
         OutputInterface $output
-    ) {
+    ): void {
         $so = $input->getOption('soft-options');
         if ($so) {
             $json = json_decode(base64_decode($so), 1);
