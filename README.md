@@ -1,4 +1,4 @@
-# Composer Compile Plugin [![Build Status](https://travis-ci.com/civicrm/composer-compile-plugin.svg?branch=master)](https://travis-ci.com/civicrm/composer-compile-plugin)
+# Composer Compile Plugin
 
 The "Compile" plugin enables developers of PHP libraries to define free-form "compilation" tasks, such as:
 
